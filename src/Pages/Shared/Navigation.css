@@ -1,0 +1,11 @@
+@media screen and (min-width: 576px) {
+  .link {
+    margin-left: 200px;
+    gap: 20px;
+  }
+}
+@media screen and (min-width: 576px) {
+  .link2 {
+       margin-left: 350px;
+  }
+}
