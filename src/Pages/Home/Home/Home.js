@@ -1,4 +1,6 @@
 import React from "react";
+import Products from "../Products/Products";
+
 
 import Slider from "../Slider/Slider";
 
@@ -7,6 +9,7 @@ const Home = () => {
     <div>
         
       <Slider />
+     <Products/>
 
     </div>
   );

@@ -1,57 +1,43 @@
 import React from "react";
-import { Col, Container, Nav, Navbar, Row } from "react-bootstrap";
+import { Container, Navbar,Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import logo from "../../images/favicon.png";
 import "./Navigation.css";
 
 const Navigation = () => {
   return (
-    <Navbar
-      className="Navbar"
-      collapseOnSelect
-      expand="lg"
-      bg="dark"
-      variant="dark"
-    >
+    <Navbar bg="dark" expand="lg">
       <Container fluid>
-       <div>
-       <Navbar.Brand className="logo">
+        <Navbar.Brand href="#home">
           <img
+            alt=""
             src={logo}
             width="30"
             height="30"
             className="d-inline-block align-top"
-            alt="React Bootstrap logo"
           />
           CHRONO CLICK
         </Navbar.Brand>
-       </div>
-
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="link">
-            <Nav.Link className="ml-2" as={Link} to="/home">
+        <Navbar.Toggle />
+        <Navbar.Collapse>
+          <Nav className="me-auto my-2 my-lg-0 link">
+            <Nav.Link as={Link} to="/home">
               Home
             </Nav.Link>
-            <Nav.Link className="ml-2" as={Link} to="/shop">
+            <Nav.Link as={Link} to="/shop">
               Shop
             </Nav.Link>
-            <Nav.Link as={Link} to="/orders">
-              orders
-            </Nav.Link>
-            
-            
-          </Nav>
 
-          <Nav className="link2">
-          <Nav.Link as={Link} to="/logIn">
-              Log In
-            </Nav.Link>
-            <Nav.Link as={Link} to="/signup">
-              Sign Up
+            <Nav.Link as={Link} to="/order">
+              Order
             </Nav.Link>
           </Nav>
+          <Nav.Link as={Link} to="/login">
+            Sign In
+          </Nav.Link>
+          <Nav.Link as={Link} to="/singin">
+            Sign Up
+          </Nav.Link>
         </Navbar.Collapse>
       </Container>
     </Navbar>

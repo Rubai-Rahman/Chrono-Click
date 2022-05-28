@@ -6,8 +6,8 @@ import slider3 from "../../../images/slider/slider3-bg.webp";
 
 const Slider = () => {
   return (
-    <Carousel>
-      <Carousel.Item interval={1000}>
+    <Carousel className="mb-4">
+      <Carousel.Item interval={3000}>
         <img className="d-block w-100" src={slider1} alt="First slide" />
         <Carousel.Caption></Carousel.Caption>
       </Carousel.Item>
