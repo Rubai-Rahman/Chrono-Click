@@ -1,0 +1,17 @@
+.footer li{
+	list-style: none;
+	font-size: 17px;
+	text-align: justify;
+  text-justify: inter-word;
+}
+.footer li:hover{
+	color:#b8860b;
+}
+h2{
+	color:#b8860b;
+	font-size: 25px;
+	margin-top: 40px;
+	margin-bottom: 40px;
+	
+  
+}

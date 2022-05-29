@@ -34,6 +34,14 @@
   height: 100%;
   margin-bottom: 20px;
   object-fit: cover;
+  background-color: rgb(35, 101, 158);
+}
+.card-top:hover img {
+  opacity: 0.2;
+}
+
+.card:hover {
+  cursor: grabbing;
 }
 
 .card-top h1 {

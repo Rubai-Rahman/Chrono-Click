@@ -56,28 +56,6 @@ const story = [
   },
 ];
 
-function SampleNextArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{ ...style, display: "block", background: "red" }}
-      onClick={onClick}
-    />
-  );
-}
-
-function SamplePrevArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{ ...style, display: "block", background: "green" }}
-      onClick={onClick}
-    />
-  );
-}
-
 const News = () => {
   const settings = {
     dots: true,
@@ -86,8 +64,6 @@ const News = () => {
     slidesToShow: 3,
     slidesToScroll: 2,
     initialSlide: 0,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
 
     responsive: [
       {
@@ -130,7 +106,12 @@ const News = () => {
             </div>
             <div className="card-bottom">
               <p>{item.story}</p>
-			  <Link to="/" style={{color:'silver', fontSize:15,letterSpacing:3}}>READ MORE </Link>
+              <Link
+                to="/"
+                style={{ color: "silver", fontSize: 15, letterSpacing: 3 }}
+              >
+                READ MORE{" "}
+              </Link>
             </div>
           </div>
         ))}
