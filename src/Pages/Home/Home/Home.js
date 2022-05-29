@@ -1,4 +1,5 @@
 import React from "react";
+import News from "../News/News";
 import Products from "../Products/Products";
 
 
@@ -10,6 +11,7 @@ const Home = () => {
         
       <Slider />
      <Products/>
+     <News/>
 
     </div>
   );
