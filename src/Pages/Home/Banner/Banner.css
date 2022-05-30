@@ -10,6 +10,7 @@
 .dialog {
   margin-top: 20px;
   color: #dcdcdc;
+  position: relative;
 }
 .dialog h3 {
   padding-top: 200px;
@@ -19,11 +20,33 @@
   font-size: 15px;
   margin-top: 20px;
 }
+.dialog button {
+  background-color: transparent;
+  border: none;
+  border-radius: 90px;
+}
 
-ion-icon {
-  font-size: 90px;
+.dialog ion-icon {
+  font-size: 60px;
   color: #dcdcdc;
 }
 ion-icon:hover {
   color: #9c7c38;
+}
+@media only screen and (max-width: 600px) {
+  .dialog h3 {
+    font-size: 20px;
+    padding-top: 20px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .dialog h5 {
+    font-size: 12px;
+    padding-top: 20px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .banner {
+    height: 300px;
+  }
 }
