@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Navbar,Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import logo from "../../images/favicon.png";
+import logo from "../../../images/favicon.png";
 import "./Navigation.css";
 
 const Navigation = () => {
@@ -16,28 +16,28 @@ const Navigation = () => {
             height="30"
             className="d-inline-block align-top"
           />
-          CHRONO CLICK
+          <span className="title" >CHRONO CLICK</span>
         </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse>
           <Nav className="me-auto my-2 my-lg-0 link">
-            <Nav.Link as={Link} to="/home">
+            <Link to="/home"  className="nav_link" >
               Home
-            </Nav.Link>
-            <Nav.Link as={Link} to="/shop">
+            </Link>
+            <Link to="/shop" className="nav_link">
               Shop
-            </Nav.Link>
+            </Link>
 
-            <Nav.Link as={Link} to="/order">
+            <Link  to="/order" className="nav_link">
               Order
-            </Nav.Link>
+            </Link>
           </Nav>
-          <Nav.Link as={Link} to="/login">
+          <Link  to="/login" className="nav_link">
             Sign In
-          </Nav.Link>
-          <Nav.Link as={Link} to="/singin">
+          </Link><br />
+          <Link  to="/singin" className="nav_link" >
             Sign Up
-          </Nav.Link>
+          </Link>
         </Navbar.Collapse>
       </Container>
     </Navbar>

@@ -1,0 +1,46 @@
+.testimonials {
+  margin-top: -40px !important;
+  padding-bottom: 100px;
+  margin-bottom: 100px;
+  padding-top: 20px;
+  background-color: rgb(8, 7, 7);
+}
+
+.testcard {
+  background-color: rgb(8, 7, 7);
+  border-left: 1px solid rgb(194, 187, 187);
+  border-right: 1px solid rgb(212, 207, 207);
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+  overflow: hidden;
+  height: 700px;
+  color: rgb(131, 129, 129);
+  margin-top: 70px;
+}
+.testcard-top img {
+  width: 100%;
+  height: 500px;
+  margin-bottom: 50px;
+  object-fit: cover;
+  background-color: rgb(35, 101, 158);
+}
+
+
+.testcard:hover{
+   
+    border-radius:  300px 90px 0px 0px;
+}
+.testcard:hover {
+  cursor: grabbing;
+}
+
+.testcard-top h1 {
+  font-size: 25px;
+}
+
+.testcard-bottom {
+  margin: 5px;
+  text-justify: auto;
+  font-size: 15px;
+}

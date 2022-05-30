@@ -100,12 +100,12 @@ const News = () => {
       <Slider {...settings}>
         {story.map((item) => (
           
-          <div className="card">
-            <div className="card-top">
+          <div className="news-card card">
+            <div className="news-card-top card-top">
               <img key={item.img} src={item.img} alt="img" />
               <h1 key={item.title}>{item.title}</h1>
             </div>
-            <div className="card-bottom">
+            <div className="news-card-bottom card-bottom">
               <p key={item.id}>{ item.story}</p>
               <Link
                 to="/"

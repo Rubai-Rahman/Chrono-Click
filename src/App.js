@@ -2,11 +2,12 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home/Home/Home";
-import Navigation from "./Pages/Shared/Navigation";
+import Navigation from "./Pages/Shared/Navigation/Navigation";
 import Shop from "./Pages/Shop/Shop";
 import Order from "./Pages/Orders/Order";
 
 import Notfound from "./Pages/Notfound/Notfound";
+import Footer from "./Pages/Home/Footer/Footer";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/order" element={<Order />} />
           <Route path="/*" element={<Notfound />} />
         </Routes>
+        <Footer/>
       </Router>
     </div>
   );
