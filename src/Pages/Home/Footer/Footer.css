@@ -1,17 +1,46 @@
-.footer li{
-	list-style: none;
-	font-size: 17px;
-	text-align: justify;
+.footer li {
+  list-style: none;
+  font-size: 17px;
+  text-align: justify;
   text-justify: inter-word;
 }
-.footer li:hover{
-	color:#b8860b;
+.footer li:hover {
+  color: #b8860b;
 }
-h2{
-	color:#b8860b;
-	font-size: 25px;
-	margin-top: 40px;
-	margin-bottom: 40px;
-	
-  
+h2 {
+  color: #b8860b;
+  font-size: 25px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.icon img {
+  background-color: black;
+  border-radius: 90px;
+  width: 30px;
+  margin-right: 5px;
+}
+.icon span {
+  font-size: 25px;
+  font-weight: 600;
+  color: #b8860b;
+}
+hr {
+  border: 1px solid #b8860b;
+  width: 100%;
+}
+.licenses {
+  color: #b8860b;
+  font-size: 15px;
+}
+.social a {
+  text-decoration: none;
+  color: #b8860b;
+  margin-left: 10px;
+}
+a ion-icon {
+  font-size: 20px;
+  transition: all 3s;
+}
+a ion-icon:hover {
+  transform: rotate(360deg)scale(2);
 }

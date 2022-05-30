@@ -20,37 +20,37 @@ const story = [
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
   },
   {
-    id: 1,
+    id: 2,
     img: img2,
-    title: "Gentlemen prefer Chrono Click!",
+    title: "The future perfect watches!",
     story:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
   },
   {
-    id: 1,
+    id: 3,
     img: img3,
-    title: "Gentlemen prefer Chrono Click!",
+    title: "The elegance of a wrist Watch",
     story:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
   },
   {
-    id: 1,
+    id: 4,
     img: img4,
-    title: "Gentlemen prefer Chrono Click!",
+    title: "Your constant companion",
     story:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
   },
   {
-    id: 1,
+    id: 5,
     img: img5,
-    title: "Gentlemen prefer Chrono Click!",
+    title: "Watch combines with jewelry",
     story:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
   },
   {
-    id: 1,
+    id: 6,
     img: img6,
-    title: "Gentlemen prefer Chrono Click!",
+    title: "The finest present you can give",
     story:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
   },
@@ -99,13 +99,14 @@ const News = () => {
       <h1>Latest News</h1>
       <Slider {...settings}>
         {story.map((item) => (
+          
           <div className="card">
             <div className="card-top">
-              <img src={item.img} alt="img" />
-              <h1>{item.title}</h1>
+              <img key={item.img} src={item.img} alt="img" />
+              <h1 key={item.title}>{item.title}</h1>
             </div>
             <div className="card-bottom">
-              <p>{item.story}</p>
+              <p key={item.id}>{ item.story}</p>
               <Link
                 to="/"
                 style={{ color: "silver", fontSize: 15, letterSpacing: 3 }}
