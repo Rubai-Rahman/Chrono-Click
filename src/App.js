@@ -5,9 +5,9 @@ import Home from "./Pages/Home/Home/Home";
 import Navigation from "./Pages/Shared/Navigation/Navigation";
 import Shop from "./Pages/Shop/Shop";
 import Order from "./Pages/Orders/Order";
-
 import Notfound from "./Pages/Notfound/Notfound";
-import Footer from "./Pages/Home/Footer/Footer";
+import Footer from "./Pages/Shared/Footer/Footer";
+import SignUp from "./Pages/SignUp/SignUp";
 
 
 function App() {
@@ -20,6 +20,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/order" element={<Order />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/*" element={<Notfound />} />
         </Routes>
         <Footer/>

@@ -35,7 +35,7 @@ const Navigation = () => {
           <Link  to="/login" className="nav_link">
             Sign In
           </Link><br />
-          <Link  to="/singin" className="nav_link" >
+          <Link  to="/signup" className="nav_link" >
             Sign Up
           </Link>
         </Navbar.Collapse>

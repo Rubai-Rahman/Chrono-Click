@@ -1,0 +1,77 @@
+.SignUpFormContainer {
+  border-radius: 7px;
+
+  background-repeat: no-repeat;
+  background-size: 110%;
+  background-image: url("../../images/signup.jpg");
+  height: 700px;
+}
+.SignUpForm {
+  width: 350px;
+  height: 350px;
+  position: relative;
+
+  border: none;
+  box-shadow: 1px 1px 3px 5px rgb(47, 56, 56);
+}
+
+.SignUpForm p {
+  color: #9c7c38;
+  font-weight: 400;
+}
+
+.SignUpForm input {
+  background-color: transparent;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #9c7c38;
+  border-radius: 0px;
+  width: 250px;
+}
+input:focus {
+  border: none;
+  color: #9c7c38;
+}
+.SignUpForm a {
+  text-decoration: none;
+  color: #dcdcdc;
+}
+.SignUpForm button {
+  width: 150px;
+  outline: 1px solid #9c7c38;
+  border-radius: 0px;
+}
+.SignUpForm button:hover {
+  background-image: linear-gradient(
+    to right,
+    hsl(30, 90%, 51%) 0%,
+    #e47915 51%,
+    #9c7c38 100%
+  );
+  color: white;
+}
+
+/* .SignUpForm button {
+  background-image: linear-gradient(
+    to right,
+    #ff512f 0%,
+    #dd2476 51%,
+    #ff512f 100%
+  );
+
+  
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
+}
+
+.SignUpForm button:hover {
+  background-position: right center; /* change the direction of the change here */
+/* color: #fff;
+  text-decoration: none;
+} */
