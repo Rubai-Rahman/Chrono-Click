@@ -8,23 +8,31 @@ import Order from "./Pages/Orders/Order";
 import Notfound from "./Pages/Notfound/Notfound";
 import Footer from "./Pages/Shared/Footer/Footer";
 import SignUp from "./Pages/SignUp/SignUp";
-
+import AuthProvider from "./Contexts/AuthProvider/AuthProvider";
+import LogIn from "./Pages/LogIn/LogIn";
+import PrivateRoute from "./Pages/PrivateRoute/PrivateRoute";
 
 function App() {
   return (
     <div className="App">
-      <Router>
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/*" element={<Notfound />} />
-        </Routes>
-        <Footer/>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <Navigation />
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/login" element={<LogIn />} />
+            <Route path="/*" element={<PrivateRoute />}>
+              <Route path="order" element={<Order />} />
+            </Route>
+            <Route path="*" element={<Notfound/>}/>
+          </Routes>
+         
+          <Footer />
+        </Router>
+      </AuthProvider>
     </div>
   );
 }

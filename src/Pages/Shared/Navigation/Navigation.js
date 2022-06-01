@@ -1,10 +1,12 @@
 import React from "react";
-import { Container, Navbar,Nav } from "react-bootstrap";
+import { Container, Navbar,Nav, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 import logo from "../../../images/favicon.png";
 import "./Navigation.css";
 
 const Navigation = () => {
+  const {user,logOut} = useAuth();
   return (
     <Navbar bg="dark" expand="lg">
       <Container fluid>
@@ -32,12 +34,16 @@ const Navigation = () => {
               Order
             </Link>
           </Nav>
-          <Link  to="/login" className="nav_link">
-            Sign In
-          </Link><br />
-          <Link  to="/signup" className="nav_link" >
-            Sign Up
+          {
+            user?.email?
+            <Button style={{backgroundColor:'transparent',border:'none'}}  onClick={logOut} className="nav_link">
+              <ion-icon name="person-circle-outline"></ion-icon>
+            </Button>
+            :
+            <Link  to="/login" className="nav_link">
+            Login
           </Link>
+          }
         </Navbar.Collapse>
       </Container>
     </Navbar>

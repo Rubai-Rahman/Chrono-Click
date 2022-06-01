@@ -1,23 +1,23 @@
 import React, { useState } from "react";
-import "./SignUp.css";
 import { Col, Container, Row } from "react-bootstrap";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
 
-const SignUp = () => {
-  const { user,resisterUser } = useAuth();
-  const [signupData, setSignupData] = useState({});
+const LogIn = () => {
+  const { user, loginUser } = useAuth();
+  const [loginData, setLoginData] = useState({});
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleOnChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
-    const newSignupData = { ...signupData };
+    const newSignupData = { ...loginData };
     newSignupData[field] = value;
-    setSignupData(newSignupData);
+    setLoginData(newSignupData);
   };
   const handleSubmit = (e) => {
-    alert("click");
-    resisterUser(signupData.email, signupData.password);
+    loginUser(loginData.email, loginData.password, location, navigate);
     e.preventDefault();
   };
 
@@ -26,7 +26,7 @@ const SignUp = () => {
       <Row>
         <Col>
           <form className="text-center  p-5 SignUpForm " action="#!">
-            <p className="h4 mb-4 ">Sign Up</p>
+            <p className="h4 mb-4 ">Log In</p>
 
             <input
               name="email"
@@ -52,8 +52,8 @@ const SignUp = () => {
             </button>
 
             <p style={{ color: "#dcdcdc" }}>
-              Already a Member?
-              <Link to="/login"> Sign in</Link>
+              New Member?
+              <Link to="/signup">Sign up</Link>
             </p>
           </form>
         </Col>
@@ -62,4 +62,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default LogIn;
