@@ -1,6 +1,6 @@
 .product {
   width: 300px;
-  height: 400px;
+  height: 450px;
   border: none;
   margin-bottom: 50px;
   background-color: rgba(248, 248, 248, 255);
@@ -11,7 +11,25 @@
   margin-left: 25px;
 }
 
-.product img:hover {
-  background-color: burlywood;
-  cursor: crosshair;
+.Card-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.button {
+  display: flex;
+  justify-content: space-evenly;
+}
+.bbutton {
+  width: 110px;
+  height: 42px;
+  border: none;
+  background-color: #9c7c38;
+  margin: 5px;
+}
+
+.bbutton:hover {
+  color: white;
 }

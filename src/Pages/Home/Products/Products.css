@@ -1,5 +1,5 @@
 .products-container {
-  margin-left: 100px;
+  margin-left: 110px;
 }
 
 a.nave_btn:link {
@@ -19,4 +19,9 @@ a.nave_btn {
 }
 .explore button:hover {
   background-color: #9c7c38;
+}
+@media only screen and (max-device-width: 667px) {
+  .products-container {
+    margin-left: 50px;
+  }
 }

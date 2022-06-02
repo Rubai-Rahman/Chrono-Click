@@ -2,10 +2,9 @@
   font-size: 25px;
   font-weight: 700;
   color: #9c7c38;
+  
 }
-.link {
-  margin-left: 20px;
-}
+
 
 a.nav_link {
   color: #838996;
@@ -14,7 +13,7 @@ a.nav_link {
 }
 a.nav_link:link {
   text-decoration: none;
-  margin-left: 10px;
+  margin-right: 10px;
   color: #838996;
 }
 
@@ -23,15 +22,22 @@ a.nav_link:hover {
   color: #9c7c38;
 }
 
-@media screen and (min-width: 576px) {
+@media screen and (min-width: 640px) {
   .link {
     margin-left: 390px;
     gap: 20px;
     position: relative;
   }
 }
-@media screen and (min-width: 576px) {
+@media screen and (min-width: 640px) {
   .link2 {
-    margin-left: 350px;
+    margin-left: 50px;
+   
+  }
+}
+@media screen and (min-width: 340px) {
+  .link2 {
+    margin-left: 50px;
+   
   }
 }

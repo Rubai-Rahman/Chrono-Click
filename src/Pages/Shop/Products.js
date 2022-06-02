@@ -10,9 +10,14 @@ const Products = ({ product }) => {
       <Card className="product shadow-lg p-3 mb-5  rounded">
         <Card.Img variant="top" src={img} />
         <Card.Body>
-          <Card.Title>{name}</Card.Title>
-          <Card.Text>$:{price}</Card.Text>
-          <button>Buy Now</button>
+          <Card.Title className="Card-title">{name}</Card.Title>
+          <Card.Text>
+            price: $:{price} <br />
+            <div className="button">
+            <button className="bbutton">Details</button>
+            <button className="bbutton">Add to Cart</button>
+            </div>
+          </Card.Text>
         </Card.Body>
       </Card>
     </Col>
