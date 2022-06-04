@@ -1,10 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Row } from "react-bootstrap";
-import useProducts from "../../hooks/useProducts";
+
 import Products from "./Products";
+import "./Shop.css";
 
 const Shop = () => {
-  const [products, setProducts] = useProducts();
+  const [products, setProducts] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const size =12;
+  useEffect(() => {
+    fetch(`http://localhost:5000/products?page=${page}&&size=${size}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data.products);
+        const count =data.count;
+        const pageNumber =Math.ceil(count/size);
+        setPageCount(pageNumber);
+
+      });
+  }, [page]);
+  
   console.log(products);
   return (
     <>
@@ -18,6 +34,15 @@ const Shop = () => {
             <Products key={product._id} product={product} />
           ))}
         </Row>
+      </div>
+
+      <div className="pagination">
+        {[...Array(pageCount).keys()].map((number) => (
+          <button className={number===page?'selected':''}
+           key={number} onClick={() => setPage(number)}>
+            {number + 1}
+          </button>
+        ))}
       </div>
     </>
   );

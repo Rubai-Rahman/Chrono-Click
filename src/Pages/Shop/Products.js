@@ -1,4 +1,3 @@
-import { Button } from "bootstrap";
 import React from "react";
 import { Col, Card } from "react-bootstrap";
 
@@ -14,8 +13,8 @@ const Products = ({ product }) => {
           <Card.Text>
             price: $:{price} <br />
             <div className="button">
-            <button className="bbutton">Details</button>
-            <button className="bbutton">Add to Cart</button>
+              <button className="bbutton">Details</button>
+              <button className="bbutton">Add to Cart</button>
             </div>
           </Card.Text>
         </Card.Body>

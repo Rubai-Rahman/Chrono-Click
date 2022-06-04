@@ -1,0 +1,16 @@
+.pagination {
+  margin: 40px;
+}
+.pagination button {
+  margin-left: 15px;
+  width: 40px;
+  border: none;
+  background-color: #9c7c38;
+}
+
+.pagination button:hover{
+    background-color: #c49838;
+}
+.pagination button.selected{
+    color: #dedede;
+}
