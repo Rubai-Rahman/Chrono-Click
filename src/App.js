@@ -11,6 +11,7 @@ import SignUp from "./Pages/SignUp/SignUp";
 import AuthProvider from "./Contexts/AuthProvider/AuthProvider";
 import LogIn from "./Pages/LogIn/LogIn";
 import PrivateRoute from "./Pages/PrivateRoute/PrivateRoute";
+import ProductDetails from "./Pages/Details/ProductDetails/ProductDetails";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<LogIn />} />
+            <Route exact path="/products/:productId" element={<ProductDetails />} />
             <Route path="/*" element={<PrivateRoute />}>
               <Route path="order" element={<Order />} />
             </Route>
