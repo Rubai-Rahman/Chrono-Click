@@ -3,7 +3,7 @@ import { Col, Card } from "react-bootstrap";
 import "./Product.css";
 
 const Product = ({ product }) => {
-  const { id, name, price, img } = product;
+  const { name, price, img } = product;
 
   return (
     <Col>

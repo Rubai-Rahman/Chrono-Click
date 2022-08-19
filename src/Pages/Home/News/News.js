@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./News.css";
@@ -99,14 +99,13 @@ const News = () => {
       <h1>Latest News</h1>
       <Slider {...settings}>
         {story.map((item) => (
-          
           <div className="news-card card">
             <div className="news-card-top card-top">
               <img key={item.img} src={item.img} alt="img" />
               <h1 key={item.title}>{item.title}</h1>
             </div>
             <div className="news-card-bottom card-bottom">
-              <p key={item.id}>{ item.story}</p>
+              <p key={item.id}>{item.story}</p>
               <Link
                 to="/"
                 style={{ color: "silver", fontSize: 15, letterSpacing: 3 }}

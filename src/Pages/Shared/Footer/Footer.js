@@ -299,20 +299,16 @@ const Footer = () => {
           </Col>
           <Col>
             <div className="social">
-              <a href="/facebook.com" >
-                {" "}
+              <a href="https://www.facebook.com/pri.abir.18">
                 <ion-icon name="logo-facebook"></ion-icon>
               </a>
-              <a href="">
-                {" "}
+              <a href="https://www.instagram.com/">
                 <ion-icon name="logo-instagram"></ion-icon>
               </a>
-              <a href="">
-                {" "}
+              <a href="https://www.linkedin.com/in/rubai-rahman-116707216/">
                 <ion-icon name="logo-linkedin"></ion-icon>
               </a>
-              <a href="">
-                {" "}
+              <a href="https://twitter.com/home">
                 <ion-icon name="logo-twitter"></ion-icon>
               </a>
             </div>

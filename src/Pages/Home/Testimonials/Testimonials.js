@@ -1,7 +1,7 @@
 import React from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import './Testimonials.css'
+import "./Testimonials.css";
 
 import img1 from "../../../images/review/blog-02.webp";
 import img2 from "../../../images/review/blog-04.webp";
@@ -9,7 +9,6 @@ import img3 from "../../../images/review/blog-07.webp";
 import img4 from "../../../images/review/blog-10.webp";
 
 import Slider from "react-slick/lib/slider";
-import { Link } from "react-router-dom";
 
 const story = [
   {
@@ -40,7 +39,6 @@ const story = [
     story:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
   },
-  
 ];
 const Testimonials = () => {
   const settings = {
@@ -80,7 +78,6 @@ const Testimonials = () => {
   };
   return (
     <div className="testimonials " style={{ marginTop: 100 }}>
-     
       <h2>Testimonials</h2>
       <Slider {...settings}>
         {story.map((item) => (
@@ -91,7 +88,6 @@ const Testimonials = () => {
             </div>
             <div className="testcard-bottom">
               <p key={item.id}>{item.story}</p>
-              
             </div>
           </div>
         ))}
