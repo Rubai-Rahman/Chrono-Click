@@ -8,19 +8,20 @@ const Shop = () => {
   const [products, setProducts] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
-  const size =12;
+  const size = 12;
   useEffect(() => {
-    fetch(`http://localhost:5000/products?page=${page}&&size=${size}`)
+    fetch(
+      `https://cryptic-shore-01306.herokuapp.com/products?page=${page}&&size=${size}`
+    )
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.products);
-        const count =data.count;
-        const pageNumber =Math.ceil(count/size);
+        const count = data.count;
+        const pageNumber = Math.ceil(count / size);
         setPageCount(pageNumber);
-
       });
   }, [page]);
-  
+
   console.log(products);
   return (
     <>
@@ -38,8 +39,11 @@ const Shop = () => {
 
       <div className="pagination">
         {[...Array(pageCount).keys()].map((number) => (
-          <button className={number===page?'selected':''}
-           key={number} onClick={() => setPage(number)}>
+          <button
+            className={number === page ? "selected" : ""}
+            key={number}
+            onClick={() => setPage(number)}
+          >
             {number + 1}
           </button>
         ))}

@@ -3,7 +3,7 @@ import { Col, Card } from "react-bootstrap";
 import "./Product.css";
 
 const Product = ({ product }) => {
-  const {id, name, price, img } = product;
+  const { id, name, price, img } = product;
 
   return (
     <Col>
@@ -13,10 +13,6 @@ const Product = ({ product }) => {
           <Card.Title className="Card-title">{name}</Card.Title>
           <Card.Text>
             price: $:{price} <br />
-            <div className="button">
-            <button className="bbutton">Details</button>
-            <button className="bbutton">Add to Cart</button>
-            </div>
           </Card.Text>
         </Card.Body>
       </Card>
