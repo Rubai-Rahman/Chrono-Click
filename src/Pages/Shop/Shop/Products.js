@@ -1,8 +1,9 @@
 import React from "react";
+import { useState } from "react";
 import { Col, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const Products = ({ product }) => {
+const Products = ({ product,handleAddtoCart }) => {
   const { _id, name, price, img } = product;
   const url = `/products/${_id}`;
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Products = ({ product }) => {
               <button onClick={handleDetails} className="bbutton">
                 Details
               </button>
-              <button className="bbutton">Add to Cart</button>
+              <button className="bbutton" onClick={()=>handleAddtoCart(product)} >Add to Cart</button>
             </div>
           </Card.Text>
         </Card.Body>

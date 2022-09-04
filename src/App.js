@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home/Home/Home";
 import Navigation from "./Pages/Shared/Navigation/Navigation";
-import Shop from "./Pages/Shop/Shop";
+
 import Order from "./Pages/Orders/Order";
 import Notfound from "./Pages/Notfound/Notfound";
 import Footer from "./Pages/Shared/Footer/Footer";
@@ -12,6 +12,7 @@ import AuthProvider from "./Contexts/AuthProvider/AuthProvider";
 import LogIn from "./Pages/LogIn/LogIn";
 import PrivateRoute from "./Pages/PrivateRoute/PrivateRoute";
 import ProductDetails from "./Pages/Details/ProductDetails/ProductDetails";
+import Shop from "./Pages/Shop/Shop/Shop";
 
 function App() {
   return (
@@ -20,18 +21,29 @@ function App() {
         <Router>
           <Navigation />
           <Routes>
+            <Route
+              path="/order"
+              element={
+                <PrivateRoute>
+                  <Order />
+                </PrivateRoute>
+              }
+            ></Route>
+
             <Route exact path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<LogIn />} />
-            <Route exact path="/products/:productId" element={<ProductDetails />} />
-            <Route path="/*" element={<PrivateRoute />}>
-              <Route path="order" element={<Order />} />
-            </Route>
-            <Route path="*" element={<Notfound/>}/>
+            <Route
+              exact
+              path="/products/:productId"
+              element={<ProductDetails />}
+            />
+
+            <Route path="*" element={<Notfound />} />
           </Routes>
-         
+
           <Footer />
         </Router>
       </AuthProvider>

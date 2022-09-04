@@ -2,22 +2,23 @@ import React, { useState } from "react";
 import "./SignUp.css";
 import { Col, Container, Row } from "react-bootstrap";
 import useAuth from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const SignUp = () => {
-  const { user,resisterUser } = useAuth();
-  const [signupData, setSignupData] = useState({});
+const SignUp = () =>{
+  const { user, registerUser} = useAuth();
+  const [loginData, setLoginData] = useState({});
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleOnChange = (e) => {
-    const field = e.target.name;
     const value = e.target.value;
-    const newSignupData = { ...signupData };
-    newSignupData[field] = value;
-    setSignupData(newSignupData);
+    const field = e.target.name;
+    const newLoginData = { ...loginData };
+    newLoginData[field] = value;
+    setLoginData(newLoginData);
   };
   const handleSubmit = (e) => {
-    alert("click");
-    resisterUser(signupData.email, signupData.password);
+    registerUser(loginData.email, loginData.password,loginData.name, location, navigate);
     e.preventDefault();
   };
 
@@ -28,6 +29,12 @@ const SignUp = () => {
           <form className="text-center  p-5 SignUpForm " action="#!">
             <p className="h4 mb-4 ">Sign Up</p>
 
+            <input
+              name="name"
+              className=" mb-4"
+              placeholder="Name"
+              onBlur={handleOnChange}
+            />
             <input
               name="email"
               type="email"
@@ -52,14 +59,14 @@ const SignUp = () => {
             </button>
 
             <p style={{ color: "#dcdcdc" }}>
-              Already a Member?
-              <Link to="/login"> Sign in</Link>
+              Already have a Account?
+              <Link to="/login">Log in</Link>
             </p>
           </form>
         </Col>
       </Row>
     </Container>
-  );
+  )
 };
 
 export default SignUp;

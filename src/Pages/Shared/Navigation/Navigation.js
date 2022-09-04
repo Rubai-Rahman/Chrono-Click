@@ -58,7 +58,7 @@ const Navigation = () => {
               onClick={logOut}
               className="nav_link"
             >
-              <ion-icon name="person-circle-outline"></ion-icon>
+              <ion-icon className='profileButton' name="person-circle-outline"></ion-icon>
             </Button>
           ) : (
             

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Row } from "react-bootstrap";
-
 import Products from "./Products";
 import "./Shop.css";
 
@@ -8,6 +7,8 @@ const Shop = () => {
   const [products, setProducts] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
+  const [cart, setCart] = useState([]);
+
   const size = 12;
   useEffect(() => {
     fetch(
@@ -22,7 +23,10 @@ const Shop = () => {
       });
   }, [page]);
 
-  console.log(products);
+  const handleAddtoCart = (product) => {
+    setCart(product);
+  };
+  console.log(cart);
   return (
     <>
       <div style={{ margin: 100 }}>
@@ -32,7 +36,11 @@ const Shop = () => {
       <div className="products-container">
         <Row xs={1} md={2} lg={3} className="g-2 ">
           {products.map((product) => (
-            <Products key={product._id} product={product} />
+            <Products
+              key={product._id}
+              product={product}
+              handleAddtoCart={handleAddtoCart}
+            />
           ))}
         </Row>
       </div>
