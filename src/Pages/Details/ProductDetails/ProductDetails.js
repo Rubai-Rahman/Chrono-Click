@@ -21,9 +21,7 @@ const ProductDetails = () => {
         <Card.Text>
           price: $:{proDetails.price} <br />
           <div className="button">
-            <button  className="bbutton">
-              Details
-            </button>
+            
             <button className="bbutton">Add to Cart</button>
           </div>
         </Card.Text>

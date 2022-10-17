@@ -23,10 +23,8 @@ const Shop = () => {
       });
   }, [page]);
 
-  const handleAddtoCart = (product) => {
-    setCart(product);
-  };
-  console.log(cart);
+  
+ 
   return (
     <>
       <div style={{ margin: 100 }}>
@@ -39,7 +37,7 @@ const Shop = () => {
             <Products
               key={product._id}
               product={product}
-              handleAddtoCart={handleAddtoCart}
+             
             />
           ))}
         </Row>

@@ -6,7 +6,9 @@ import logo from "../../../images/favicon.png";
 import "./Navigation.css";
 
 const Navigation = () => {
-  const { user, logOut } = useAuth();
+  const {
+    allContexts: { user, logOut },
+  } = useAuth()
   let activeColor = {
     color: "#9c7c38",
   };

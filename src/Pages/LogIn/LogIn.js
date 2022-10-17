@@ -4,7 +4,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
 const LogIn = () => {
-  const { user, loginUser } = useAuth();
+  const {
+    allContexts: { user, loginUser },
+  } = useAuth()
+
   const [loginData, setLoginData] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
@@ -48,7 +51,7 @@ const LogIn = () => {
             />
 
             <button className="btn  my-2" type="submit" onClick={handleSubmit}>
-              Sign Up
+              Log In
             </button>
 
             <p style={{ color: "#dcdcdc" }}>
