@@ -15,8 +15,7 @@ a.nav_link:link {
   color: #838996;
 }
 
-
-.profileButton{
+.profileButton {
   font-size: 1.5em;
 }
 
@@ -46,16 +45,23 @@ a.nav_link:link {
 .cartItemDetail {
   flex-direction: column;
 }
+@media screen and (min-width: 1024px) {
+  .navbar {
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+    margin-bottom: 10px;
+  }
+}
 
 @media screen and (min-width: 640px) {
   .link2 {
     margin-left: 50px;
-   
   }
 }
+
 @media screen and (min-width: 340px) {
   .link2 {
     margin-left: 50px;
-   
   }
 }

@@ -4,7 +4,7 @@ import {  Link, NavLink } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import logo from "../../../images/favicon.png";
 import "./Navigation.css";
-import { FaShoppingCart } from "react-icons/fa"
+import { FiShoppingCart } from "react-icons/fi"
 import { AiFillDelete } from "react-icons/ai"
 
 const Navigation = () => {
@@ -25,7 +25,7 @@ const Navigation = () => {
      margin: 10,
    }
   return (
-    <Navbar bg="dark" expand="lg">
+    <Navbar bg="dark" expand="lg" className="navbar">
       <Container fluid>
         <Navbar.Brand href="#home">
           <img
@@ -66,17 +66,18 @@ const Navigation = () => {
           <Nav>
             <Dropdown>
               <Dropdown.Toggle variant="dark">
-                <FaShoppingCart color="white" fontSize="25px" />
-                <Badge variant="dark">{cart.length}</Badge>
+                <FiShoppingCart color="white" fontSize="25px" />
+                <Badge bg="dark">{cart.length}</Badge>
               </Dropdown.Toggle>
               <Dropdown.Menu
                 align="end"
                 style={{
                   minWidth: 370,
-                  height: 500,
+                  height: 350,
                   overflow: "scroll",
                   paddingLeft: 30,
                   marginTop: 20,
+                  borderColor:"#9c7c38",
                 }}
               >
                 {cart.length > 0 ? (
