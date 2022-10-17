@@ -27,6 +27,26 @@ a.nav_link:link {
     position: relative;
   }
 }
+.cartItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 20px;
+  margin-bottom: 20px;
+}
+
+.cartItemImg {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  margin-right: 10;
+}
+
+.cartItemDetail {
+  flex-direction: column;
+}
+
 @media screen and (min-width: 640px) {
   .link2 {
     margin-left: 50px;
