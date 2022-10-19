@@ -1,19 +1,23 @@
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
-import { Col, Container, ListGroup, ListGroupItem, Row } from "react-bootstrap";
-import useAuth from "../../hooks/useAuth";
-import {AiFillDelete} from "react-icons/ai"
+import React from "react"
+import { useEffect } from "react"
+import { useState } from "react"
+import { Col, Container, ListGroup, ListGroupItem, Row } from "react-bootstrap"
+import useAuth from "../../hooks/useAuth"
+import { AiFillDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
 
 const Order = () => {
-  const { state: { cart }, dispatch } = useAuth();
-  const [total, setTotal] = useState();
+  const {
+    state: { cart },
+    dispatch,
+  } = useAuth()
+  const [total, setTotal] = useState()
 
   useEffect(() => {
-    setTotal(cart.reduce((acc,curr) => acc+Number(curr.price),0))
-  },[cart])
+    setTotal(cart.reduce((acc, curr) => acc + Number(curr.price*curr.qty), 0))
+  }, [cart])
+ 
   return (
-    <Container>
+    <Container style={{ marginTop: 70 }}>
       <div>
         <ListGroup>
           {cart.map((product) => (
@@ -27,7 +31,38 @@ const Order = () => {
                   />
                 </Col>
                 <Col>{product.name}</Col>
-                <Col>{product.price}</Col>
+                <Col>{product.price * product.qty}</Col>
+                <Col className="increaseDecrease">
+                  <button
+                    style={{ backgroundColor: "white" }}
+                    onClick={() =>
+                      dispatch({
+                        type: "INCREASE_CART_QTY",
+                        payload: {
+                          _id: product._id,
+                          qty: product.qty,
+                        },
+                      })
+                    }
+                  >
+                    <AiOutlinePlus />
+                  </button>
+                  <button>{product.qty}</button>
+                  <button
+                    style={{ backgroundColor: "white" }}
+                    onClick={() =>
+                      dispatch({
+                        type: "DECREASE_CART_QTY",
+                        payload: {
+                          _id: product._id,
+                          qty: product.qty,
+                        },
+                      })
+                    }
+                  >
+                    <AiOutlineMinus />
+                  </button>
+                </Col>
                 <Col>
                   {" "}
                   <AiFillDelete
@@ -45,13 +80,13 @@ const Order = () => {
           ))}
         </ListGroup>
       </div>
-      <div className="filters summary ">
+      <div className="filtersSummary ">
         <span className="title">Subtotal ({cart.length}) items</span>
         <span className="title"> Total: $ {total} </span>
         <button className="bbutton">Check Out</button>
       </div>
     </Container>
   )
-};
+}
 
-export default Order;
+export default Order

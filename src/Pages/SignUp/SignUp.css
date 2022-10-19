@@ -3,13 +3,12 @@
   background-repeat: no-repeat;
   background-size: 110%;
   background-image: url("../../images/signup.jpg");
-  height: 700px;
+  height: 600px;
 }
 .SignUpForm {
   width: 350px;
   height: 350px;
   position: relative;
-
   border: none;
   box-shadow: 1px 1px 3px 5px rgb(47, 56, 56);
 }
@@ -33,7 +32,7 @@ input:focus {
 }
 .SignUpForm a {
   text-decoration: none;
-  color: #dcdcdc;
+  color: hsl(0, 0%, 97%);
 }
 .SignUpForm button {
   width: 150px;
@@ -49,28 +48,12 @@ input:focus {
   );
   color: white;
 }
-
-/* .SignUpForm button {
-  background-image: linear-gradient(
-    to right,
-    #ff512f 0%,
-    #dd2476 51%,
-    #ff512f 100%
-  );
-
-  
-  text-align: center;
-  text-transform: uppercase;
-  transition: 0.5s;
-  background-size: 200% auto;
-  color: white;
-  box-shadow: 0 0 20px #eee;
-  border-radius: 10px;
-  display: block;
+@media screen and (min-width: 1024px) {
+  .SignUpFormContainer {
+    margin-top: 62px;
+  }
+  .SignUpForm {
+    margin-top: 50px;
+ 
+  }
 }
-
-.SignUpForm button:hover {
-  background-position: right center; /* change the direction of the change here */
-/* color: #fff;
-  text-decoration: none;
-} */

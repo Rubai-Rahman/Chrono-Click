@@ -8,6 +8,7 @@ a.nav_link {
   color: #838996;
   font-size: 17px;
   font-weight: bold;
+  
 }
 a.nav_link:link {
   text-decoration: none;
@@ -49,8 +50,8 @@ a.nav_link:link {
   .navbar {
     position: fixed;
     width: 100%;
-    z-index: 1;
-    margin-bottom: 10px;
+    z-index: 100;
+    margin-bottom: 30px;
   }
 }
 

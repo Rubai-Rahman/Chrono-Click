@@ -27,6 +27,19 @@ const Products = ({ product}) => {
                 Details
               </button>
 
+              {cart.some((p) => p._id === product._id) ? (
+                <button
+                  className="bbutton"
+                  onClick={() => {
+                    dispatch({
+                      type: "REMOVE_FROM_CART",
+                      payload: product,
+                    })
+                  }}
+                >
+                  Remove
+                </button>
+              ) : (
                 <button
                   className="bbutton"
                   onClick={() => {
@@ -38,7 +51,7 @@ const Products = ({ product}) => {
                 >
                   Add to Cart
                 </button>
-              
+              )}
             </div>
           </Card.Text>
         </Card.Body>

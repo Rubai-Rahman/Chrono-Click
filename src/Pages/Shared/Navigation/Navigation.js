@@ -45,14 +45,14 @@ const Navigation = () => {
               className="nav_link"
               style={({ isActive }) => (isActive ? activeColor : deActiveColor)}
             >
-              Home
+              HOME
             </NavLink>
             <NavLink
               to="/shop"
               className="nav_link"
               style={({ isActive }) => (isActive ? activeColor : deActiveColor)}
             >
-              Shop
+           SHOP
             </NavLink>
 
             <NavLink
@@ -76,6 +76,7 @@ const Navigation = () => {
                   height: 350,
                   overflow: "scroll",
                   paddingLeft: 30,
+                  zIndex:1,
                   marginTop: 20,
                   borderColor:"#9c7c38",
                 }}
