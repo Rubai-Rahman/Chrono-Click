@@ -1,15 +1,15 @@
-import React from "react";
-import { Col, Card } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import useAuth from "../../../hooks/useAuth";
+import React from "react"
+import { Col, Card } from "react-bootstrap"
+import { useNavigate } from "react-router-dom"
+import useAuth from "../../../hooks/useAuth"
 
-const Products = ({ product}) => {
-  const { _id, name, price, img } = product;
-  const url = `/products/${_id}`;
-  const navigate = useNavigate();
+const Products = ({ product }) => {
+  const { _id, name, price,img, image } = product
+  const url = `/products/${_id}`
+  const navigate = useNavigate()
   const handleDetails = () => {
-    navigate(url);
-  };
+    navigate(url)
+  }
   const {
     state: { cart },
     dispatch,
@@ -17,7 +17,8 @@ const Products = ({ product}) => {
   return (
     <Col>
       <Card className="product shadow-lg p-3 mb-5  rounded">
-        <Card.Img variant="top" src={img} />
+        {/* <Card.Img variant="top" src={`data:image/png;base64,${image}`} /> */}
+        <Card.Img variant="top" src={ img} />
         <Card.Body>
           <Card.Title className="Card-title">{name}</Card.Title>
           <Card.Text>
@@ -30,6 +31,7 @@ const Products = ({ product}) => {
               {cart.some((p) => p._id === product._id) ? (
                 <button
                   className="bbutton"
+                  style={{ color: "white" }}
                   onClick={() => {
                     dispatch({
                       type: "REMOVE_FROM_CART",
@@ -58,6 +60,6 @@ const Products = ({ product}) => {
       </Card>
     </Col>
   )
-};
+}
 
-export default Products;
+export default Products

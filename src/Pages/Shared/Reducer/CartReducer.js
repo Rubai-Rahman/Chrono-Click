@@ -40,6 +40,11 @@ const CartReducer = (state, action) => {
         ),
       }
     }
+    case "ClEAR_CART": {
+      return {
+        cart: [],
+      }
+    }
     default:
       return state
   }

@@ -1,0 +1,11 @@
+.productForm {
+  background-color: rgb(36, 35, 35);
+  width: 60%;
+  margin-left: 200px;
+  border-radius: 9px;
+  padding: 5px;
+  color: rgb(151, 119, 11);
+}
+.productForm>*{
+  margin-bottom: 10px;
+}

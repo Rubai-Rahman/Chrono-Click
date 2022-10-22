@@ -1,28 +1,33 @@
-import React, { useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import React, { useState } from "react"
+import { Col, Container, Row, Spinner } from "react-bootstrap"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import useAuth from "../../hooks/useAuth"
+import { FcGoogle } from "react-icons/fc"
 
 const LogIn = () => {
   const {
-    allContexts: { user, loginUser },
+    allContexts: { user, isLoading, loginUser, googleSignIn },
   } = useAuth()
 
-  const [loginData, setLoginData] = useState({});
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [loginData, setLoginData] = useState({})
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const handleOnChange = (e) => {
-    const field = e.target.name;
-    const value = e.target.value;
-    const newSignupData = { ...loginData };
-    newSignupData[field] = value;
-    setLoginData(newSignupData);
-  };
+    const field = e.target.name
+    const value = e.target.value
+    const newSignupData = { ...loginData }
+    newSignupData[field] = value
+    setLoginData(newSignupData)
+  }
   const handleSubmit = (e) => {
-    loginUser(loginData.email, loginData.password, location, navigate);
-    e.preventDefault();
-  };
+    loginUser(loginData.email, loginData.password, location, navigate)
+    e.preventDefault()
+  }
+  const handleGoogleSignIn = (e) => {
+    googleSignIn(location, navigate)
+    e.preventDefault()
+  }
 
   return (
     <Container className=" SignUpFormContainer">
@@ -58,11 +63,20 @@ const LogIn = () => {
               New Member?
               <Link to="/signup">Sign up</Link>
             </p>
+            <button
+              className="my-2"
+              style={{ backgroundColor: "#AA8B56" }}
+              type="submit"
+              onClick={handleGoogleSignIn}
+            >
+              <FcGoogle /> Google SignIn
+            </button>
           </form>
+          {isLoading && <Spinner animation="grow" />}
         </Col>
       </Row>
     </Container>
-  );
-};
+  )
+}
 
-export default LogIn;
+export default LogIn

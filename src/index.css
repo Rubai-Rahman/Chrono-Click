@@ -25,3 +25,9 @@ html {
 display: flex;
 justify-content: space-between;
 }
+@media screen and (min-width: 1024px) {
+  
+  .navSetup{
+    margin-top: 100px;
+  }
+}

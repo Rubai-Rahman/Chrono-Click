@@ -1,0 +1,33 @@
+.dashboard {
+  margin-top: 60px;
+  display: flex;
+}
+.outlet {
+  flex-grow: 1;
+}
+.drawer {
+  background-color: #161516ee;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around;
+  gap: 20px;
+  width: 16%;
+  padding: 20px;
+  padding-top: 30px;
+  height: max-content;
+
+  position: sticky;
+}
+.drawer_button {
+  color: black;
+  width: 130px;
+  height: 40px;
+  margin: 5px;
+  border-radius: 5px;
+  background-color: #9c7c38;
+  font-size: 15px;
+}
+.drawer_button:hover{
+  color:aliceblue;
+}

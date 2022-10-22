@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -6,71 +6,99 @@ import {
   onAuthStateChanged,
   signOut,
   updateProfile,
-} from "firebase/auth";
-import FirebaseInitialize from "../Firebase/Firebase.init";
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth"
+import FirebaseInitialize from "../Firebase/Firebase.init"
 
-FirebaseInitialize();
+FirebaseInitialize()
 
 const useFirebase = () => {
-  const auth = getAuth();
-  const [user, setUser] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [authError, setAuthError] = useState("");
+  const auth = getAuth()
+  const [user, setUser] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
+  const [authError, setAuthError] = useState("")
+
+  const provider = new GoogleAuthProvider()
 
   const registerUser = (email, password, name, location, navigate) => {
-    setIsLoading(true);
+    setIsLoading(true)
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        setAuthError("");
-        const newUser = { email, displayName: name };
-    
-        setUser(newUser);
+        setAuthError("")
+        const newUser = { email, displayName: name }
+
+        setUser(newUser)
 
         updateProfile(auth.currentUser, {
           displayName: name,
         })
           .then(() => {})
-          .catch((error) => {});
-        const destination = location?.state?.from || "/";
-        navigate(destination);
+          .catch((error) => { setAuthError(error.message)})
+        
+        const destination = location?.state?.from || "/"
+        navigate(destination)
       })
       .catch((error) => {
-        setAuthError(error.message);
-        setUser({});
+        setAuthError(error.message)
+        setUser({})
       })
-      .finally(() => setIsLoading(false));
-  };
+      .finally(() => setIsLoading(false))
+  }
   //log in user
   const loginUser = (email, password, location, navigate) => {
+    setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const destination = location?.state?.from || "/";
-        navigate(destination);
+        const destination = location?.state?.from || "/"
+        navigate(destination)
         // Signed in
         //  if(location.state?.form){
         //    Navigate (location.state.from);
         //  }
-        const user = userCredential.user;
-        setUser(user);
+        const user = userCredential.user
+        setUser(user)
         // ...
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        setUser({});
-      });
-  };
+        setAuthError(error.message)
+        setUser({})
+      })
+      .finally(() => setIsLoading(false))
+  }
+  //google log in
+  const googleSignIn = (location, navigate) => {
+    setIsLoading(true);
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        setAuthError("")
+        const credential = GoogleAuthProvider.credentialFromResult(result)
+        const token = credential.accessToken
+
+        const user = result.user
+        const destination = location?.state?.from || "/";
+        navigate(destination);
+      })
+      .catch((error) => {
+        setAuthError(error.message)
+
+        const email = error.customData.email
+
+        const credential = GoogleAuthProvider.credentialFromError(error)
+      })
+      .finally(() => setIsLoading(false))
+  }
   //observer
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUser(user);
+        setUser(user)
       } else {
-        setUser({});
+        setUser({})
       }
-    });
-    return () => unsubscribe;
-  }, []);
+    })
+    return () => unsubscribe
+  }, [])
 
   const logOut = () => {
     signOut(auth)
@@ -79,14 +107,16 @@ const useFirebase = () => {
       })
       .catch((error) => {
         // An error happened.
-      });
-  };
+      })
+  }
   return {
     user,
+    isLoading,
     registerUser,
+    googleSignIn,
     loginUser,
     logOut,
-  };
-};
+  }
+}
 
-export default useFirebase;
+export default useFirebase

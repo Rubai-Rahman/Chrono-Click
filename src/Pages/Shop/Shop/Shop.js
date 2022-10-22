@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row } from "react-bootstrap";
+import { Row, Spinner } from "react-bootstrap";
 import Products from "./Products";
 import "./Shop.css";
 
@@ -7,7 +7,7 @@ const Shop = () => {
   const [products, setProducts] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
-  const [cart, setCart] = useState([]);
+
 
   const size = 12;
   useEffect(() => {
@@ -30,15 +30,14 @@ const Shop = () => {
       <div style={{ margin: 100 }}>
         <h4>LATEST WATCHES YOU CAN'T RESIST!</h4>
         <h2>Find Your Watch </h2>
+        <Spinner animation="grow" />;
+        <Spinner animation="grow" />;
+        <Spinner animation="grow" />;
       </div>
       <div className="products-container">
         <Row xs={1} md={2} lg={3} className="g-2 ">
           {products.map((product) => (
-            <Products
-              key={product._id}
-              product={product}
-             
-            />
+            <Products key={product._id} product={product} />
           ))}
         </Row>
       </div>
@@ -55,7 +54,7 @@ const Shop = () => {
         ))}
       </div>
     </>
-  );
+  )
 };
 
 export default Shop;

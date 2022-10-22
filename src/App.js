@@ -13,6 +13,13 @@ import LogIn from "./Pages/LogIn/LogIn";
 import PrivateRoute from "./Pages/PrivateRoute/PrivateRoute";
 import ProductDetails from "./Pages/Details/ProductDetails/ProductDetails";
 import Shop from "./Pages/Shop/Shop/Shop";
+import Payment from "./Pages/Payment/Payment";
+import Dashboard from "./Pages/Dashboard/Dashboard";
+import MakeAdmin from "./Pages/Dashboard/Makeadmin/MakeAdmin";
+import MyOrders from "./Pages/Dashboard/MyOrders/MyOrders";
+import AddProduct from "./Pages/Dashboard/AddProduct/AddProduct";
+import Review from "./Pages/Dashboard/Review/Review";
+import ManageOrders from "./Pages/Dashboard/ManageOrders/ManageOrders";
 
 function App() {
   return (
@@ -29,18 +36,45 @@ function App() {
                 </PrivateRoute>
               }
             ></Route>
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            >
+              {/* Dashboard */}
 
+              <Route
+                path={`/dashboard/makeAdmin`}
+                element={<MakeAdmin />}
+              ></Route>
+              <Route
+                path={`/dashboard/myOrders`}
+                element={<MyOrders />}
+              ></Route>
+              <Route
+                path={`/dashboard/addProduct`}
+                element={<AddProduct />}
+              ></Route>
+              <Route path={`/dashboard/review`} element={<Review />}></Route>
+              <Route path={`/dashboard/manageOrders`} element={<ManageOrders />}></Route>
+            </Route>
+
+            {/* End DashBoard  */}
             <Route exact path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<LogIn />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route
               exact
               path="/products/:productId"
               element={<ProductDetails />}
             />
-
             <Route path="*" element={<Notfound />} />
           </Routes>
 
@@ -48,7 +82,7 @@ function App() {
         </Router>
       </AuthProvider>
     </div>
-  );
+  )
 }
 
 export default App;
