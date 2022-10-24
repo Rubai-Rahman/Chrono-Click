@@ -16,8 +16,7 @@
   padding: 20px;
   padding-top: 30px;
   height: max-content;
-
-  position: sticky;
+  position:fixed;
 }
 .drawer_button {
   color: black;
@@ -30,4 +29,7 @@
 }
 .drawer_button:hover{
   color:aliceblue;
+}
+.outlet{
+  margin-left: 187px;
 }

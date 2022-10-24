@@ -36,7 +36,7 @@ const AddProduct = () => {
         console.error("Error:", error)
       })
   }
-  console.log(name,price,details)
+ 
   return (
     <div>
       <h2>Add A Product</h2>

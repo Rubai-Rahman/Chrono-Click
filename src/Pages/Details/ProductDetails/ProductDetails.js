@@ -20,6 +20,8 @@ const ProductDetails = () => {
         <Card.Title className="Card-title">{proDetails.name}</Card.Title>
         <Card.Text>
           price: $:{proDetails.price} <br />
+       
+          Details: {proDetails.details} <br />
           <div className="button">
             
             <button className="bbutton">Add to Cart</button>

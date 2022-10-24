@@ -1,19 +1,20 @@
-import React from "react";
-import { Row } from "react-bootstrap";
-import "./Products.css";
-import Product from "../Product/Product";
-import { Link } from "react-router-dom";
-import useProducts from "../../../hooks/useProducts";
+import React from "react"
+import { Row, Spinner } from "react-bootstrap"
+import "./Products.css"
+import Product from "../Product/Product"
+import { Link } from "react-router-dom"
+import useProducts from "../../../hooks/useProducts"
 
 const Products = () => {
-  const [products, setProducts] = useProducts();
-  let random = products.sort(() => 0.5 - Math.random()).slice(0, 6);
+  const [products,setProducts] = useProducts()
+  let random = products.sort(() => 0.5 - Math.random()).slice(0, 6)
 
   return (
     <>
       <div style={{ margin: 100 }}>
         <h4>LATEST WATCHES YOU CAN'T RESIST!</h4>
         <h2>Universal Timekeepers of the world</h2>
+        
       </div>
       <div className="products-container">
         <>
@@ -32,7 +33,7 @@ const Products = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Products;
+export default Products

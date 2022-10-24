@@ -20,6 +20,8 @@ import MyOrders from "./Pages/Dashboard/MyOrders/MyOrders";
 import AddProduct from "./Pages/Dashboard/AddProduct/AddProduct";
 import Review from "./Pages/Dashboard/Review/Review";
 import ManageOrders from "./Pages/Dashboard/ManageOrders/ManageOrders";
+import AdminRoute from "./Pages/AdminRoute/AdminRoute";
+import ManageProduct from "./Pages/Dashboard/ManageProduct/ManageProduct";
 
 function App() {
   return (
@@ -48,18 +50,45 @@ function App() {
 
               <Route
                 path={`/dashboard/makeAdmin`}
-                element={<MakeAdmin />}
+                element={
+                  <AdminRoute>
+                    <MakeAdmin />
+                  </AdminRoute>
+                }
               ></Route>
               <Route
                 path={`/dashboard/myOrders`}
                 element={<MyOrders />}
               ></Route>
               <Route
+                path={`/dashboard/payment`}
+                element={<Payment />}
+              ></Route>
+              <Route
                 path={`/dashboard/addProduct`}
-                element={<AddProduct />}
+                element={
+                  <AdminRoute>
+                    <AddProduct />
+                  </AdminRoute>
+                }
               ></Route>
               <Route path={`/dashboard/review`} element={<Review />}></Route>
-              <Route path={`/dashboard/manageOrders`} element={<ManageOrders />}></Route>
+              <Route
+                path={`/dashboard/manageOrders`}
+                element={
+                  <AdminRoute>
+                    <ManageOrders />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path={`/dashboard/manageProduct`}
+                element={
+                  <AdminRoute>
+                    <ManageProduct />
+                  </AdminRoute>
+                }
+              ></Route>
             </Route>
 
             {/* End DashBoard  */}
@@ -82,7 +111,7 @@ function App() {
         </Router>
       </AuthProvider>
     </div>
-  )
+  );
 }
 
 export default App;

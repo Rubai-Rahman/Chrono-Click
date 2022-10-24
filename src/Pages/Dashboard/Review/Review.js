@@ -15,8 +15,8 @@ const Review = () => {
 
     const reviewData = new FormData()
     reviewData.append("name", user?.displayName)
-    reviewData.append("review",review)
-console.log(reviewData)
+    reviewData.append("review", review)
+    console.log(reviewData)
     fetch("http://localhost:5000/reviews", {
       method: "POST",
       body: reviewData,
@@ -24,8 +24,8 @@ console.log(reviewData)
       .then((res) => res.json())
       .then((data) => {
         if (data.insertedId) {
-          setSuccess("Review added successfully")
-          console.log("Review added successfully")
+          setSuccess(true)
+          
         }
       })
       .catch((error) => {
@@ -45,7 +45,12 @@ console.log(reviewData)
           <Form.Control
             type="text"
             placeholder="Add A Review"
-            style={{ width: "80%", height: 200, marginLeft: 20 }}
+            style={{
+              width: "80%",
+              height: 200,
+              marginLeft: 20,
+              borderColor: "#9c7c38",
+            }}
           />
         </FloatingLabel>
         <br />
@@ -53,7 +58,7 @@ console.log(reviewData)
           className="bbutton"
           type="submit"
           style={{
-           width:150,
+            width: 150,
             backgroundColor: "#9c7c38",
           }}
         >
@@ -61,7 +66,7 @@ console.log(reviewData)
         </button>
       </form>
     </div>
-  )
+  );
 }
 
 export default Review

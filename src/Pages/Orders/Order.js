@@ -1,50 +1,58 @@
-import React from "react"
-import { useEffect } from "react"
-import { useState } from "react"
-import { Col, Container, ListGroup, ListGroupItem, Row } from "react-bootstrap"
-import useAuth from "../../hooks/useAuth"
-import { AiFillDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
-import { Link, useNavigate } from "react-router-dom"
+import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
+import { Col, Container, ListGroup, ListGroupItem, Row } from "react-bootstrap";
+import useAuth from "../../hooks/useAuth";
+import { AiFillDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import { Link, useNavigate } from "react-router-dom";
 
 const Order = () => {
   const {
     allContexts: { user },
     state: { cart },
     dispatch,
-  } = useAuth()
-  const navigate = useNavigate()
-  const [total, setTotal] = useState()
-  
-
+  } = useAuth();
+  const navigate = useNavigate();
+  const [total, setTotal] = useState();
+  const [success, setSuccess] = useState(false);
+  const email = user.email;
   useEffect(() => {
-    setTotal(cart.reduce((acc, curr) => acc + Number(curr.price * curr.qty), 0))
-  }, [cart])
-  //send item to db
-  // const handleOrder = (e) => {
-  //   //make data for send
-  //   const orders = [
-  //     {
-  //       ...cart,
-  //       // email: user.email,
-  //     },
-  //   ]
-  //   fetch(`http://localhost:5000/orders`, {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "content-type": "application/json",
-  //     },
-  //     body: JSON.stringify(),
-  //   })
-  //   console.log(orders)
-  //   //Clear Cart
-  //   dispatch({
-  //     type: "ClEAR_CART",
-  //   })
-  //   navigate("/payment")
-  //   e.preventDefault()
-  // }
-console.log(user)
+    setTotal(
+      cart.reduce((acc, curr) => acc + Number(curr.price * curr.qty), 0)
+    );
+  }, [cart]);
+  // send item to db
+  const handleOrder = (e) => {
+    //make data for send
+    const orderData = {
+      cart,
+      email,
+    };
+    fetch(`http://localhost:5000/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.insertedId) {
+          setSuccess(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
+    //Clear Cart
+    dispatch({
+      type: "ClEAR_CART",
+    });
+    navigate("/payment");
+    e.preventDefault();
+  };
+
   return (
     <Container style={{ marginTop: 70 }}>
       <div>
@@ -115,13 +123,13 @@ console.log(user)
         <span className="title">Subtotal ({cart.length}) items</span>
         <span className="title"> Total: $ {total} </span>
         <Link to="">
-          <button className="bbutton">
+          <button onClick={handleOrder} className="bbutton">
             Check Out
           </button>
         </Link>
       </div>
     </Container>
-  )
-}
+  );
+};
 
-export default Order
+export default Order;

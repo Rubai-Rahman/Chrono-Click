@@ -1,38 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { Row, Spinner } from "react-bootstrap";
-import Products from "./Products";
-import "./Shop.css";
+import React, { useEffect, useState } from "react"
+import { Row, Spinner } from "react-bootstrap"
+import Products from "./Products"
+import "./Shop.css"
 
 const Shop = () => {
-  const [products, setProducts] = useState([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [page, setPage] = useState(0);
+  const [products, setProducts] = useState([])
+  const [pageCount, setPageCount] = useState(0)
+  const [page, setPage] = useState(0)
+  const [loading, setIsLoading] = useState(true)
 
-
-  const size = 12;
+  const size = 12
   useEffect(() => {
     fetch(
       `https://cryptic-shore-01306.herokuapp.com/products?page=${page}&&size=${size}`
     )
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data.products);
-        const count = data.count;
-        const pageNumber = Math.ceil(count / size);
-        setPageCount(pageNumber);
-      });
-  }, [page]);
+        setProducts(data.products)
+        const count = data.count
+        const pageNumber = Math.ceil(count / size)
+        setPageCount(pageNumber)
+        setIsLoading(false)
+      })
+  }, [page])
 
-  
- 
   return (
     <>
       <div style={{ margin: 100 }}>
         <h4>LATEST WATCHES YOU CAN'T RESIST!</h4>
         <h2>Find Your Watch </h2>
-        <Spinner animation="grow" />;
-        <Spinner animation="grow" />;
-        <Spinner animation="grow" />;
+        {loading && <Spinner animation="grow" />}
+        {loading && <Spinner animation="grow" />}
+        {loading && <Spinner animation="grow" />}
       </div>
       <div className="products-container">
         <Row xs={1} md={2} lg={3} className="g-2 ">
@@ -55,6 +54,6 @@ const Shop = () => {
       </div>
     </>
   )
-};
+}
 
-export default Shop;
+export default Shop
