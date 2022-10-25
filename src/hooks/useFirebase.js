@@ -119,7 +119,7 @@ const useFirebase = () => {
         // An error happened.
       });
   };
-  //Save user to password
+  //Save user to Database
   const saveUser = (email, displayName, method) => {
     const user = { email, displayName };
     fetch(`http://localhost:5000/users`, {

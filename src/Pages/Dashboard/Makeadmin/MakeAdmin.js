@@ -1,16 +1,19 @@
 import React from "react";
 import { useState } from "react";
 import { Alert, FloatingLabel, Form } from "react-bootstrap";
+import useAuth from "../../../hooks/useAuth";
 
 const MakeAdmin = () => {
   const [email, setEmail] = useState();
   const [success, setSuccess] = useState(false);
-  console.log(email);
+  const { allContexts: { token } } = useAuth();
+
   const handleSubmit = (e) => {
     const user = { email };
     fetch("http://localhost:5000/users/admin", {
       method: "PUT",
       headers: {
+        'authorization':`Bearer ${token}`,
         "content-type": "application/json",
       },
       body: JSON.stringify(user),
@@ -20,6 +23,7 @@ const MakeAdmin = () => {
         if (data.modifiedCount) {
           setSuccess(true);
           setEmail("");
+           
         }
         
       });
