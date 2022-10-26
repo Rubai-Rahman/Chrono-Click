@@ -1,22 +1,22 @@
-import React, { useState } from "react"
-import { FloatingLabel, Form } from "react-bootstrap"
-
-import useAuth from "../../../hooks/useAuth"
+import React, { useState } from "react";
+import { FloatingLabel, Form } from "react-bootstrap";
+import "./Review.css";
+import useAuth from "../../../hooks/useAuth";
 
 const Review = () => {
   const {
     allContexts: { user },
-  } = useAuth()
-  const [review, setReview] = useState("")
-  const [success, setSuccess] = useState(false)
+  } = useAuth();
+  const [review, setReview] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const reviewData = new FormData()
-    reviewData.append("name", user?.displayName)
-    reviewData.append("review", review)
-    console.log(reviewData)
+    const reviewData = new FormData();
+    reviewData.append("name", user?.displayName);
+    reviewData.append("review", review);
+    console.log(reviewData);
     fetch("http://localhost:5000/reviews", {
       method: "POST",
       body: reviewData,
@@ -24,14 +24,13 @@ const Review = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.insertedId) {
-          setSuccess(true)
-          
+          setSuccess(true);
         }
       })
       .catch((error) => {
-        console.error("Error:", error)
-      })
-  }
+        console.error("Error:", error);
+      });
+  };
   return (
     <div>
       <h2>Add A Review </h2>
@@ -39,8 +38,7 @@ const Review = () => {
         <FloatingLabel
           controlId="floatingInput"
           onChange={(e) => setReview(e.target.value)}
-          className="mb-3"
-          style={{ marginLeft: 150 }}
+          className="mb-3 ReviewForm"
         >
           <Form.Control
             type="text"
@@ -67,6 +65,6 @@ const Review = () => {
       </form>
     </div>
   );
-}
+};
 
-export default Review
+export default Review;

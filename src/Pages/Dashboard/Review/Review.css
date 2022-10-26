@@ -1,0 +1,8 @@
+.ReviewForm {
+  margin-left: 150px;
+}
+@media only screen and (max-width: 600px) {
+  .ReviewForm {
+    margin-left: 0px;
+  }
+}

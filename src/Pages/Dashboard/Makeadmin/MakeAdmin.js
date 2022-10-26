@@ -2,18 +2,20 @@ import React from "react";
 import { useState } from "react";
 import { Alert, FloatingLabel, Form } from "react-bootstrap";
 import useAuth from "../../../hooks/useAuth";
-
+import "./MakeAdmin.css";
 const MakeAdmin = () => {
   const [email, setEmail] = useState();
   const [success, setSuccess] = useState(false);
-  const { allContexts: { token } } = useAuth();
+  const {
+    allContexts: { token },
+  } = useAuth();
 
   const handleSubmit = (e) => {
     const user = { email };
     fetch("http://localhost:5000/users/admin", {
       method: "PUT",
       headers: {
-        'authorization':`Bearer ${token}`,
+        authorization: `Bearer ${token}`,
         "content-type": "application/json",
       },
       body: JSON.stringify(user),
@@ -23,9 +25,7 @@ const MakeAdmin = () => {
         if (data.modifiedCount) {
           setSuccess(true);
           setEmail("");
-           
         }
-        
       });
     e.preventDefault();
   };
@@ -36,16 +36,14 @@ const MakeAdmin = () => {
         <FloatingLabel
           controlId="floatingInput"
           onBlur={(e) => setEmail(e.target.value)}
-          className="mb-3"
-          style={{ marginLeft: 150 }}
+          className="mb-3 ReviewForm"
         >
           <Form.Control
             type="email"
             placeholder="Add Admin"
+            className="formControl"
             style={{
-              width: "35%",
               height: 20,
-              marginLeft: 340,
               borderStyle: "solid",
               borderColor: "#9c7c38",
             }}
@@ -63,11 +61,7 @@ const MakeAdmin = () => {
           Make Admin
         </button>
       </form>
-      {success && (
-        <Alert  variant="success">
-          Made Admin Successfully
-        </Alert>
-      )}
+      {success && <Alert variant="success">Made Admin Successfully</Alert>}
     </div>
   );
 };

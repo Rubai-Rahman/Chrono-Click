@@ -15,8 +15,8 @@ const MyOrders = () => {
     fetch(url)
       .then((res) => res.json())
       .then((data) => setOrder(data));
-  }, []);
-console.log(order)
+  }, [email]);
+
   const cart = order.map((product) => product.cart);
 
   return (
@@ -40,14 +40,14 @@ console.log(order)
                     {" "}
                     <AiFillDelete
                       style={{ cursor: "pointer", fontSize: 20 }}
-                      onClick=""
+                     
                     />
                   </Col>
                   <Col>
                     {" "}
                     <AiFillDelete
                       style={{ cursor: "pointer", fontSize: 20 }}
-                      onClick=""
+                      
                     />
                   </Col>
                 </Row>
