@@ -11,7 +11,7 @@ const MyOrders = () => {
   } = useAuth();
   const [order, setOrder] = useState([]);
   useEffect(() => {
-    const url = `http://localhost:5000/orders/${email}`;
+    const url = `https://chronoclick.onrender.com/orders/${email}`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => setOrder(data));

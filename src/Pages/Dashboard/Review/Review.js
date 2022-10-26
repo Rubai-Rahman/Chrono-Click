@@ -17,7 +17,7 @@ const Review = () => {
     reviewData.append("name", user?.displayName);
     reviewData.append("review", review);
     console.log(reviewData);
-    fetch("http://localhost:5000/reviews", {
+    fetch("https://chronoclick.onrender.com/reviews", {
       method: "POST",
       body: reviewData,
     })

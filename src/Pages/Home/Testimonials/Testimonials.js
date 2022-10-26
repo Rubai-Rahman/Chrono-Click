@@ -83,7 +83,7 @@ const Testimonials = () => {
         {story.map((item) => (
           <div className="testcard">
             <div className="testcard-top">
-              <img key={item.id} src={item.id} alt="img" />
+              <img key={item.id} src={item.img} alt="img" />
               <h1 key={item.title}>{item.title}</h1>
             </div>
             <div className="testcard-bottom">

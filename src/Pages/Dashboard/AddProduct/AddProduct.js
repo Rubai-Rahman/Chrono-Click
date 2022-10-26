@@ -21,20 +21,19 @@ const AddProduct = () => {
     productData.append("image", image)
 
     console.log(productData);
-    fetch("http://localhost:5000/products", {
+    fetch("https://chronoclick.onrender.com/products", {
       method: "POST",
       body: productData,
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.insertedId) {
-          setSuccess(true)
-         
+          setSuccess(true);
         }
       })
       .catch((error) => {
-        console.error("Error:", error)
-      })
+        console.error("Error:", error);
+      });
   }
  
   return (

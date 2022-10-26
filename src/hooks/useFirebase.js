@@ -30,7 +30,7 @@ const useFirebase = () => {
       .then((userCredential) => {
         setAuthError("");
         const newUser = { email, displayName: name };
-        saveUser(email, name,'POST');
+        saveUser(email, name, "POST");
         setUser(newUser);
 
         updateProfile(auth.currentUser, {
@@ -81,7 +81,7 @@ const useFirebase = () => {
         const token = credential.accessToken;
 
         const user = result.user;
-        saveUser (user.email,user.displayName,'PUT')
+        saveUser(user.email, user.displayName, "PUT");
         const destination = location?.state?.from || "/";
         navigate(destination);
       })
@@ -101,10 +101,10 @@ const useFirebase = () => {
         setUser(user);
         getIdToken(user).then((idToken) => {
           setToken(idToken);
-        })
+        });
       } else {
         setUser({});
-        setIsLoading(false)
+        setIsLoading(false);
       }
     });
     return () => unsubscribe;
@@ -122,21 +122,21 @@ const useFirebase = () => {
   //Save user to Database
   const saveUser = (email, displayName, method) => {
     const user = { email, displayName };
-    fetch(`http://localhost:5000/users`, {
-      method:method,
+    fetch(`http://:5000/users`, {
+      method: method,
       headers: {
         "content-type": "application/json",
       },
       body: JSON.stringify(user),
     }).then();
   };
- //Admin 
-    useEffect(() => {
-      fetch(`http://localhost:5000/users/${user.email}`)
-        .then((res) => res.json())
-        .then((data) => setAdmin(data.admin));
-    },[user.email])
-  
+  //Admin
+  useEffect(() => {
+    fetch(`https://chronoclick.onrender.com/users/${user.email}`)
+      .then((res) => res.json())
+      .then((data) => setAdmin(data.admin));
+  }, [user.email]);
+
   return {
     user,
     token,
