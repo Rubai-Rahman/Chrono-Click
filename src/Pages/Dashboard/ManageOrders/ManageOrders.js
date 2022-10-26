@@ -17,6 +17,20 @@ const ManageOrders = () => {
       .then((data) => setOrder(data));
   }, []);
 
+  const handleDelete = id => {
+    const url = `http://localhost:5000/orders/${id}`;
+    fetch(url, {
+      method:'DELETE'
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.deleteCount) {
+          alert('deleted')
+          const remaining = cart.filter(product => product.id != id);
+          setOrder(remaining)
+      }
+    })
+  }
   const cart = order.map((product) => product.cart);
   return (
     <Container style={{ marginTop: 70 }}>
@@ -39,7 +53,7 @@ const ManageOrders = () => {
                     {" "}
                     <AiFillDelete
                       style={{ cursor: "pointer", fontSize: 20 }}
-                      onClick=""
+                      onClick={handleDelete}
                     />
                   </Col>
                   <Col>

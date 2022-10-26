@@ -11,12 +11,12 @@ const MyOrders = () => {
   } = useAuth();
   const [order, setOrder] = useState([]);
   useEffect(() => {
-    const url = `http://localhost:5000/orders`;
+    const url = `http://localhost:5000/orders/${email}`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => setOrder(data));
   }, []);
-
+console.log(order)
   const cart = order.map((product) => product.cart);
 
   return (
