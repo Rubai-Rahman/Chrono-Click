@@ -30,6 +30,8 @@ function App() {
         <Router>
           <Navigation />
           <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
             <Route
               path="/order"
               element={
@@ -60,10 +62,7 @@ function App() {
                 path={`/dashboard/myOrders`}
                 element={<MyOrders />}
               ></Route>
-              <Route
-                path={`/dashboard/payment`}
-                element={<Payment />}
-              ></Route>
+              <Route path={`/dashboard/payment`} element={<Payment />}></Route>
               <Route
                 path={`/dashboard/addProduct`}
                 element={
@@ -92,8 +91,7 @@ function App() {
             </Route>
 
             {/* End DashBoard  */}
-            <Route exact path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
+
             <Route path="/shop" element={<Shop />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<LogIn />} />
