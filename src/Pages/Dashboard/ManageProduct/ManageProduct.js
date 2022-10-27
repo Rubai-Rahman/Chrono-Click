@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Row, Spinner } from "react-bootstrap";
 import DeleteProduct from "./DeleteProduct";
 
-
-
 const ManageProduct = () => {
   const [products, setProducts] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -13,7 +11,7 @@ const ManageProduct = () => {
   const size = 12;
   useEffect(() => {
     fetch(
-      `https://cryptic-shore-01306.herokuapp.com/products?page=${page}&&size=${size}`
+      `https://chronoclick.onrender.com/products?page=${page}&&size=${size}`
     )
       .then((res) => res.json())
       .then((data) => {

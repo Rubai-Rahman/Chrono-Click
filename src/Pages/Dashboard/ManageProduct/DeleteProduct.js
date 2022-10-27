@@ -4,7 +4,7 @@ const DeleteProduct = ({ product }) => {
   const { _id, name, price, img } = product;
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/products/${id}`, {
+    fetch(`https://chronoclick.onrender.com/products/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())

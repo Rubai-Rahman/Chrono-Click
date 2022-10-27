@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react"
-import { Row, Spinner } from "react-bootstrap"
-import Products from "./Products"
-import "./Shop.css"
+import React, { useEffect, useState } from "react";
+import { Row, Spinner } from "react-bootstrap";
+import Products from "./Products";
+import "./Shop.css";
 
 const Shop = () => {
-  const [products, setProducts] = useState([])
-  const [pageCount, setPageCount] = useState(0)
-  const [page, setPage] = useState(0)
-  const [loading, setIsLoading] = useState(true)
+  const [products, setProducts] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [loading, setIsLoading] = useState(true);
 
-  const size = 12
+  const size = 12;
   useEffect(() => {
     fetch(
-      `https://cryptic-shore-01306.herokuapp.com/products?page=${page}&&size=${size}`
+      `https://chronoclick.onrender.com/products?page=${page}&&size=${size}`
     )
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data.products)
-        const count = data.count
-        const pageNumber = Math.ceil(count / size)
-        setPageCount(pageNumber)
-        setIsLoading(false)
-      })
-  }, [page])
+        setProducts(data.products);
+        const count = data.count;
+        const pageNumber = Math.ceil(count / size);
+        setPageCount(pageNumber);
+        setIsLoading(false);
+      });
+  }, [page]);
 
   return (
     <>
@@ -53,7 +53,7 @@ const Shop = () => {
         ))}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Shop
+export default Shop;

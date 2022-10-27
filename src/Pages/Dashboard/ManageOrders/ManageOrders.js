@@ -19,7 +19,7 @@ const ManageOrders = () => {
 
   const cart = order.map((product) => product.cart);
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/orders/${id}`, {
+    fetch(`https://chronoclick.onrender.com/orders/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())

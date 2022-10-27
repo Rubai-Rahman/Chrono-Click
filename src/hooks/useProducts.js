@@ -8,9 +8,7 @@ const useProducts = () => {
   const size = 10;
 
   useEffect(() => {
-    fetch(
-      `https://cryptic-shore-01306.herokuapp.com/products?${page}&&size=${size}`
-    )
+    fetch(`https://chronoclick.onrender.com/products?${page}&&size=${size}`)
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.products);
