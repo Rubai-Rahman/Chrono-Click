@@ -1,26 +1,25 @@
-import React, { useState } from "react"
-import { Alert, FloatingLabel, Form } from "react-bootstrap"
-import './AddProduct.css'
+import React, { useState } from "react";
+import { Alert, FloatingLabel, Form } from "react-bootstrap";
+import "./AddProduct.css";
 
 const AddProduct = () => {
-  const [name, setName] = useState("")
-  const [price, setPrice] = useState("")
-  const [details, setDetails] = useState("")
-  const [image, setImage] = useState(null)
-  const [success, setSuccess] = useState(false)
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [details, setDetails] = useState("");
+  const [image, setImage] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!image) {
-      return
+      return;
     }
-    const productData = new FormData()
-    productData.append("name", name)
-    productData.append("price", price)
-    productData.append("details", details)
-    productData.append("image", image)
+    const productData = new FormData();
+    productData.append("name", name);
+    productData.append("price", price);
+    productData.append("details", details);
+    productData.append("image", image);
 
-    console.log(productData);
     fetch("https://chronoclick.onrender.com/products", {
       method: "POST",
       body: productData,
@@ -34,8 +33,8 @@ const AddProduct = () => {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }
- 
+  };
+
   return (
     <div>
       <h2>Add A Product</h2>
@@ -80,7 +79,7 @@ const AddProduct = () => {
         <button className="bbutton">Add Product</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default AddProduct
+export default AddProduct;

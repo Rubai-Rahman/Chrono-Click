@@ -122,7 +122,7 @@ const useFirebase = () => {
   //Save user to Database
   const saveUser = (email, displayName, method) => {
     const user = { email, displayName };
-    fetch(`http://:5000/users`, {
+    fetch(`https://chronoclick.onrender.com/users`, {
       method: method,
       headers: {
         "content-type": "application/json",

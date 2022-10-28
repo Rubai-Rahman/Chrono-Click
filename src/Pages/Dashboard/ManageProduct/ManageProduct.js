@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Spinner } from "react-bootstrap";
-import DeleteProduct from "./DeleteProduct";
+import { Card, Col, Row, Spinner } from "react-bootstrap";
 
 const ManageProduct = () => {
   const [products, setProducts] = useState([]);
@@ -22,12 +21,24 @@ const ManageProduct = () => {
         setIsLoading(false);
       });
   }, [page]);
+  const handleDelete = (product,id) => {
+    fetch(`https://chronoclick.onrender.com/products/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.deletedCount > 0) {
+          alert("Deleted");
+          const remaining = products.filter(product._id !== id);
+          setProducts(remaining)
+        }
+      });
+  };
 
   return (
     <>
       <div style={{ margin: 100 }}>
-        <h4>LATEST WATCHES YOU CAN'T RESIST!</h4>
-        <h2>Find Your Watch </h2>
+        <h2>Manage Product</h2>
         {loading && <Spinner animation="grow" />}
         {loading && <Spinner animation="grow" />}
         {loading && <Spinner animation="grow" />}
@@ -35,7 +46,25 @@ const ManageProduct = () => {
       <div className="products-container">
         <Row xs={1} md={2} lg={3} className="g-2 ">
           {products.map((product) => (
-            <DeleteProduct key={product._id} product={product} />
+            <Col>
+              <Card className="product shadow-lg p-3 mb-5  rounded">
+                <Card.Img variant="top" src={product.img} />
+                <Card.Body>
+                  <Card.Title className="Card-title">{product.name}</Card.Title>
+                  <Card.Text>
+                    price: $:{product.price} <br />
+                    <div className="button">
+                      <button
+                        onClick={() => handleDelete(product,product._id)}
+                        className="bbutton"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
           ))}
         </Row>
       </div>
