@@ -8,6 +8,22 @@ const AddProduct = () => {
   const [details, setDetails] = useState("");
   const [image, setImage] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [file, setFile] = useState('');
+
+  const previewFiles = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onloadend = () => {
+      console.log(image);
+      setImage(reader.result);
+    };
+  };
+  const handleChange = (e) => {
+    const file = e.target.files[0];
+    setFile(file);
+    previewFiles(file)
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,7 +50,7 @@ const AddProduct = () => {
         console.error("Error:", error);
       });
   };
-
+  
   return (
     <div>
       <h2>Add A Product</h2>
@@ -73,11 +89,12 @@ const AddProduct = () => {
         <input
           accept="image/*"
           type="file"
-          onChange={(e) => setImage(e.target.files[0])}
+          onChange={e=>handleChange(e)}
         />
         <br />
         <button className="bbutton">Add Product</button>
       </form>
+      <img src={image} alt="" />
     </div>
   );
 };

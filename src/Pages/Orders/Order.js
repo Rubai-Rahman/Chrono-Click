@@ -21,14 +21,17 @@ const Order = () => {
       cart.reduce((acc, curr) => acc + Number(curr.price * curr.qty), 0)
     );
   }, [cart]);
+
   // send item to db
+
   const handleOrder = (e) => {
     //make data for send
     const orderData = {
-      cart,
       email,
+      cart,
     };
-    fetch(`https://chronoclick.onrender.com//orders`, {
+
+    fetch(`http://localhost:5000/orders`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +48,7 @@ const Order = () => {
         console.error("Error:", error);
       });
 
-    //Clear Cart
+    // //Clear Cart
     dispatch({
       type: "ClEAR_CART",
     });
