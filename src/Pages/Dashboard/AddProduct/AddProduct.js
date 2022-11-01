@@ -6,37 +6,48 @@ const AddProduct = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [details, setDetails] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState("");
   const [success, setSuccess] = useState(false);
-  const [file, setFile] = useState('');
+  const [file, setFile] = useState("");
+  const [imageUrl,setImageUrl] = useState("")
 
   const previewFiles = (file) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
 
     reader.onloadend = () => {
-      console.log(image);
       setImage(reader.result);
+      
     };
+    console.log(image);
   };
   const handleChange = (e) => {
     const file = e.target.files[0];
     setFile(file);
-    previewFiles(file)
-  }
+    previewFiles(file);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!image) {
-      return;
-    }
-    const productData = new FormData();
+    const imageData = new FormData();
+    imageData.append("name", name);
+    imageData.append("image", image)
+    
+     fetch("http://localhost:5000", {
+       method: "POST",
+       body: imageData,
+     })
+       .then((res) => res.json())
+      .then((data) => setImageUrl(data.url));
+    console.log(imageUrl)
+    
+     const productData = new FormData();
     productData.append("name", name);
     productData.append("price", price);
     productData.append("details", details);
-    productData.append("image", image);
+    productData.append("image", imageUrl);
 
-    fetch("https://chronoclick.onrender.com/products", {
+     fetch("http://localhost:5000/products", {
       method: "POST",
       body: productData,
     })
@@ -49,8 +60,9 @@ const AddProduct = () => {
       .catch((error) => {
         console.error("Error:", error);
       });
+   
   };
-  
+
   return (
     <div>
       <h2>Add A Product</h2>
@@ -86,11 +98,7 @@ const AddProduct = () => {
         </FloatingLabel>
         <br />
 
-        <input
-          accept="image/*"
-          type="file"
-          onChange={e=>handleChange(e)}
-        />
+        <input accept="image/*" type="file" onChange={(e) => handleChange(e)} />
         <br />
         <button className="bbutton">Add Product</button>
       </form>
