@@ -16,7 +16,7 @@ FirebaseInitialize();
 
 const useFirebase = () => {
   const auth = getAuth();
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user'))||{});
   const [isLoading, setIsLoading] = useState(true);
   const [authError, setAuthError] = useState("");
   const [admin, setAdmin] = useState(false);
@@ -57,12 +57,10 @@ const useFirebase = () => {
       .then((userCredential) => {
         const destination = location?.state?.from || "/";
         navigate(destination);
-        // Signed in
-        //  if(location.state?.form){
-        //    Navigate (location.state.from);
-        //  }
+        
         const user = userCredential.user;
         setUser(user);
+        localStorage.setItem('user',JSON.stringify(user))
         // ...
       })
       .catch((error) => {
@@ -112,6 +110,7 @@ const useFirebase = () => {
 
   const logOut = () => {
     signOut(auth)
+      localStorage.removeItem('user',user)
       .then(() => {
         // Sign-out successful.
       })

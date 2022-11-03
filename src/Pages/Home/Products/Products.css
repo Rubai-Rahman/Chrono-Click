@@ -1,7 +1,9 @@
 .products-container {
   margin-left: 110px;
 }
-
+.header {
+  margin: 100px;
+}
 a.nave_btn:link {
   text-decoration: none;
 }
@@ -22,6 +24,13 @@ a.nave_btn {
 }
 @media only screen and (max-device-width: 667px) {
   .products-container {
-    margin-left: 50px;
+    margin-left: 11%;
+  }
+  .header {
+    margin: 20px;
+  }
+  .header > h2 {
+    font-size: 20px;
+    width: 100%;
   }
 }

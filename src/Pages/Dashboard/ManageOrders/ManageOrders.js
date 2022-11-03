@@ -54,11 +54,7 @@ const ManageOrders = () => {
                     />
                   </Col>
                   <Col>
-                    {" "}
-                    <AiFillDelete
-                      style={{ cursor: "pointer", fontSize: 20 }}
-                      onClick=""
-                    />
+                    <button> { cart.status}</button>
                   </Col>
                 </Row>
               </ListGroupItem>

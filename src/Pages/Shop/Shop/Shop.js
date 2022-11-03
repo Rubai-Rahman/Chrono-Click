@@ -26,7 +26,7 @@ const Shop = () => {
 
   return (
     <>
-      <div style={{ margin: 100 }}>
+      <div className="header">
         <h4>LATEST WATCHES YOU CAN'T RESIST!</h4>
         <h2>Find Your Watch </h2>
         {loading && <Spinner animation="grow" />}

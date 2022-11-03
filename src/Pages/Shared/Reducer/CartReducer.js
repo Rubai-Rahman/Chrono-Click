@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 const CartReducer = (state, action) => {
   switch (action.type) {
@@ -10,15 +10,16 @@ const CartReducer = (state, action) => {
           {
             ...action.payload,
             qty: 1,
+            status: "pending",
           },
         ],
-      }
+      };
     }
     case "REMOVE_FROM_CART": {
       return {
         ...state,
         cart: state.cart.filter((c) => c._id !== action.payload._id),
-      }
+      };
     }
     case "INCREASE_CART_QTY": {
       return {
@@ -28,7 +29,7 @@ const CartReducer = (state, action) => {
             ? (c.qty = action.payload.qty + 1)
             : c.qty
         ),
-      }
+      };
     }
     case "DECREASE_CART_QTY": {
       return {
@@ -38,16 +39,16 @@ const CartReducer = (state, action) => {
             ? (c.qty = action.payload.qty - 1)
             : c.qty
         ),
-      }
+      };
     }
     case "ClEAR_CART": {
       return {
         cart: [],
-      }
+      };
     }
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default CartReducer
+export default CartReducer;

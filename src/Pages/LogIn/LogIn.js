@@ -1,33 +1,33 @@
-import React, { useState } from "react"
-import { Col, Container, Row, Spinner } from "react-bootstrap"
-import { Link, useLocation, useNavigate } from "react-router-dom"
-import useAuth from "../../hooks/useAuth"
-import { FcGoogle } from "react-icons/fc"
+import React, { useState } from "react";
+import { Col, Container, Row, Spinner } from "react-bootstrap";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
+import { FcGoogle } from "react-icons/fc";
 
 const LogIn = () => {
   const {
-    allContexts: { user, isLoading, loginUser, googleSignIn },
-  } = useAuth()
+    allContexts: { loginUser, googleSignIn },
+  } = useAuth();
 
-  const [loginData, setLoginData] = useState({})
-  const location = useLocation()
-  const navigate = useNavigate()
+  const [loginData, setLoginData] = useState({});
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleOnChange = (e) => {
-    const field = e.target.name
-    const value = e.target.value
-    const newSignupData = { ...loginData }
-    newSignupData[field] = value
-    setLoginData(newSignupData)
-  }
+    const field = e.target.name;
+    const value = e.target.value;
+    const newSignupData = { ...loginData };
+    newSignupData[field] = value;
+    setLoginData(newSignupData);
+  };
   const handleSubmit = (e) => {
-    loginUser(loginData.email, loginData.password, location, navigate)
-    e.preventDefault()
-  }
+    loginUser(loginData.email, loginData.password, location, navigate);
+    e.preventDefault();
+  };
   const handleGoogleSignIn = (e) => {
-    googleSignIn(location, navigate)
-    e.preventDefault()
-  }
+    googleSignIn(location, navigate);
+    e.preventDefault();
+  };
 
   return (
     <Container className=" SignUpFormContainer">
@@ -72,11 +72,10 @@ const LogIn = () => {
               <FcGoogle /> Google SignIn
             </button>
           </form>
-          {isLoading && <Spinner animation="grow" />}
         </Col>
       </Row>
     </Container>
-  )
-}
+  );
+};
 
-export default LogIn
+export default LogIn;
