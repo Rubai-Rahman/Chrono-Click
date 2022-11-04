@@ -10,9 +10,6 @@ const AddProduct = () => {
   const [imageUrl, setImageUrl] = useState("");
 
   const handleChange = (e) => {
-    //   const file = e.target.files[0];
-    //   setFile(file);
-    //   previewFiles(file);
     var myWidget = window.cloudinary.createUploadWidget(
       {
         cloudName: "dcjgjjbi3",

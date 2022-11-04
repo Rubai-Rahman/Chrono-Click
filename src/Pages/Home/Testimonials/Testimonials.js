@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./Testimonials.css";
@@ -9,38 +9,50 @@ import img3 from "../../../images/review/blog-07.webp";
 import img4 from "../../../images/review/blog-10.webp";
 
 import Slider from "react-slick/lib/slider";
+import { useState } from "react";
 
-const story = [
-  {
-    id: 1,
-    img: img1,
-    title: "Gentlemen prefer Chrono Click!",
-    story:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
-  },
-  {
-    id: 2,
-    img: img2,
-    title: "The future perfect watches!",
-    story:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
-  },
-  {
-    id: 3,
-    img: img3,
-    title: "The elegance of a wrist Watch",
-    story:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
-  },
-  {
-    id: 4,
-    img: img4,
-    title: "Your constant companion",
-    story:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
-  },
-];
+// const story = [
+//   {
+//     id: 1,
+//     img: img1,
+//     title: "Gentlemen prefer Chrono Click!",
+//     story:
+//       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
+//   },
+//   {
+//     id: 2,
+//     img: img2,
+//     title: "The future perfect watches!",
+//     story:
+//       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
+//   },
+//   {
+//     id: 3,
+//     img: img3,
+//     title: "The elegance of a wrist Watch",
+//     story:
+//       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
+//   },
+//   {
+//     id: 4,
+//     img: img4,
+//     title: "Your constant companion",
+//     story:
+//       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
+//   },
+// ];
+
 const Testimonials = () => {
+  const [story, setStory] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/review`)
+      .then((res) => res.json())
+      .then((data) => {
+        setStory(data);
+      });
+  }, []);
+  console.log(story);
   const settings = {
     dots: true,
     infinite: true,
@@ -84,10 +96,10 @@ const Testimonials = () => {
           <div className="testcard">
             <div className="testcard-top">
               <img key={item.id} src={item.img} alt="img" />
-              <h1 key={item.title}>{item.title}</h1>
+              <h1 key={item.name}>{item.name}</h1>
             </div>
             <div className="testcard-bottom">
-              <p key={item.id}>{item.story}</p>
+              <p key={item.comment}>{item.comment}</p>
             </div>
           </div>
         ))}

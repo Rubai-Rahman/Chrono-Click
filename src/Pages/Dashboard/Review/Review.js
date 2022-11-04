@@ -10,11 +10,7 @@ const Review = () => {
   const [review, setReview] = useState("");
   const [success, setSuccess] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-
   const handleChange = (e) => {
-    //   const file = e.target.files[0];
-    //   setFile(file);
-    //   previewFiles(file);
     var myWidget = window.cloudinary.createUploadWidget(
       {
         cloudName: "dcjgjjbi3",
@@ -31,21 +27,22 @@ const Review = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const reviewData = new FormData();
-    reviewData.append("name", user?.displayName);
-    reviewData.append("review", review);
-    reviewData.append("image", imageUrl);
-    console.log(reviewData);
-    fetch("https://chronoclick.onrender.com/reviews", {
+    const reviewData = {
+      review,
+      name: user.displayName,
+      image: imageUrl,
+    };
+    fetch("http://localhost:5000/review", {
       method: "POST",
-      body: reviewData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reviewData),
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.insertedId) {
           setSuccess(true);
-          setImageUrl("");
-          setReview("");
         }
       })
       .catch((error) => {
@@ -76,10 +73,14 @@ const Review = () => {
           />
         </FloatingLabel>
         <br />
-        <p className="uploadImage" onClick={(e) => handleChange(e)}>
+        <p
+          className="uploadImage"
+          style={{ cursor: "pointer" }}
+          onClick={(e) => handleChange(e)}
+        >
           Upload Image
         </p>
-        <br />
+
         <button
           className="bbutton"
           type="submit"
