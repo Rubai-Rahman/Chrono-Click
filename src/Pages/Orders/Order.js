@@ -23,7 +23,6 @@ const Order = () => {
   }, [cart]);
 
   // send item to db
-console.log(cart)
   const handleOrder = (e) => {
     //make data for send
     const orderData = {

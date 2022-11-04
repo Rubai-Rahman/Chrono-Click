@@ -28,7 +28,7 @@ const ManageProduct = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.deletedCount > 0) {
-          alert("Deleted");
+          alert("The item is Deleted Please Refresh");
           const remaining = products.filter(product._id !== id);
           setProducts(remaining)
         }

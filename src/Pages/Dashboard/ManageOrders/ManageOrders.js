@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col, Container, ListGroup, ListGroupItem, Row } from "react-bootstrap";
+import { Col, Container, ListGroup, ListGroupItem, Row, Spinner } from "react-bootstrap";
 import { AiFillDelete } from "react-icons/ai";
 import useAuth from "../../../hooks/useAuth";
 
@@ -9,28 +9,38 @@ const ManageOrders = () => {
       user: { email },
     },
   } = useAuth();
-  const [order, setOrder] = useState([]);
+  const [cart, setCart] = useState([]);
+   const [loading, setIsLoading] = useState(false);
   useEffect(() => {
     const url = `https://chronoclick.onrender.com/orders`;
     fetch(url)
       .then((res) => res.json())
-      .then((data) => setOrder(data));
+      .then((data) => {
+        setCart(data.map((product) => product.cart));
+      });
   }, []);
 
-  const cart = order.map((product) => product.cart);
+  //const cart = order.map((product) => product.cart);
   const handleDelete = (id) => {
-    fetch(`https://chronoclick.onrender.com/orders/${id}`, {
+    fetch(`http://localhost:5000/orders/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.deletedCount > 0) {
-          alert("Deleted");
+        if (data.deletedCount) {
+          alert("All The Item of This Cart is Deleted ");
+          setIsLoading(true)
+          const remaining = cart.filter((product) => product.id !== id);
+          setCart(remaining);
+          setIsLoading(false)
         }
       });
   };
   return (
     <Container style={{ marginTop: 70 }}>
+      {loading && <Spinner animation="grow" />}
+      {loading && <Spinner animation="grow" />}
+      {loading && <Spinner animation="grow" />}
       <div>
         <ListGroup>
           {cart.map((product) =>
@@ -54,7 +64,7 @@ const ManageOrders = () => {
                     />
                   </Col>
                   <Col>
-                    <button> { cart.status}</button>
+                    <button> {cart.status}</button>
                   </Col>
                 </Row>
               </ListGroupItem>

@@ -1,8 +1,17 @@
 .ReviewForm {
   margin-left: 150px;
 }
+.uploadImage{
+  background-color:#9c7c38;
+  width: 25%;
+  margin-left: 450px;
+  cursor: pointer;
+}
 @media only screen and (max-width: 600px) {
   .ReviewForm {
     margin-left: 0px;
+  }
+  .uploadImage{
+    margin-left: 100px;
   }
 }

@@ -9,15 +9,29 @@ const MyOrders = () => {
       user: { email },
     },
   } = useAuth();
-  const [order, setOrder] = useState([]);
+  const [cart, setCart] = useState([]);
   useEffect(() => {
     const url = `https://chronoclick.onrender.com/orders/${email}`;
     fetch(url)
       .then((res) => res.json())
-      .then((data) => setOrder(data));
+      .then((data) => {
+        setCart(data.map((product) => product.cart));
+      });
   }, [email]);
 
-  const cart = order.map((product) => product.cart);
+  const handleDelete = (id) => {
+    fetch(`http://localhost:5000/orders/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.deletedCount) {
+          alert("All The Item of This Cart is Deleted ");
+          const remaining = cart.filter((product) => product.id !== id);
+          setCart(remaining);
+        }
+      });
+  };
 
   return (
     <Container style={{ marginTop: 70 }}>
@@ -40,15 +54,11 @@ const MyOrders = () => {
                     {" "}
                     <AiFillDelete
                       style={{ cursor: "pointer", fontSize: 20 }}
-                     
+                      onClick={() => handleDelete(cart._id)}
                     />
                   </Col>
                   <Col>
-                    {" "}
-                    <AiFillDelete
-                      style={{ cursor: "pointer", fontSize: 20 }}
-                      
-                    />
+                    <button> {cart.status}</button>
                   </Col>
                 </Row>
               </ListGroupItem>

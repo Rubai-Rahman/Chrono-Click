@@ -86,7 +86,9 @@ const AddProduct = () => {
         </FloatingLabel>
         <br />
 
-        <p onClick={(e) => handleChange(e)}>Upload Image</p>
+        <p style={{ cursor: "pointer" }} onClick={(e) => handleChange(e)}>
+          Upload Image
+        </p>
         <br />
         <button className="bbutton">Add Product</button>
       </form>
