@@ -1,4 +1,3 @@
-import { setLogLevel } from "firebase/app";
 import React, { useEffect, useState } from "react";
 import { Card, Col, Row, Spinner } from "react-bootstrap";
 import "./ManageProduct.css";
@@ -33,7 +32,6 @@ const ManageProduct = () => {
           const remaining = products.filter(product._id !== id);
           setProducts(remaining);
           setIsLoading(true);
-          window.location.reload(true);
         }
       });
   };

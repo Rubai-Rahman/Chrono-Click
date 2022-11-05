@@ -1,12 +1,12 @@
 import React from "react";
-import { Row, Spinner } from "react-bootstrap";
+import { Row} from "react-bootstrap";
 import "./Products.css";
 import Product from "../Product/Product";
 import { Link } from "react-router-dom";
 import useProducts from "../../../hooks/useProducts";
 
 const Products = () => {
-  const [products, setProducts] = useProducts();
+  const [products] = useProducts();
   let random = products.sort(() => 0.5 - Math.random()).slice(0, 6);
 
   return (

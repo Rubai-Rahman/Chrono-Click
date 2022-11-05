@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth";
 import "./Dashboard.css";
 const Dashboard = () => {
   const {
-    allContexts: { user, logOut, admin },
+    allContexts: { logOut, admin },
   } = useAuth();
 
   return (

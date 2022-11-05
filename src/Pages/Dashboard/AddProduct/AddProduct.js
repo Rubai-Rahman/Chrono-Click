@@ -49,9 +49,7 @@ const AddProduct = () => {
       .catch((error) => {
         console.error("Error:", error);
       });
-    setTimeout(() => {
-      window.location.reload(true);
-    }, 1);
+    
   };
 
   return (

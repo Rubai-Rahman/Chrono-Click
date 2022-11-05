@@ -1,14 +1,11 @@
 import React from "react";
 import { useState } from "react";
 import { Alert, FloatingLabel, Form } from "react-bootstrap";
-import useAuth from "../../../hooks/useAuth";
+
 import "./MakeAdmin.css";
 const MakeAdmin = () => {
   const [email, setEmail] = useState();
   const [success, setSuccess] = useState(false);
-  const {
-    allContexts: { token },
-  } = useAuth();
 
   const handleSubmit = (e) => {
     const user = { email };
@@ -28,9 +25,6 @@ const MakeAdmin = () => {
         }
       });
     e.preventDefault();
-   setTimeout(() => {
-     window.location.reload(true);
-   }, 1);
   };
   return (
     <div>

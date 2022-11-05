@@ -16,7 +16,7 @@ const ProductDetails = () => {
     fetch(url)
       .then((res) => res.json())
       .then((data) => setProDetails(data));
-  }, []);
+  }, [productId]);
   return (
     <Container className="navSetup">
       <Row>

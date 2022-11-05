@@ -47,9 +47,7 @@ const AddNews = () => {
       .catch((error) => {
         console.error("Error:", error);
       });
-    setTimeout(() => {
-      window.location.reload(true);
-    }, 1);
+    
   };
 
   return (
@@ -81,7 +79,7 @@ const AddNews = () => {
           Upload Image
         </p>
         <br />
-        <button className="bbutton">Add Product</button>
+        <button className="bbutton">Add News</button>
       </form>
     </div>
   );

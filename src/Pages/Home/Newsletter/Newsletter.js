@@ -4,26 +4,26 @@ import { Alert, Container } from "react-bootstrap";
 import "./Newsletter.css";
 
 const Newsletter = () => {
-    const [alert,setAlert] = useState(false)
+  const [alert, setAlert] = useState(false);
   const handleSubmit = (e) => {
     e.preventDefault();
-   setAlert(true)
-    };
-    
+    setAlert(true);
+    {
+      setTimeout(() => {
+        setAlert(false);
+      }, 2000);
+    }
+  };
+
   return (
-      <div className="newsLetter">
-          {alert && <Alert variant="primary">Thank You For Subscribe</Alert>}
-         { setTimeout(() => {
-            setAlert(false)
-          }, 2000)
-          }
-          
-          <Container>
-              
+    <div className="newsLetter">
+      {alert && <Alert variant="primary">Thank You For Subscribe</Alert>}
+
+      <Container>
         <div className="text">
           <h6>SUBSCRIBE TO THE MAILING LIST</h6>
           <h3>Newsletter</h3>
-              </div>
+        </div>
         <div className="mail my-5">
           <input type="gmail " placeholder="Your email address" />
           <button onClick={handleSubmit}> SUBMIT</button>

@@ -5,7 +5,7 @@ import useAuth from "../../hooks/useAuth";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const SignUp = () =>{
-  const { allContexts: { user, registerUser } } = useAuth();
+  const { allContexts: { registerUser } } = useAuth();
   const [loginData, setLoginData] = useState({});
   const location = useLocation();
   const navigate = useNavigate();

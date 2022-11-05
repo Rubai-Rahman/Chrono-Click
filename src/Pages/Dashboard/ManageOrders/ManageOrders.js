@@ -27,9 +27,7 @@ const ManageOrders = () => {
           setCart(remaining);
         }
       });
-    setTimeout(() => {
-      window.location.reload(true);
-    }, 1);
+   
   };
   return (
     <Container style={{ marginTop: 70 }}>
