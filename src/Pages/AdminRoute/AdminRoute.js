@@ -7,10 +7,11 @@ const AdminRoute = ({ children, ...rest }) => {
   const {
     allContexts: { user, admin },
   } = useAuth();
+
   if (user.email && admin) {
     return children;
   }
-  return <Navigate to="/" state={{ from: location }} />;
+  return <Navigate to={location} />;
 };
 
 export default AdminRoute;

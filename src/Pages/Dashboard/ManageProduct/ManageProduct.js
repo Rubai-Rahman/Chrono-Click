@@ -1,6 +1,7 @@
+import { setLogLevel } from "firebase/app";
 import React, { useEffect, useState } from "react";
 import { Card, Col, Row, Spinner } from "react-bootstrap";
-
+import "./ManageProduct.css";
 const ManageProduct = () => {
   const [products, setProducts] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -21,16 +22,18 @@ const ManageProduct = () => {
         setIsLoading(false);
       });
   }, [page]);
-  const handleDelete = (product,id) => {
+  const handleDelete = (product, id) => {
     fetch(`https://chronoclick.onrender.com/products/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.deletedCount > 0) {
+        if (data.deletedCount) {
           alert("The item is Deleted Please Refresh");
           const remaining = products.filter(product._id !== id);
-          setProducts(remaining)
+          setProducts(remaining);
+          setIsLoading(true);
+          window.location.reload(true);
         }
       });
   };
@@ -43,11 +46,11 @@ const ManageProduct = () => {
         {loading && <Spinner animation="grow" />}
         {loading && <Spinner animation="grow" />}
       </div>
-      <div className="products-container">
+      <div className="products-container manageProductContainer ">
         <Row xs={1} md={2} lg={3} className="g-2 ">
           {products.map((product) => (
             <Col>
-              <Card className="product shadow-lg p-3 mb-5  rounded">
+              <Card className="product shadow-lg p-3 mb-5 smallCard rounded">
                 <Card.Img variant="top" src={product.img} />
                 <Card.Body>
                   <Card.Title className="Card-title">{product.name}</Card.Title>
@@ -55,7 +58,7 @@ const ManageProduct = () => {
                     price: $:{product.price} <br />
                     <div className="button">
                       <button
-                        onClick={() => handleDelete(product,product._id)}
+                        onClick={() => handleDelete(product, product._id)}
                         className="bbutton"
                       >
                         Delete

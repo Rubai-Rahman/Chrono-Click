@@ -30,7 +30,7 @@ const Order = () => {
       cart,
     };
 
-    fetch(`http://localhost:5000/orders`, {
+    fetch(`https://chronoclick.onrender.com/orders`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

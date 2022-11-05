@@ -1,5 +1,5 @@
 .news {
-  margin-top: -200px!important;
+  margin-top: -200px !important;
   padding-top: 100px;
   padding-bottom: 100px;
   background-color: rgb(8, 7, 7);
@@ -19,7 +19,7 @@
   margin: 0 -10px;
 }
 .news-card {
-  background-color: black;
+  background-color: rgb(31, 25, 25);
   border-left: 1px solid rgb(194, 187, 187);
   border-right: 1px solid rgb(212, 207, 207);
   border-top: none;
@@ -31,11 +31,9 @@
   margin-top: 70px;
 }
 .news-card-top img {
+  height: 300px;
   width: 100%;
-  height: 100%;
-  margin-bottom: 20px;
   object-fit: cover;
-  background-color: rgb(35, 101, 158);
 }
 .news-card-top:hover img {
   opacity: 0.2;
@@ -46,12 +44,11 @@
 }
 
 .news-card-top h1 {
-  font-size: 25px;
+  font-size: 20px;
 }
 
 .news-card-bottom {
   margin: 5px;
   text-justify: auto;
-  font-size: 15px;
+  font-size: 13px;
 }
-

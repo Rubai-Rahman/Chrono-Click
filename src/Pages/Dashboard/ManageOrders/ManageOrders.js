@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Col, Container, ListGroup, ListGroupItem, Row, Spinner } from "react-bootstrap";
+import { Col, Container, ListGroup, ListGroupItem, Row } from "react-bootstrap";
 import { AiFillDelete } from "react-icons/ai";
-import useAuth from "../../../hooks/useAuth";
 
 const ManageOrders = () => {
-  const {
-    allContexts: {
-      user: { email },
-    },
-  } = useAuth();
   const [cart, setCart] = useState([]);
-   const [loading, setIsLoading] = useState(false);
+
   useEffect(() => {
     const url = `https://chronoclick.onrender.com/orders`;
     fetch(url)
@@ -20,27 +14,25 @@ const ManageOrders = () => {
       });
   }, []);
 
-  //const cart = order.map((product) => product.cart);
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/orders/${id}`, {
+    fetch(`https://chronoclick.onrender.com/orders/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.deletedCount) {
           alert("All The Item of This Cart is Deleted ");
-          setIsLoading(true)
+
           const remaining = cart.filter((product) => product.id !== id);
           setCart(remaining);
-          setIsLoading(false)
         }
       });
+    setTimeout(() => {
+      window.location.reload(true);
+    }, 1);
   };
   return (
     <Container style={{ marginTop: 70 }}>
-      {loading && <Spinner animation="grow" />}
-      {loading && <Spinner animation="grow" />}
-      {loading && <Spinner animation="grow" />}
       <div>
         <ListGroup>
           {cart.map((product) =>

@@ -22,6 +22,7 @@ import Review from "./Pages/Dashboard/Review/Review";
 import ManageOrders from "./Pages/Dashboard/ManageOrders/ManageOrders";
 import AdminRoute from "./Pages/AdminRoute/AdminRoute";
 import ManageProduct from "./Pages/Dashboard/ManageProduct/ManageProduct";
+import AddNews from "./Pages/Dashboard/AddNews/AddNews";
 
 function App() {
   return (
@@ -85,6 +86,14 @@ function App() {
                 element={
                   <AdminRoute>
                     <ManageProduct />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path={`/dashboard/addNews`}
+                element={
+                  <AdminRoute>
+                    <AddNews />
                   </AdminRoute>
                 }
               ></Route>

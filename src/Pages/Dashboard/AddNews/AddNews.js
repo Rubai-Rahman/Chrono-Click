@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { Alert, FloatingLabel, Form } from "react-bootstrap";
-import "./Review.css";
-import useAuth from "../../../hooks/useAuth";
 
-const Review = () => {
-  const {
-    allContexts: { user },
-  } = useAuth();
-  const [review, setReview] = useState("");
+const AddNews = () => {
+  const [name, setName] = useState("");
+
+  const [details, setDetails] = useState("");
   const [success, setSuccess] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+
   const handleChange = (e) => {
     var myWidget = window.cloudinary.createUploadWidget(
       {
@@ -24,25 +22,26 @@ const Review = () => {
     );
     myWidget.open();
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const reviewData = {
-      review,
-      name: user.displayName,
+    const newsData = {
+      name,
+      details,
       image: imageUrl,
     };
-    fetch("https://chronoclick.onrender.com/review", {
+    fetch("https://chronoclick.onrender.com/news", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(reviewData),
+      body: JSON.stringify(newsData),
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.insertedId) {
           setSuccess(true);
+          setImageUrl("");
         }
       })
       .catch((error) => {
@@ -52,51 +51,40 @@ const Review = () => {
       window.location.reload(true);
     }, 1);
   };
+
   return (
     <div>
-      <h2>Add A Review </h2>
-      <form onSubmit={handleSubmit}>
-        {success && (
-          <Alert variant="success">Product is Added Successfully</Alert>
-        )}
+      <h2>Add A News</h2>
+      <form m className="productForm" onSubmit={handleSubmit}>
+        {success && <Alert variant="success">News is Added Successfully</Alert>}
         <FloatingLabel
           controlId="floatingInput"
-          onChange={(e) => setReview(e.target.value)}
-          className="mb-3 ReviewForm"
+          onChange={(e) => setName(e.target.value)}
+          className="mb-3"
+          label="News Title"
         >
-          <Form.Control
-            type="text"
-            placeholder="Add A Review"
-            style={{
-              width: "80%",
-              height: 200,
-              marginLeft: 20,
-              borderColor: "#9c7c38",
-            }}
-          />
+          <Form.Control type="text" placeholder="Add Title" />
         </FloatingLabel>
         <br />
-        <p
-          className="uploadImage"
-          style={{ cursor: "pointer" }}
-          onClick={(e) => handleChange(e)}
+
+        <FloatingLabel
+          controlId="floatingInput"
+          onChange={(e) => setDetails(e.target.value)}
+          className="mb-3"
+          label="News Details"
         >
+          <Form.Control type="text" placeholder="Add Details" />
+        </FloatingLabel>
+        <br />
+
+        <p style={{ cursor: "pointer" }} onClick={(e) => handleChange(e)}>
           Upload Image
         </p>
-
-        <button
-          className="bbutton"
-          type="submit"
-          style={{
-            width: 150,
-            backgroundColor: "#9c7c38",
-          }}
-        >
-          Add Review
-        </button>
+        <br />
+        <button className="bbutton">Add Product</button>
       </form>
     </div>
   );
 };
 
-export default Review;
+export default AddNews;

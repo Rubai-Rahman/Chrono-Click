@@ -15,7 +15,7 @@ const MakeAdmin = () => {
     fetch("https://chronoclick.onrender.com/users/admin", {
       method: "PUT",
       headers: {
-        authorization: `Bearer ${localStorage.getItem('idToken')}`,
+        authorization: `Bearer ${localStorage.getItem("idToken")}`,
         "content-type": "application/json",
       },
       body: JSON.stringify(user),
@@ -28,6 +28,9 @@ const MakeAdmin = () => {
         }
       });
     e.preventDefault();
+   setTimeout(() => {
+     window.location.reload(true);
+   }, 1);
   };
   return (
     <div>

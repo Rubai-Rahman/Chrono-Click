@@ -1,62 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./News.css";
-import img1 from "../../../images/News/blog9.webp";
-import img2 from "../../../images/News/blog8.webp";
-import img3 from "../../../images/News/blog7.webp";
-import img4 from "../../../images/News/blog10.webp";
-import img5 from "../../../images/News/blog12.webp";
-import img6 from "../../../images/News/blog11.webp";
 import Slider from "react-slick/lib/slider";
 import { Link } from "react-router-dom";
 
-const story = [
-  {
-    id: 1,
-    img: img1,
-    title: "Gentlemen prefer Chrono Click!",
-    story:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
-  },
-  {
-    id: 2,
-    img: img2,
-    title: "The future perfect watches!",
-    story:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
-  },
-  {
-    id: 3,
-    img: img3,
-    title: "The elegance of a wrist Watch",
-    story:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
-  },
-  {
-    id: 4,
-    img: img4,
-    title: "Your constant companion",
-    story:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
-  },
-  {
-    id: 5,
-    img: img5,
-    title: "Watch combines with jewelry",
-    story:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
-  },
-  {
-    id: 6,
-    img: img6,
-    title: "The finest present you can give",
-    story:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, quod facere. Vitae quis ipsa molestias repellat non eligendi tempore ",
-  },
-];
 
 const News = () => {
+ const [story, setStory] = useState([]);
+
+ useEffect(() => {
+   fetch(`https://chronoclick.onrender.com/news`)
+     .then((res) => res.json())
+     .then((data) => {
+       setStory(data);
+     });
+ }, []);
+  
   const settings = {
     dots: true,
     infinite: true,
@@ -102,10 +62,10 @@ const News = () => {
           <div className="news-card card">
             <div className="news-card-top card-top">
               <img key={item.img} src={item.img} alt="img" />
-              <h1 key={item.title}>{item.title}</h1>
+              <h1 key={item.name}>{item.name}</h1>
             </div>
             <div className="news-card-bottom card-bottom">
-              <p key={item.id}>{item.story}</p>
+              <p key={item.details}>{item.details}</p>
               <Link
                 to="/"
                 style={{ color: "silver", fontSize: 15, letterSpacing: 3 }}

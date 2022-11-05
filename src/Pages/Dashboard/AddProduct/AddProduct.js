@@ -32,7 +32,7 @@ const AddProduct = () => {
     productData.append("details", details);
     productData.append("image", imageUrl);
 
-    fetch("http://localhost:5000/products", {
+    fetch("https://chronoclick.onrender.com/products", {
       method: "POST",
       body: productData,
     })
@@ -40,12 +40,18 @@ const AddProduct = () => {
       .then((data) => {
         if (data.insertedId) {
           setSuccess(true);
-          setImageUrl("");
+          setImageUrl();
+          setName();
+          setPrice();
+          setDetails();
         }
       })
       .catch((error) => {
         console.error("Error:", error);
       });
+    setTimeout(() => {
+      window.location.reload(true);
+    }, 1);
   };
 
   return (
@@ -58,7 +64,7 @@ const AddProduct = () => {
         <FloatingLabel
           controlId="floatingInput"
           onChange={(e) => setName(e.target.value)}
-          className="mb-3"
+          className="mb-3 "
           label="Name"
         >
           <Form.Control type="text" placeholder="Add Name" />

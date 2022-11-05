@@ -45,6 +45,9 @@ const Dashboard = () => {
             >
               <button className="drawer_button">ManageProduct</button>
             </Link>
+            <Link style={{ textDecoration: "none" }} to={`/dashboard/addNews`}>
+              <button className="drawer_button">Add News</button>
+            </Link>
           </>
         )}
 
