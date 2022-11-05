@@ -33,7 +33,7 @@ const MyOrders = () => {
       });
      setTimeout(() => {
        window.location.reload(true);
-     }, 1);
+     }, 2000);
   };
 
   return (

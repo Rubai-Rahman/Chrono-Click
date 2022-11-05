@@ -52,3 +52,9 @@
   text-justify: auto;
   font-size: 13px;
 }
+
+.details {
+  height: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

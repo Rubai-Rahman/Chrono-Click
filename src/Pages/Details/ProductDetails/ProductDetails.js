@@ -11,6 +11,7 @@ const ProductDetails = () => {
     state: { cart },
     dispatch,
   } = useAuth();
+  
   useEffect(() => {
     const url = `https://chronoclick.onrender.com/products/${productId}`;
     fetch(url)

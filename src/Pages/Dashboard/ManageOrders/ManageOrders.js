@@ -29,7 +29,7 @@ const ManageOrders = () => {
       });
     setTimeout(() => {
       window.location.reload(true);
-    }, 1);
+    }, 2000);
   };
   return (
     <Container style={{ marginTop: 70 }}>

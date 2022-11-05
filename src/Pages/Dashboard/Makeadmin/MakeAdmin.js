@@ -26,7 +26,7 @@ const MakeAdmin = () => {
     e.preventDefault();
     setTimeout(() => {
       window.location.reload(true);
-    }, 1);
+    }, 2000);
   };
   return (
     <div>

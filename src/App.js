@@ -23,6 +23,7 @@ import ManageOrders from "./Pages/Dashboard/ManageOrders/ManageOrders";
 import AdminRoute from "./Pages/AdminRoute/AdminRoute";
 import ManageProduct from "./Pages/Dashboard/ManageProduct/ManageProduct";
 import AddNews from "./Pages/Dashboard/AddNews/AddNews";
+import NewsDetails from "./Pages/Details/NewsDetails/NewsDetails";
 
 function App() {
   return (
@@ -106,11 +107,8 @@ function App() {
             <Route path="/login" element={<LogIn />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route
-              exact
-              path="/products/:productId"
-              element={<ProductDetails />}
-            />
+            <Route path="/products/:productId" element={<ProductDetails />} />
+            <Route path="/news/:newsId" element={<NewsDetails />} />
             <Route path="*" element={<Notfound />} />
           </Routes>
 

@@ -62,7 +62,9 @@ const Testimonials = () => {
               <h1 key={item.name}>{item.name}</h1>
             </div>
             <div className="testcard-bottom">
-              <p key={item.comment}>{item.comment}</p>
+              <p className="details" key={item.comment}>
+                {item.comment}
+              </p>
             </div>
           </div>
         ))}

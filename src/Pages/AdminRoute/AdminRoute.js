@@ -7,7 +7,7 @@ const AdminRoute = ({ children, ...rest }) => {
   const {
     allContexts: { user, admin },
   } = useAuth();
-  console.log(user, admin);
+
   if (user.email && admin) {
     return children;
   }

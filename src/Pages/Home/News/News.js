@@ -3,7 +3,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./News.css";
 import Slider from "react-slick/lib/slider";
-import { Link } from "react-router-dom";
+import NewsItem from "./NewsItem";
 
 const News = () => {
   const [story, setStory] = useState([]);
@@ -59,19 +59,7 @@ const News = () => {
       <Slider {...settings}>
         {story.map((item) => (
           <div className="news-card card">
-            <div className="news-card-top card-top">
-              <img key={item.img} src={item.img} alt="img" />
-              <h1 key={item.name}>{item.name}</h1>
-            </div>
-            <div className="news-card-bottom card-bottom">
-              <p key={item.details}>{item.details}</p>
-              <Link
-                to="/"
-                style={{ color: "silver", fontSize: 15, letterSpacing: 3 }}
-              >
-                READ MORE{" "}
-              </Link>
-            </div>
+            <NewsItem key={item._id} item={item} />
           </div>
         ))}
       </Slider>

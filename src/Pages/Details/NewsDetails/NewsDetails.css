@@ -1,0 +1,13 @@
+.image {
+  padding-left: 20px;
+}
+.image img {
+  object-fit: cover;
+  width: 100%;
+}
+.newsDetails {
+  margin-top: 20px;
+  height: 100%;
+  padding-left: 20px;
+  text-align: justify;
+}
