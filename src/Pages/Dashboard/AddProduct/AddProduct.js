@@ -49,7 +49,9 @@ const AddProduct = () => {
       .catch((error) => {
         console.error("Error:", error);
       });
-    
+    setTimeout(() => {
+      window.location.reload(true);
+    }, 1);
   };
 
   return (
@@ -65,7 +67,11 @@ const AddProduct = () => {
           className="mb-3 "
           label="Name"
         >
-          <Form.Control type="text" placeholder="Add Name" />
+          <Form.Control
+            type="text"
+            required="required"
+            placeholder="Add Name"
+          />
         </FloatingLabel>
         <br />
         <FloatingLabel
@@ -74,7 +80,11 @@ const AddProduct = () => {
           className="mb-3"
           label="Price"
         >
-          <Form.Control type="text" placeholder="Add Price" />
+          <Form.Control
+            type="text"
+            required="required"
+            placeholder="Add Price"
+          />
         </FloatingLabel>
         <br />
         <FloatingLabel
@@ -83,7 +93,11 @@ const AddProduct = () => {
           className="mb-3"
           label="Details"
         >
-          <Form.Control type="text" placeholder="Add Details" />
+          <Form.Control
+            type="text"
+            required="required"
+            placeholder="Add Details"
+          />
         </FloatingLabel>
         <br />
 

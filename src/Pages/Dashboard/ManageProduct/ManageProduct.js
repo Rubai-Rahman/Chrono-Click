@@ -34,6 +34,9 @@ const ManageProduct = () => {
           setIsLoading(true);
         }
       });
+     setTimeout(() => {
+       window.location.reload(true);
+     }, 1);
   };
 
   return (

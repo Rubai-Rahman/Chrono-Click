@@ -31,6 +31,9 @@ const MyOrders = () => {
           setCart(remaining);
         }
       });
+     setTimeout(() => {
+       window.location.reload(true);
+     }, 1);
   };
 
   return (

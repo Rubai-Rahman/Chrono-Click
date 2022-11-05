@@ -47,7 +47,9 @@ const AddNews = () => {
       .catch((error) => {
         console.error("Error:", error);
       });
-    
+    setTimeout(() => {
+      window.location.reload(true);
+    }, 1);
   };
 
   return (
@@ -61,7 +63,11 @@ const AddNews = () => {
           className="mb-3"
           label="News Title"
         >
-          <Form.Control type="text" placeholder="Add Title" />
+          <Form.Control
+            type="text"
+            required="required"
+            placeholder="Add Title"
+          />
         </FloatingLabel>
         <br />
 
@@ -71,7 +77,11 @@ const AddNews = () => {
           className="mb-3"
           label="News Details"
         >
-          <Form.Control type="text" placeholder="Add Details" />
+          <Form.Control
+            type="text"
+            required="required"
+            placeholder="Add Details"
+          />
         </FloatingLabel>
         <br />
 

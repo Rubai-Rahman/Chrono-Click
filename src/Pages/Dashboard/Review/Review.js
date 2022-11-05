@@ -66,6 +66,7 @@ const Review = () => {
         >
           <Form.Control
             type="text"
+            required="required"
             placeholder="Add A Review"
             style={{
               width: "80%",

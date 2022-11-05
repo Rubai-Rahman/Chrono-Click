@@ -6,7 +6,6 @@ import "./Testimonials.css";
 import Slider from "react-slick/lib/slider";
 import { useState } from "react";
 
-
 const Testimonials = () => {
   const [story, setStory] = useState([]);
 
@@ -16,7 +15,7 @@ const Testimonials = () => {
       .then((data) => {
         setStory(data);
       });
-  }, []);
+  }, [story]);
   const settings = {
     dots: true,
     infinite: true,

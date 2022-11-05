@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import { Alert, FloatingLabel, Form } from "react-bootstrap";
-
 import "./MakeAdmin.css";
 const MakeAdmin = () => {
   const [email, setEmail] = useState();
@@ -25,6 +24,9 @@ const MakeAdmin = () => {
         }
       });
     e.preventDefault();
+    setTimeout(() => {
+      window.location.reload(true);
+    }, 1);
   };
   return (
     <div>

@@ -8,11 +8,11 @@ const Newsletter = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setAlert(true);
-    {
+    
       setTimeout(() => {
         setAlert(false);
       }, 2000);
-    }
+    
   };
 
   return (

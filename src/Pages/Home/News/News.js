@@ -5,18 +5,17 @@ import "./News.css";
 import Slider from "react-slick/lib/slider";
 import { Link } from "react-router-dom";
 
-
 const News = () => {
- const [story, setStory] = useState([]);
+  const [story, setStory] = useState([]);
 
- useEffect(() => {
-   fetch(`https://chronoclick.onrender.com/news`)
-     .then((res) => res.json())
-     .then((data) => {
-       setStory(data);
-     });
- }, []);
-  
+  useEffect(() => {
+    fetch(`https://chronoclick.onrender.com/news`)
+      .then((res) => res.json())
+      .then((data) => {
+        setStory(data);
+      });
+  }, [story]);
+
   const settings = {
     dots: true,
     infinite: true,
