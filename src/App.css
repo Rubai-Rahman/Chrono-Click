@@ -2,10 +2,12 @@
   text-align: center;
   font-family: 'Poppins', sans-serif;
   overflow-x: hidden;
+  margin: 0; /* Ensures no unwanted space around the app */
+  padding: 0; /* Removes any default padding */
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 10rem; /* 40vmin converted to rem */
   pointer-events: none;
 }
 
@@ -21,15 +23,37 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  justify-content: space-between; /* Ensure even space distribution */
+  font-size: 1.25rem; /* Converted from calc(10px + 2vmin) */
   color: white;
+  padding: 1.25rem 0; /* Adjusted padding for balance */
+  box-sizing: border-box; /* Makes sure padding doesn't affect overall layout */
 }
 
 .App-link {
   color: #61dafb;
 }
 
+/* Adding spacing for mobile devices */
+@media (max-width: 48rem) {
+  /* 768px in rem */
+  .App-header {
+    padding: 0.625rem 0; /* Adjust padding for smaller screens */
+  }
+
+  .App-logo {
+    height: 7.5rem; /* 30vmin converted to rem */
+  }
+}
+
+/* For larger screens */
+@media (min-width: 75rem) {
+  /* 1200px in rem */
+  .App-header {
+    font-size: 1.5rem; /* Larger font on big screens */
+    padding: 1.875rem 0; /* More spacing for larger screens */
+  }
+}
 
 @keyframes App-logo-spin {
   from {
