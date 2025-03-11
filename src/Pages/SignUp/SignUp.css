@@ -24,6 +24,7 @@
   width: 350px;
   height: 350px;
   border: none;
+  margin: 4rem;
   box-shadow: 1px 1px 3px 5px rgb(47, 56, 56);
   position: relative; /* Keeps form above the background */
 }

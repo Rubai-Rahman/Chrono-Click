@@ -34,7 +34,7 @@ const LogIn = () => {
       <Row className="justify-content-start">
         <Col xs={12} md={6} lg={4}>
           <form className="text-center p-5 LogInForm" action="#!">
-            <p className="h4 m-4 text-white">Log In</p>
+            <p className="h4 text-white">Log In</p>
 
             <input
               name="email"
