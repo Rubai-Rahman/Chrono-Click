@@ -1,6 +1,8 @@
+/* Existing Shop.css styles */
 .pagination {
   margin: 40px;
 }
+
 .pagination button {
   margin-left: 15px;
   width: 40px;
@@ -8,9 +10,94 @@
   background-color: #9c7c38;
 }
 
-.pagination button:hover{
-    background-color: #c49838;
+.pagination button:hover {
+  background-color: #c49838;
 }
-.pagination button.selected{
-    color: #dedede;
+
+.pagination button.selected {
+  color: #dedede;
+}
+
+/* Skeleton styles */
+.skeleton-image {
+  width: 100%;
+  max-width: 225px;
+  height: 260px; /* Match Product img height (approximate, based on auto height) */
+  margin: 0 auto;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 20px;
+  background-color: #e0e0e0;
+  margin: 1rem auto 0.5rem;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.skeleton-text {
+  width: 40%;
+  height: 16px;
+  background-color: #e0e0e0;
+  margin: 0.5rem auto;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.skeleton-button {
+  background-color: #e0e0e0;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: 200px 0;
+  }
+}
+
+.skeleton-image,
+.skeleton-title,
+.skeleton-text,
+.skeleton-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-image::before,
+.skeleton-title::before,
+.skeleton-text::before,
+.skeleton-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Responsive adjustments (if needed) */
+@media only screen and (max-device-width: 667px) {
+  .skeleton-image {
+    max-width: 200px;
+    height: 200px;
+  }
+  .skeleton-button {
+    width: 90px;
+    height: 36px;
+  }
 }

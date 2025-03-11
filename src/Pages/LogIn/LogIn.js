@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Col, Container, Row, Spinner } from "react-bootstrap";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
-import { FcGoogle } from "react-icons/fc";
+import React, { useState } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
+import { FcGoogle } from 'react-icons/fc';
 
 const LogIn = () => {
   const {
@@ -30,17 +30,17 @@ const LogIn = () => {
   };
 
   return (
-    <Container className=" SignUpFormContainer">
-      <Row>
-        <Col>
-          <form className="text-center  p-5 SignUpForm " action="#!">
-            <p className="h4 mb-4 ">Log In</p>
+    <Container className="LogInFormContainer">
+      <Row className="justify-content-start">
+        <Col xs={12} md={6} lg={4}>
+          <form className="text-center p-5 LogInForm" action="#!">
+            <p className="h4 m-4 text-white">Log In</p>
 
             <input
               name="email"
               type="email"
               id="defaultLoginFormEmail"
-              className=" mb-4"
+              className="mb-4"
               placeholder="E-mail"
               onBlur={handleOnChange}
             />
@@ -50,22 +50,21 @@ const LogIn = () => {
               name="password"
               type="password"
               id="defaultLoginFormPassword"
-              className=" mb-4"
+              className="mb-4"
               placeholder="Password"
               onBlur={handleOnChange}
             />
 
-            <button className="btn  my-2" type="submit" onClick={handleSubmit}>
+            <button className="btn my-2" type="submit" onClick={handleSubmit}>
               Log In
             </button>
 
-            <p style={{ color: "#dcdcdc" }}>
-              New Member?
-              <Link to="/signup">Sign up</Link>
+            <p style={{ color: '#dcdcdc' }}>
+              New Member? <Link to="/signup">Sign up</Link>
             </p>
             <button
               className="my-2"
-              style={{ backgroundColor: "#AA8B56" }}
+              style={{ backgroundColor: '#AA8B56' }}
               type="submit"
               onClick={handleGoogleSignIn}
             >

@@ -4,9 +4,10 @@ import './Products.css';
 import Product from '../Product/Product';
 import { Link } from 'react-router-dom';
 import useProducts from '../../../hooks/useProducts';
+import ProductSkeleton from '../../Shared/share/ProductSkeleton';
 
 const Products = () => {
-  const [products] = useProducts();
+  const [products, loading] = useProducts();
   let random = products.sort(() => 0.5 - Math.random()).slice(0, 6);
 
   return (
@@ -15,6 +16,7 @@ const Products = () => {
         <h4>LATEST WATCHES YOU CAN'T RESIST!</h4>
         <h2>Universal Timekeepers of the world</h2>
       </div>
+
       <div className="products-container">
         <>
           <Row
@@ -24,11 +26,17 @@ const Products = () => {
             xl={4}
             className="g-4 justify-content-center"
           >
-            {random.map((product) => (
-              <Col key={product._id}>
-                <Product product={product} />
-              </Col>
-            ))}
+            {loading
+              ? Array(6)
+                  .fill(0)
+                  .map((_, index) => (
+                    <ProductSkeleton key={`skeleton-${index}`} />
+                  ))
+              : random.map((product) => (
+                  <Col key={product._id}>
+                    <Product product={product} />
+                  </Col>
+                ))}
           </Row>
         </>
         <div className="explore">

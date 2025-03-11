@@ -1,43 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Spinner } from 'react-bootstrap';
+import React from 'react';
+import { Row } from 'react-bootstrap';
 import './Shop.css';
 import Product from '../../Home/Product/Product';
+import useProducts from '../../../hooks/useProducts';
+import ProductSkeleton from '../../Shared/share/ProductSkeleton';
+
+// Skeleton component to mimic the Product card
 
 const Shop = () => {
-  const [products, setProducts] = useState([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [page, setPage] = useState(0);
-  const [loading, setIsLoading] = useState(true);
-
-  const size = 12;
-  useEffect(() => {
-    fetch(
-      `https://chronoclick.onrender.com/products?page=${page}&&size=${size}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data.products);
-        const count = data.count;
-        const pageNumber = Math.ceil(count / size);
-        setPageCount(pageNumber);
-        setIsLoading(false);
-      });
-  }, [page]);
+  const [products, page, setPage, loading, pageCount] = useProducts();
+  const size = 10; // Match the size from useProducts hook
 
   return (
     <>
       <div className="header">
         <h4>LATEST WATCHES YOU CAN'T RESIST!</h4>
-        <h2>Find Your Watch </h2>
-        {loading && <Spinner animation="grow" />}
-        {loading && <Spinner animation="grow" />}
-        {loading && <Spinner animation="grow" />}
+        <h2>Find Your Watch</h2>
       </div>
       <div className="products-container">
         <Row xs={1} md={2} lg={3} xl={4} className="g-4 justify-content-center">
-          {products.map((product) => (
-            <Product key={product._id} product={product} />
-          ))}
+          {loading
+            ? Array(size)
+                .fill(0)
+                .map((_, index) => (
+                  <ProductSkeleton key={`skeleton-${index}`} />
+                ))
+            : products.map((product) => (
+                <Product key={product._id} product={product} />
+              ))}
         </Row>
       </div>
 
