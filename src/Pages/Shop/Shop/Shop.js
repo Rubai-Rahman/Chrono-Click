@@ -9,7 +9,7 @@ import ProductSkeleton from '../../Shared/share/ProductSkeleton';
 
 const Shop = () => {
   const [products, page, setPage, loading, pageCount] = useProducts();
-  const size = 10; // Match the size from useProducts hook
+  const size = 12; // Match the size from useProducts hook
 
   return (
     <>

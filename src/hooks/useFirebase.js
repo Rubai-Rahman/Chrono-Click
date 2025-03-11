@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -9,18 +9,20 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   getIdToken,
-} from "firebase/auth";
-import FirebaseInitialize from "../Firebase/Firebase.init";
+} from 'firebase/auth';
+import FirebaseInitialize from '../Firebase/Firebase.init';
 
 FirebaseInitialize();
 
 const useFirebase = () => {
   const auth = getAuth();
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user'))||{});
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem('user')) || {}
+  );
   const [isLoading, setIsLoading] = useState(true);
-  const [authError, setAuthError] = useState("");
+  const [authError, setAuthError] = useState('');
   const [admin, setAdmin] = useState(false);
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState('');
 
   const provider = new GoogleAuthProvider();
   //Register User
@@ -28,9 +30,9 @@ const useFirebase = () => {
     setIsLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        setAuthError("");
+        setAuthError('');
         const newUser = { email, displayName: name };
-        saveUser(email, name, "POST");
+        saveUser(email, name, 'POST');
         setUser(newUser);
 
         updateProfile(auth.currentUser, {
@@ -41,7 +43,7 @@ const useFirebase = () => {
             setAuthError(error.message);
           });
 
-        const destination = location?.state?.from || "/";
+        const destination = location?.state?.from || '/';
         navigate(destination);
       })
       .catch((error) => {
@@ -55,12 +57,12 @@ const useFirebase = () => {
     setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const destination = location?.state?.from || "/";
+        const destination = location?.state?.from || '/';
         navigate(destination);
-        
+
         const user = userCredential.user;
         setUser(user);
-        localStorage.setItem('user',JSON.stringify(user))
+        localStorage.setItem('user', JSON.stringify(user));
         // ...
       })
       .catch((error) => {
@@ -74,13 +76,13 @@ const useFirebase = () => {
     setIsLoading(true);
     signInWithPopup(auth, provider)
       .then((result) => {
-        setAuthError("");
+        setAuthError('');
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
 
         const user = result.user;
-        saveUser(user.email, user.displayName, "PUT");
-        const destination = location?.state?.from || "/";
+        saveUser(user.email, user.displayName, 'PUT');
+        const destination = location?.state?.from || '/';
         navigate(destination);
       })
       .catch((error) => {
@@ -109,22 +111,18 @@ const useFirebase = () => {
   }, []);
 
   const logOut = () => {
-    signOut(auth)
-      localStorage.removeItem('user',user)
-      .then(() => {
-        // Sign-out successful.
-      })
-      .catch((error) => {
-        // An error happened.
-      });
+    signOut(auth);
+    localStorage.removeItem('user'); // Remove 'user' from localStorage
+    // Sign-out successful, you can add any other actions here if needed.
   };
+
   //Save user to Database
   const saveUser = (email, displayName, method) => {
     const user = { email, displayName };
     fetch(`https://chronoclick.onrender.com/users`, {
       method: method,
       headers: {
-        "content-type": "application/json",
+        'content-type': 'application/json',
       },
       body: JSON.stringify(user),
     }).then();
@@ -135,7 +133,7 @@ const useFirebase = () => {
       .then((res) => res.json())
       .then((data) => setAdmin(data.admin));
   }, [user.email]);
-
+  console.log('admin', admin);
   return {
     user,
     token,
