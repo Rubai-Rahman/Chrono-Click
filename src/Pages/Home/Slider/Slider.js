@@ -1,15 +1,15 @@
-import React from "react";
-import "./Slider.css";
-import { Carousel } from "react-bootstrap";
-import slider1 from "../../../images/slider/slider1-bg.webp";
-import slider2 from "../../../images/slider/slider2-bg.webp";
-import slider3 from "../../../images/slider/slider3-bg.webp";
-import { Link } from "react-router-dom";
+import React from 'react';
+import './Slider.css';
+import { Carousel } from 'react-bootstrap';
+import slider1 from '../../../images/slider/slider1-bg.webp';
+import slider2 from '../../../images/slider/slider2-bg.webp';
+import slider3 from '../../../images/slider/slider3-bg.webp';
+import { Link } from 'react-router-dom';
 
 const Slider = () => {
   return (
     <>
-      <Carousel style={{marginTop:10}} >
+      <Carousel>
         <Carousel.Item>
           <img
             className="d-block w-100 letSee"
