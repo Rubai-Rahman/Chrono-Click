@@ -1,9 +1,9 @@
-import React from "react";
-import { Row} from "react-bootstrap";
-import "./Products.css";
-import Product from "../Product/Product";
-import { Link } from "react-router-dom";
-import useProducts from "../../../hooks/useProducts";
+import React from 'react';
+import { Row, Col } from 'react-bootstrap';
+import './Products.css';
+import Product from '../Product/Product';
+import { Link } from 'react-router-dom';
+import useProducts from '../../../hooks/useProducts';
 
 const Products = () => {
   const [products] = useProducts();
@@ -17,9 +17,17 @@ const Products = () => {
       </div>
       <div className="products-container">
         <>
-          <Row xs={1} md={2} lg={3} className="g-2 ">
+          <Row
+            xs={1}
+            md={2}
+            lg={3}
+            xl={4}
+            className="g-4 justify-content-center"
+          >
             {random.map((product) => (
-              <Product key={product._id} product={product} />
+              <Col key={product._id}>
+                <Product product={product} />
+              </Col>
             ))}
           </Row>
         </>

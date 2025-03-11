@@ -1,6 +1,9 @@
 .products-container {
-  margin-left: 110px;
+  padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
 }
+
 .header {
   margin: 100px;
 }
@@ -12,6 +15,7 @@ a.nave_btn {
   font-weight: 300;
   color: #060607;
 }
+
 .explore button {
   background-color: transparent;
   margin-right: 100px;
@@ -19,12 +23,14 @@ a.nave_btn {
   height: 60px;
   border: 1px solid #9c7c38;
 }
+
 .explore button:hover {
   background-color: #9c7c38;
 }
+
 @media only screen and (max-device-width: 667px) {
   .products-container {
-    margin-left: 11%;
+    padding: 1rem;
   }
   .header {
     margin: 20px;

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Row, Spinner } from "react-bootstrap";
-import Products from "./Products";
-import "./Shop.css";
+import React, { useEffect, useState } from 'react';
+import { Row, Spinner } from 'react-bootstrap';
+import './Shop.css';
+import Product from '../../Home/Product/Product';
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -34,9 +34,9 @@ const Shop = () => {
         {loading && <Spinner animation="grow" />}
       </div>
       <div className="products-container">
-        <Row xs={1} md={2} lg={3} className="g-2 ">
+        <Row xs={1} md={2} lg={3} xl={4} className="g-4 justify-content-center">
           {products.map((product) => (
-            <Products key={product._id} product={product} />
+            <Product key={product._id} product={product} />
           ))}
         </Row>
       </div>
@@ -44,7 +44,7 @@ const Shop = () => {
       <div className="pagination">
         {[...Array(pageCount).keys()].map((number) => (
           <button
-            className={number === page ? "selected" : ""}
+            className={number === page ? 'selected' : ''}
             key={number}
             onClick={() => setPage(number)}
           >

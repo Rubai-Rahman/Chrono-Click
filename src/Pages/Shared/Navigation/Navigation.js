@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react';
 import {
   Container,
   Navbar,
@@ -6,33 +6,33 @@ import {
   Button,
   Dropdown,
   Badge,
-} from "react-bootstrap"
-import { Link, NavLink } from "react-router-dom"
-import useAuth from "../../../hooks/useAuth"
-import logo from "../../../images/favicon.png"
-import "./Navigation.css"
-import { FiShoppingCart } from "react-icons/fi"
-import { AiFillDelete } from "react-icons/ai"
+} from 'react-bootstrap';
+import { Link, NavLink } from 'react-router-dom';
+import useAuth from '../../../hooks/useAuth';
+import logo from '../../../images/favicon.png';
+import './Navigation.css';
+import { FiShoppingCart } from 'react-icons/fi';
+import { AiFillDelete } from 'react-icons/ai';
 
 const Navigation = () => {
   const {
     allContexts: { user, logOut },
     state: { cart },
     dispatch,
-  } = useAuth()
+  } = useAuth();
   let activeColor = {
-    color: "#9c7c38",
-  }
+    color: '#9c7c38',
+  };
   let deActiveColor = {
-    color: "#838996",
-  }
+    color: '#838996',
+  };
   const CartTitleStyle = {
     width: 20,
-    overflow: "hidden",
-    textOverflow: "hidden",
-    whiteSpace: "nowrap",
+    overflow: 'hidden',
+    textOverflow: 'hidden',
+    whiteSpace: 'nowrap',
     margin: 10,
-  }
+  };
 
   return (
     <Navbar bg="dark" expand="lg" className="navbar">
@@ -83,7 +83,7 @@ const Navigation = () => {
                 DASHBOARD
               </NavLink>
             ) : (
-              ""
+              ''
             )}
           </Nav>
           <Nav>
@@ -97,11 +97,11 @@ const Navigation = () => {
                 style={{
                   minWidth: 370,
                   height: 350,
-                  overflow: "scroll",
+                  overflow: 'scroll',
                   paddingLeft: 30,
                   zIndex: 1,
                   marginTop: 20,
-                  borderColor: "#9c7c38",
+                  borderColor: '#9c7c38',
                 }}
               >
                 {cart.length > 0 ? (
@@ -111,15 +111,15 @@ const Navigation = () => {
                         <img className="cartItemImg" src={product.img} alt="" />
                         <div className="cartItemDetails">
                           <span style={CartTitleStyle}>{product.title}</span>
-                          <span style={{ margin: 10, color: "green" }}>
+                          <span style={{ margin: 10, color: 'green' }}>
                             ${product.price}
                           </span>
                         </div>
                         <AiFillDelete
-                          style={{ cursor: "pointer", fontSize: 20 }}
+                          style={{ cursor: 'pointer', fontSize: 20 }}
                           onClick={() =>
                             dispatch({
-                              type: "REMOVE_FROM_CART",
+                              type: 'REMOVE_FROM_CART',
                               payload: product,
                             })
                           }
@@ -138,7 +138,7 @@ const Navigation = () => {
           </Nav>
           {user?.email ? (
             <Button
-              style={{ backgroundColor: "transparent", border: "none" }}
+              style={{ backgroundColor: 'transparent', border: 'none' }}
               onClick={logOut}
               className="nav_link"
             >
@@ -159,7 +159,7 @@ const Navigation = () => {
         </Navbar.Collapse>
       </Container>
     </Navbar>
-  )
-}
+  );
+};
 
-export default Navigation
+export default Navigation;
