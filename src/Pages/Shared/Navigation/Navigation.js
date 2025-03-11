@@ -47,7 +47,7 @@ const Navigation = () => {
           />
           <span className="title">CHRONO CLICK</span>
         </Navbar.Brand>
-        <Navbar.Toggle />
+        <Navbar.Toggle aria-controls="navbarScroll" className="custom-toggle" />
         <Navbar.Collapse>
           <Nav className="me-auto ms-5  my-2 my-lg-0 link">
             <NavLink
