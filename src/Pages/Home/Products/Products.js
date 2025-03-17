@@ -23,7 +23,8 @@ const Products = () => {
             xs={1}
             md={2}
             lg={3}
-            xl={4}
+            xl={3}
+            xxl={4}
             className="g-4 justify-content-center"
           >
             {loading
