@@ -1,17 +1,14 @@
-"use client"; // This component uses client-side hooks
+'use client'; // This component uses client-side hooks
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useAuth } from "@/Contexts/AuthProvider/AuthProvider"; // Updated import path
-import { Spinner } from "@/components/ui/spinner"; // Placeholder for Shadcn UI Spinner
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import useAuth from '@/hooks/useAuth';
 
 const LoginPageContent = () => {
-  const {
-    login, googleLogin, isLoading
-  } = useAuth();
+  const { login, googleLogin, isLoading } = useAuth();
 
-  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
   const router = useRouter();
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,13 +56,11 @@ const LoginPageContent = () => {
             type="submit"
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isLoading}
-          >
-            {isLoading ? <Spinner size="sm" /> : "Log In"}
-          </button>
+          ></button>
         </form>
 
         <p className="text-center text-gray-600 mt-4">
-          New Member?{" "}
+          New Member?{' '}
           <Link href="/signup" className="text-blue-500 hover:underline">
             Sign up
           </Link>
