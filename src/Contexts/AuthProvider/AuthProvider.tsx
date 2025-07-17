@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useState, useContext, ReactNode } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import {
   loginUser,
@@ -16,19 +16,19 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   error: string | null;
-  login: (email: string, password: string, router: any) => void;
-  register: (email: string, password: string, name: string, router: any) => void;
-  googleLogin: (router: any) => void;
-  logout: (router: any) => void;
+  login: (email: string, password: string) => void;
+  register: (email: string, password: string, name: string) => void;
+  googleLogin: () => void;
+  logout: () => void;
   state: { cart: any[] }; // Placeholder for cart state
   dispatch: (action: any) => void; // Placeholder for cart dispatch
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -85,9 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     onError: (err) => {
       setError(err.message);
     },
-    onSettled: () => {
-      setIsLoading(false);
-    },
+    onSettled: () => {},
   });
 
   const registerMutation = useMutation<AuthResponse, Error, { email: string; password: string; name: string }>(
@@ -104,9 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     onError: (err) => {
       setError(err.message);
     },
-    onSettled: () => {
-      setIsLoading(false);
-    },
+    onSettled: () => {},
   });
 
   const googleSignInMutation = useMutation<AuthResponse, Error, void>(
@@ -123,9 +119,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     onError: (err) => {
       setError(err.message);
     },
-    onSettled: () => {
-      setIsLoading(false);
-    },
+    onSettled: () => {},
   });
 
   const logoutMutation = useMutation<void, Error, void>(
@@ -138,9 +132,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     onError: (err) => {
       setError(err.message);
     },
-    onSettled: () => {
-      setIsLoading(false);
-    },
+    onSettled: () => {},
   });
 
   const value = {
@@ -148,19 +140,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     isLoading: loginMutation.isPending || registerMutation.isPending || googleSignInMutation.isPending || logoutMutation.isPending,
     error,
     login: (email, password) => {
-      setIsLoading(true);
       loginMutation.mutate({ email, password });
     },
     register: (email, password, name) => {
-      setIsLoading(true);
       registerMutation.mutate({ email, password, name });
     },
     googleLogin: () => {
-      setIsLoading(true);
       googleSignInMutation.mutate();
     },
     logout: () => {
-      setIsLoading(true);
       logoutMutation.mutate();
     },
     state: { cart },
@@ -170,10 +158,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
+

@@ -3,7 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useAuth } from "@/Contexts/AuthProvider/AuthProvider"; // Updated import path
+import useAuth from "@/hooks/useAuth";
 
 interface ProductProps {
   product: {
@@ -22,7 +22,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
     router.push(`/products/${_id}`);
   };
 
-  const { state: { cart }, dispatch } = useAuth(); // Assuming useAuth returns state and dispatch
+  const { state: { cart }, dispatch } = useAuth()!;
 
   return (
     <div className="w-full p-2">

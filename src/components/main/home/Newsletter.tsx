@@ -20,7 +20,7 @@ const Newsletter = () => {
         </div>
       )}
 
-      <div classNameName="container mx-auto">
+      <div className="container mx-auto">
         <div className="text-center mb-8">
           <h6 className="text-sm uppercase tracking-wider text-gray-400">
             SUBSCRIBE TO THE MAILING LIST

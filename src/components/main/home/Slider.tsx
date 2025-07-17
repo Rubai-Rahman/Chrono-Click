@@ -11,19 +11,19 @@ import {
 
 const slides = [
   {
-    image: "/slider/slider1-bg.webp",
+    image: "/images/slider/slider1-bg.webp",
     title: "PREMIUM MODEL",
     description: "Stylish external wrist watch",
     link: "/shop",
   },
   {
-    image: "/slider/slider2-bg.webp",
+    image: "/images/slider/slider2-bg.webp",
     title: "FALL IN LOVE",
     description: "Redefining the meaning of time",
     link: "/shop",
   },
   {
-    image: "/slider/slider3-bg.webp",
+    image: "/images/slider/slider3-bg.webp",
     title: "SECRET NEW MODELS",
     description: "Priceless and timeless designs",
     link: "/shop",
