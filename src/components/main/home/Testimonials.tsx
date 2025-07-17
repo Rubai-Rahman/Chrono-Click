@@ -49,7 +49,7 @@ const Testimonials = () => {
         <CarouselContent className="-ml-4">
           {story?.map((item) => (
             <CarouselItem
-              key={item.id}
+              key={item._id}
               className="pl-4 md:basis-1/2 lg:basis-1/3"
             >
               <div className="p-1">
