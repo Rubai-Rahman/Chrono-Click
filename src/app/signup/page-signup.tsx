@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/Contexts/AuthProvider/AuthProvider"; // Updated import path
+import useAuth from "@/hooks/useAuth";
 
 const SignUpPageContent = () => {
   const {

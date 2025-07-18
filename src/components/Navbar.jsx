@@ -3,10 +3,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import logo from '../../public/favicon.png';
 import { ShoppingCart } from 'lucide-react';
+import { Button } from './ui/button';
+import { ProfileMenu } from './profile/profile-menu';
+import Cart from './cart/cart';
 
 const Navbar = () => {
+  let auth = false;
   return (
-    <nav className="bg-gray-800 p-4">
+    <nav className="bg-foreground p-4">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="home" className="flex items-center space-x-2">
           <Image
@@ -16,44 +20,40 @@ const Navbar = () => {
             height={30}
             className="inline-block align-top"
           />
-          <span className="text-yellow-600 text-xl font-bold">
-            CHRONO CLICK
-          </span>
+          <span className="text-primary text-xl font-bold">CHRONO CLICK</span>
         </Link>
         <div className="flex space-x-4">
           <Link
             href="/home"
-            className="text-gray-400 hover:text-yellow-600 font-bold"
+            className="text-primary-foreground hover:text-primary font-bold"
           >
-            HOME
+            Home
           </Link>
           <Link
             href="/shop"
-            className="text-gray-400 hover:text-yellow-600 font-bold"
+            className="text-primary-foreground hover:text-primary font-bold"
           >
-            SHOP
+            Shop
           </Link>
           <Link
             href="/order"
-            className="text-gray-400 hover:text-yellow-600 font-bold"
+            className="text-primary-foreground hover:text-primary font-bold"
           >
             Order
           </Link>
         </div>
         <div className="flex items-center space-x-4">
-          {/* Cart Dropdown - needs Shadcn UI implementation */}
-          <div className="relative">
-            <button className="text-white focus:outline-none">
-              <ShoppingCart className="h-5 w-5" />
-            </button>
-          </div>
-
-          <Link
-            href="/login"
-            className="text-gray-400 hover:text-yellow-600 font-bold"
-          >
-            LogIn
-          </Link>
+          <Cart />
+          {auth ? (
+            <Link
+              href="/login"
+              className="text-primary-foreground hover:text-primary font-bold"
+            >
+              LogIn
+            </Link>
+          ) : (
+            <ProfileMenu />
+          )}
         </div>
       </div>
     </nav>
