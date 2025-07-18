@@ -6,11 +6,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { ShoppingCart } from 'lucide-react';
 
 const Cart = () => {
   return (
     <Sheet>
-      <SheetTrigger className="text-destructive">Open</SheetTrigger>
+      <SheetTrigger>
+        <ShoppingCart className="hover:text-primary hover:cursor-pointer" />
+      </SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Are you absolutely sure?</SheetTitle>

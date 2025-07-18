@@ -1,5 +1,3 @@
-// components/Navbar.tsx
-
 import Link from 'next/link';
 import Image from 'next/image';
 import logo from '../../public/favicon.png';
@@ -9,8 +7,6 @@ import { Suspense, lazy } from 'react';
 import Cart from './cart/cart';
 import { navItems } from '@/lib/constant';
 
-// Lazy loaded components
-
 const ProfileMenu = lazy(() => import('./profile/profile-menu'));
 
 const Navbar = () => {
@@ -19,13 +15,10 @@ const Navbar = () => {
   return (
     <nav className="bg-foreground text-primary-foreground border-b border-border">
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
-        {/* Logo */}
         <Link href="/home" className="flex items-center gap-2">
           <Image src={logo} alt="Logo" width={30} height={30} />
           <span className="text-primary font-bold text-lg">CHRONO CLICK</span>
         </Link>
-
-        {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
           {navItems.map((item) => (
             <Link
@@ -37,11 +30,8 @@ const Navbar = () => {
             </Link>
           ))}
         </div>
-
-        {/* Right-side for desktop */}
         <div className="hidden md:flex items-center gap-4">
           <Cart />
-
           <Suspense fallback={<span>Loading...</span>}>
             {auth ? <ProfileMenu /> : <Link href="/login">LogIn</Link>}
           </Suspense>
