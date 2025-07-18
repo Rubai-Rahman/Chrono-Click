@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export function ProfileMenu() {
+const ProfileMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -40,4 +40,6 @@ export function ProfileMenu() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};
+
+export default ProfileMenu;

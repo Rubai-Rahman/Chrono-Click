@@ -1,59 +1,85 @@
-import React from 'react';
+// components/Navbar.tsx
+
 import Link from 'next/link';
 import Image from 'next/image';
 import logo from '../../public/favicon.png';
-import { ShoppingCart } from 'lucide-react';
-import { Button } from './ui/button';
-import { ProfileMenu } from './profile/profile-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu } from 'lucide-react';
+import { Suspense, lazy } from 'react';
 import Cart from './cart/cart';
+import { navItems } from '@/lib/constant';
+
+// Lazy loaded components
+
+const ProfileMenu = lazy(() => import('./profile/profile-menu'));
 
 const Navbar = () => {
-  let auth = false;
+  const auth = true; // Toggle manually or replace with real auth
+
   return (
-    <nav className="bg-foreground p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link href="home" className="flex items-center space-x-2">
-          <Image
-            alt="logo"
-            src={logo}
-            width={30}
-            height={30}
-            className="inline-block align-top"
-          />
-          <span className="text-primary text-xl font-bold">CHRONO CLICK</span>
+    <nav className="bg-foreground text-primary-foreground border-b border-border">
+      <div className="container mx-auto flex items-center justify-between px-4 py-3">
+        {/* Logo */}
+        <Link href="/home" className="flex items-center gap-2">
+          <Image src={logo} alt="Logo" width={30} height={30} />
+          <span className="text-primary font-bold text-lg">CHRONO CLICK</span>
         </Link>
-        <div className="flex space-x-4">
-          <Link
-            href="/home"
-            className="text-primary-foreground hover:text-primary font-bold"
-          >
-            Home
-          </Link>
-          <Link
-            href="/shop"
-            className="text-primary-foreground hover:text-primary font-bold"
-          >
-            Shop
-          </Link>
-          <Link
-            href="/order"
-            className="text-primary-foreground hover:text-primary font-bold"
-          >
-            Order
-          </Link>
-        </div>
-        <div className="flex items-center space-x-4">
-          <Cart />
-          {auth ? (
+
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-6">
+          {navItems.map((item) => (
             <Link
-              href="/login"
-              className="text-primary-foreground hover:text-primary font-bold"
+              key={item.name}
+              href={item.href}
+              className="hover:text-primary transition-colors font-medium"
             >
-              LogIn
+              {item.name}
             </Link>
-          ) : (
-            <ProfileMenu />
-          )}
+          ))}
+        </div>
+
+        {/* Right-side for desktop */}
+        <div className="hidden md:flex items-center gap-4">
+          <Suspense fallback={<span>Loading cart...</span>}>
+            <Cart />
+          </Suspense>
+          <Suspense fallback={<span>Loading...</span>}>
+            {auth ? <ProfileMenu /> : <Link href="/login">LogIn</Link>}
+          </Suspense>
+        </div>
+
+        {/* Mobile menu (hamburger) */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <button className="text-primary-foreground hover:text-primary">
+                <Menu size={24} />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[250px]">
+              <div className="flex flex-col gap-4 mt-6">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="text-sm font-medium hover:text-primary"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+                <Cart />
+                <Suspense fallback={<span>Loading...</span>}>
+                  {auth ? (
+                    <ProfileMenu />
+                  ) : (
+                    <Link href="/login" className="text-sm font-medium">
+                      LogIn
+                    </Link>
+                  )}
+                </Suspense>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </nav>

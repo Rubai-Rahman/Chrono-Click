@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { useAuth } from "@/Contexts/AuthProvider/AuthProvider";
+import useAuth from "@/hooks/useAuth";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
