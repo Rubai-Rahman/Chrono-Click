@@ -40,9 +40,8 @@ const Navbar = () => {
 
         {/* Right-side for desktop */}
         <div className="hidden md:flex items-center gap-4">
-          <Suspense fallback={<span>Loading cart...</span>}>
-            <Cart />
-          </Suspense>
+          <Cart />
+
           <Suspense fallback={<span>Loading...</span>}>
             {auth ? <ProfileMenu /> : <Link href="/login">LogIn</Link>}
           </Suspense>
@@ -68,15 +67,15 @@ const Navbar = () => {
                   </Link>
                 ))}
                 <Cart />
-                <Suspense fallback={<span>Loading...</span>}>
-                  {auth ? (
+                {auth ? (
+                  <Suspense fallback={<span>profile</span>}>
                     <ProfileMenu />
-                  ) : (
-                    <Link href="/login" className="text-sm font-medium">
-                      LogIn
-                    </Link>
-                  )}
-                </Suspense>
+                  </Suspense>
+                ) : (
+                  <Link href="/login" className="text-sm font-medium">
+                    LogIn
+                  </Link>
+                )}
               </div>
             </SheetContent>
           </Sheet>
