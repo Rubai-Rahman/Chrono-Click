@@ -15,8 +15,9 @@ import { useRef } from 'react';
 
 const Slider = () => {
   const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
+
   return (
-    <div className="">
+    <div className="w-full overflow-hidden">
       <Carousel
         opts={{
           align: 'start',
@@ -30,13 +31,12 @@ const Slider = () => {
         <CarouselContent>
           {slides.map((slide, index) => (
             <CarouselItem key={index}>
-              <div className="relative w-full">
+              <div className="relative w-full h-[calc(100vw*9/16)] max-h-[500px] overflow-hidden">
                 <Image
-                  className="w-full object-cover"
                   src={slide.image}
                   alt={slide.title}
-                  width={1920}
-                  height={1080}
+                  fill
+                  className="object-cover"
                   priority={index === 0}
                 />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center">
@@ -48,7 +48,7 @@ const Slider = () => {
                   </p>
                   <Link
                     href={slide.link}
-                    className="px-8 py-3  border border-primary hover:bg-primary text-primary-foreground transition-colors duration-300"
+                    className="px-8 py-3 border border-primary hover:bg-primary text-primary-foreground transition-colors duration-300"
                   >
                     Explore
                   </Link>
