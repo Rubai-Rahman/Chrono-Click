@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import icon from '../../public/favicon.png'; // Assuming favicon.png is in public folder

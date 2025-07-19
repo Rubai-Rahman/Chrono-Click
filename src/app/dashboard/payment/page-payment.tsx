@@ -1,5 +1,3 @@
-import React from 'react';
-
 const PaymentPageContent = () => {
   return (
     <div className="p-4">

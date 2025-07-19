@@ -1,6 +1,7 @@
-import React from 'react';
+'use client';
 import Link from 'next/link';
 import Image from 'next/image';
+import Autoplay from 'embla-carousel-autoplay';
 import {
   Carousel,
   CarouselContent,
@@ -8,32 +9,23 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-
-const slides = [
-  {
-    image: '/images/slider/slider1-bg.webp',
-    title: 'PREMIUM MODEL',
-    description: 'Stylish external wrist watch',
-    link: '/shop',
-  },
-  {
-    image: '/images/slider/slider2-bg.webp',
-    title: 'FALL IN LOVE',
-    description: 'Redefining the meaning of time',
-    link: '/shop',
-  },
-  {
-    image: '/images/slider/slider3-bg.webp',
-    title: 'SECRET NEW MODELS',
-    description: 'Priceless and timeless designs',
-    link: '/shop',
-  },
-];
+import { slides } from '@/lib/constant';
+import { useRef } from 'react';
 
 const Slider = () => {
+  const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
   return (
     <div className="">
-      <Carousel className="w-full">
+      <Carousel
+        opts={{
+          align: 'start',
+          loop: true,
+        }}
+        className="w-full"
+        plugins={[plugin.current]}
+        onMouseEnter={plugin.current.stop}
+        onMouseLeave={plugin.current.reset}
+      >
         <CarouselContent>
           {slides.map((slide, index) => (
             <CarouselItem key={index}>
@@ -46,14 +38,16 @@ const Slider = () => {
                   height={1080}
                   priority={index === 0}
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-4">
-                  <h3 className="text-3xl md:text-5xl font-bold mb-2">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center ml-3">
+                  <h3 className="text-2xl md:text-5xl font-bold mb-2">
                     {slide.title}
                   </h3>
-                  <p className="text-lg md:text-xl mb-6">{slide.description}</p>
+                  <p className="text-lg md:text-xl mb-6 text-primary">
+                    {slide.description}
+                  </p>
                   <Link
                     href={slide.link}
-                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-md text-white transition-colors duration-300"
+                    className="px-8 py-3  border border-primary hover:bg-primary text-primary-foreground transition-colors duration-300"
                   >
                     Explore
                   </Link>
