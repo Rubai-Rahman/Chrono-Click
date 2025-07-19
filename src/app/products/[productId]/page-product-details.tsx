@@ -1,73 +1,100 @@
-"use client"; // This component uses client-side hooks
+'use client';
 
-import React from "react";
-import { useParams } from "next/navigation";
-import Image from "next/image";
-import useAuth from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
-import { fetchProductDetails, ProductDetailsItem } from "@/api-lib/products";
+import React from 'react';
+import { useParams } from 'next/navigation';
+import Image from 'next/image';
+import { useQuery } from '@tanstack/react-query';
+import { fetchProductDetails, ProductDetailsItem } from '@/api-lib/products';
+import { useCartStore } from '@/store/useCartStore';
 
 const ProductDetailsPageContent = () => {
   const { productId } = useParams();
-  const { 
-    state: { cart },
-    dispatch,
-  } = useAuth();
+  const {
+    items: cart,
+    addToCart,
+    removeFromCart,
+  } = useCartStore((state) => ({
+    items: state.items,
+    addToCart: state.addToCart,
+    removeFromCart: state.removeFromCart,
+  }));
 
-  const { data: proDetails, isLoading, isError, error } = useQuery<ProductDetailsItem, Error>({
-    queryKey: ["productDetails", productId],
+  const {
+    data: proDetails,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<ProductDetailsItem, Error>({
+    queryKey: ['productDetails', productId],
     queryFn: () => fetchProductDetails(productId as string),
-    enabled: !!productId, // Only run query if productId is available
+    enabled: !!productId,
   });
 
   if (isLoading) {
-    return <div className="text-center py-8">Loading product details...</div>;
+    return (
+      <div className="text-center py-12 text-lg text-gray-600">
+        Loading product details...
+      </div>
+    );
   }
 
   if (isError) {
-    return <div className="text-center py-8 text-red-500">Error: {error?.message}</div>;
+    return (
+      <div className="text-center py-12 text-red-600">
+        Error: {error?.message}
+      </div>
+    );
   }
 
   if (!proDetails) {
-    return <div className="text-center py-8">Product not found.</div>;
+    return (
+      <div className="text-center py-12 text-gray-600">Product not found.</div>
+    );
   }
 
+  const isInCart = cart.some((p) => p._id === proDetails._id);
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="lg:w-1/2">
-          <div className="bg-white shadow-lg p-3 rounded-lg">
-            <Image src={proDetails.img} alt={proDetails.name} width={500} height={500} className="w-full h-auto object-cover" />
+    <div className="container mx-auto px-4 py-10">
+      <div className="flex flex-col lg:flex-row gap-10">
+        {/* Image Section */}
+        <div className="lg:w-1/2 flex justify-center">
+          <div className="bg-white shadow-xl p-4 rounded-lg border">
+            <Image
+              src={proDetails.img}
+              alt={proDetails.name}
+              width={500}
+              height={500}
+              className="w-full h-auto rounded object-contain"
+            />
           </div>
         </div>
-        <div className="lg:w-1/2">
-          <div className="bg-white shadow-lg p-5 rounded-lg">
-            <h1 className="text-3xl font-bold mb-4">{proDetails.name}</h1>
-            <p className="text-xl text-gray-700 mb-4">Price: ${proDetails.price}</p>
-            <p className="text-gray-800 mb-6">{proDetails.details}</p>
 
-            <div className="flex space-x-4">
-              {cart.some((p: any) => p._id === proDetails._id) ? (
+        {/* Details Section */}
+        <div className="lg:w-1/2">
+          <div className="bg-white shadow-xl p-6 rounded-lg border space-y-5">
+            <h1 className="text-4xl font-semibold text-gray-900">
+              {proDetails.name}
+            </h1>
+            <p className="text-2xl text-primary font-bold">
+              ৳{proDetails.price}
+            </p>
+            <p className="text-gray-700 leading-relaxed">
+              {proDetails.details}
+            </p>
+
+            <div className="mt-6">
+              {isInCart ? (
                 <button
-                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-                  onClick={() => {
-                    dispatch({
-                      type: "REMOVE_FROM_CART",
-                      payload: proDetails,
-                    });
-                  }}
+                  onClick={() => removeFromCart(proDetails._id)}
+                  className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-6 rounded shadow transition duration-200"
                 >
-                  Remove
+                  Remove from Cart
                 </button>
               ) : (
                 <button
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-                  onClick={() => {
-                    dispatch({
-                      type: "ADD_TO_CART",
-                      payload: proDetails,
-                    });
-                  }}
+                  onClick={() => addToCart(proDetails)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded shadow transition duration-200"
                 >
                   Add to Cart
                 </button>

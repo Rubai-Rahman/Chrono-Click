@@ -2,6 +2,6 @@ import firebaseConfig from "./config";
 import { initializeApp } from "firebase/app";
 
 const FirebaseInitialize = () => {
-  const app = initializeApp(firebaseConfig);
+  initializeApp(firebaseConfig);
 };
 export default FirebaseInitialize;

@@ -3,7 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import useAuth from "@/hooks/useAuth";
+import { useCartStore } from "@/store/useCartStore";
 
 interface ProductProps {
   product: {
@@ -22,7 +22,8 @@ const Product: React.FC<ProductProps> = ({ product }) => {
     router.push(`/products/${_id}`);
   };
 
-  const { state: { cart }, dispatch } = useAuth()!;
+  const { items, addToCart, removeFromCart } = useCartStore();
+  const isInCart = items.some((p) => p._id === product._id);
 
   return (
     <div className="w-full p-2">
@@ -35,27 +36,17 @@ const Product: React.FC<ProductProps> = ({ product }) => {
             <button onClick={handleDetails} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
               Details
             </button>
-            {cart.some((p: any) => p._id === product._id) ? (
+            {isInCart ? (
               <button
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-                onClick={() => {
-                  dispatch({
-                    type: "REMOVE_FROM_CART",
-                    payload: product,
-                  });
-                }}
+                onClick={() => removeFromCart(product._id)}
               >
                 Remove
               </button>
             ) : (
               <button
                 className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
-                onClick={() => {
-                  dispatch({
-                    type: "ADD_TO_CART",
-                    payload: product,
-                  });
-                }}
+                onClick={() => addToCart(product)}
               >
                 Add to Cart
               </button>

@@ -52,7 +52,7 @@ const ShopPageContent = () => {
     <>
       <div className="text-center py-8">
         <h4 className="text-lg font-semibold text-gray-600">
-          LATEST WATCHES YOU CAN'T RESIST!
+          LATEST WATCHES YOU CAN&apos;T RESIST!
         </h4>
         <h2 className="text-4xl font-bold text-gray-800 mt-2">
           Find Your Watch
