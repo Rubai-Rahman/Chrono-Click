@@ -1,8 +1,11 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import logo from '../../../../public/favicon.png';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Menu, Search, User } from 'lucide-react';
 import { Suspense, lazy } from 'react';
 import Cart from '../../cart/cart';
 import { navItems } from '@/lib/constant';
@@ -10,69 +13,178 @@ import { navItems } from '@/lib/constant';
 const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
 
 const Navbar = () => {
-  const auth = true;
+  const auth = false;
 
   return (
-    <nav className="bg-background text-foreground">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
-        <Link href="/home" className="flex items-center gap-2">
-          <Image src={logo} alt="Logo" width={30} height={30} />
-          <span className="text-primary font-bold text-lg">CHRONO CLICK</span>
-        </Link>
-        <div className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="hover:text-primary transition-colors font-medium"
-            >
-              {item.name}
-            </Link>
-          ))}
-        </div>
-        <div className="hidden md:flex items-center gap-4">
-          <Cart />
-          {auth ? (
-            <Suspense fallback={<span>Profile</span>}>
-              <ProfileMenu />
-            </Suspense>
-          ) : (
-            <Link href="/login">LogIn</Link>
-          )}
-        </div>
+    <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      {/* Top bar with subtle gradient */}
+      <div className="h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20"></div>
 
-        {/* Mobile menu (hamburger) */}
-        <div className="md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <button className="text-primary-foreground hover:text-primary">
-                <Menu size={24} />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[250px]">
-              <div className="flex flex-col gap-4 mt-6">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="text-sm font-medium hover:text-primary"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-                <Cart />
-                {auth ? (
-                  <Suspense fallback={<span>profile</span>}>
-                    <ProfileMenu />
-                  </Suspense>
-                ) : (
-                  <Link href="/login" className="text-sm font-medium">
-                    LogIn
-                  </Link>
-                )}
+      <div className="container mx-auto">
+        <div className="flex h-16 items-center justify-between px-4">
+          {/* Logo Section */}
+          <Link href="/home" className="flex items-center gap-3 group">
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/20 rounded-full blur-sm group-hover:blur-md transition-all duration-300"></div>
+              <Image
+                src={logo}
+                alt="Chrono Click Logo"
+                width={32}
+                height={32}
+                className="relative z-10 rounded-full"
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-primary font-bold text-xl tracking-tight">
+                CHRONO CLICK
+              </span>
+              <span className="text-xs text-muted-foreground font-medium">
+                Premium Timepieces
+              </span>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center">
+            <div className="flex items-center gap-1 bg-muted/30 rounded-full p-1">
+              {navItems.map((item, index) => (
+                <Link
+                  key={index}
+                  href={item.href}
+                  className="relative px-4 py-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-all duration-200 rounded-full hover:bg-background/80 hover:shadow-sm group"
+                >
+                  {item.name}
+                  <span className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-3">
+            {/* Search Button */}
+            <Button variant="ghost" size="icon" className="relative group">
+              <Search className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+              <span className="sr-only">Search</span>
+            </Button>
+
+            {/* Cart */}
+            <div className="relative">
+              <Cart />
+            </div>
+
+            {/* Profile/Auth */}
+            {auth ? (
+              <Suspense
+                fallback={
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                }
+              >
+                <ProfileMenu />
+              </Suspense>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" asChild>
+                  <Link href="/login">Sign In</Link>
+                </Button>
               </div>
-            </SheetContent>
-          </Sheet>
+            )}
+          </div>
+
+          {/* Mobile Menu */}
+          <div className="md:hidden flex items-center gap-2">
+            {/* Mobile Cart */}
+            <Cart />
+
+            {/* Mobile Menu Trigger */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[280px] sm:w-[350px]">
+                <div className="flex flex-col h-full">
+                  {/* Mobile Header */}
+                  <div className="flex items-center gap-3 pb-6 border-b border-border">
+                    <Image
+                      src="/placeholder.svg?height=40&width=40"
+                      alt="Logo"
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                    <div>
+                      <span className="text-primary font-bold text-lg">
+                        CHRONO CLICK
+                      </span>
+                      <p className="text-xs text-muted-foreground">
+                        Premium Timepieces
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Mobile Navigation */}
+                  <div className="flex flex-col gap-2 py-6">
+                    {navItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className="flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-lg hover:bg-muted/50 transition-colors"
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Mobile Search */}
+                  <div className="px-3 py-2">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start gap-2 bg-transparent"
+                    >
+                      <Search className="h-4 w-4" />
+                      Search products...
+                    </Button>
+                  </div>
+
+                  {/* Mobile Auth Section */}
+                  <div className="mt-auto pt-6 border-t border-border">
+                    {auth ? (
+                      <div className="px-3">
+                        <Suspense
+                          fallback={
+                            <div className="text-sm">Loading profile...</div>
+                          }
+                        >
+                          <ProfileMenu />
+                        </Suspense>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-2 px-3">
+                        <Button
+                          variant="outline"
+                          asChild
+                          className="w-full bg-transparent"
+                        >
+                          <Link href="/login">Sign In</Link>
+                        </Button>
+                        <Button
+                          asChild
+                          className="w-full bg-gradient-to-r from-primary to-primary/80"
+                        >
+                          <Link href="/register">Sign Up</Link>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </nav>

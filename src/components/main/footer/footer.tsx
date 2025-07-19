@@ -59,18 +59,18 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-900 text-gray-400 py-10 mt-20">
+    <footer className="bg-background text- py-10 mt-20">
       <div className="container mx-auto px-4">
         {/* Top Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {sections.map((section, idx) => (
             <div key={idx}>
-              <h2 className="text-yellow-500 text-lg font-semibold mb-4">
+              <h2 className="text-primary text-lg font-semibold mb-4">
                 {section.title}
               </h2>
               <ul>
                 {section.links.map((link, i) => (
-                  <li key={i} className="mb-2 hover:text-yellow-500 transition">
+                  <li key={i} className="mb-2 hover:text-primary transition">
                     <Link href="#">{link}</Link>
                   </li>
                 ))}
@@ -80,7 +80,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center mt-12 pt-8 border-t border-gray-700 gap-6 text-sm">
+        <div className="flex flex-col md:flex-row justify-between items-center mt-12 pt-8 border-t border-primary gap-6 text-sm">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Image
@@ -90,9 +90,7 @@ const Footer = () => {
               height={30}
               className="rounded-full bg-black"
             />
-            <span className="text-yellow-500 font-bold text-xl">
-              CHRONO CLICK
-            </span>
+            <span className="text-primary font-bold text-xl">CHRONO CLICK</span>
           </div>
 
           {/* Copyright */}
@@ -101,7 +99,7 @@ const Footer = () => {
           </p>
 
           {/* Social Icons */}
-          <div className="flex gap-4 text-yellow-500 text-2xl">
+          <div className="flex gap-4 text-primary text-2xl">
             {socialLinks.map(({ href, icon }, idx) => (
               <a
                 key={idx}
