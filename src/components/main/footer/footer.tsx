@@ -59,7 +59,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-background text- py-10 mt-20">
+    <footer className="bg-background  py-10 mt-20">
       <div className="container mx-auto px-4">
         {/* Top Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

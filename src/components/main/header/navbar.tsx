@@ -16,7 +16,7 @@ const Navbar = () => {
   const auth = true;
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       {/* Top bar with subtle gradient */}
       <div className="h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20"></div>
 
