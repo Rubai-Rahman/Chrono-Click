@@ -1,4 +1,5 @@
 'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import Autoplay from 'embla-carousel-autoplay';
@@ -38,7 +39,7 @@ const Slider = () => {
                   height={1080}
                   priority={index === 0}
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center ml-3">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center">
                   <h3 className="text-2xl md:text-5xl font-bold mb-2">
                     {slide.title}
                   </h3>
