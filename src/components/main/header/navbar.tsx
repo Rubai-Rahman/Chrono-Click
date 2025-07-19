@@ -5,7 +5,7 @@ import Image from 'next/image';
 import logo from '../../../../public/favicon.png';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Menu, Search, User } from 'lucide-react';
+import { Menu, User } from 'lucide-react';
 import { Suspense, lazy } from 'react';
 import Cart from '../../cart/cart';
 import { navItems } from '@/lib/constant';
@@ -13,7 +13,7 @@ import { navItems } from '@/lib/constant';
 const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
 
 const Navbar = () => {
-  const auth = false;
+  const auth = true;
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -62,12 +62,6 @@ const Navbar = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
-            {/* Search Button */}
-            <Button variant="ghost" size="icon" className="relative group">
-              <Search className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-              <span className="sr-only">Search</span>
-            </Button>
-
             {/* Cart */}
             <div className="relative">
               <Cart />
@@ -138,17 +132,6 @@ const Navbar = () => {
                         {item.name}
                       </Link>
                     ))}
-                  </div>
-
-                  {/* Mobile Search */}
-                  <div className="px-3 py-2">
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start gap-2 bg-transparent"
-                    >
-                      <Search className="h-4 w-4" />
-                      Search products...
-                    </Button>
                   </div>
 
                   {/* Mobile Auth Section */}

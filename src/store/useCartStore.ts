@@ -1,29 +1,68 @@
 import { create } from 'zustand';
-import { ProductDetailsItem } from '@/api-lib/products';
+import { persist } from 'zustand/middleware';
 
-type CartState = {
-  items: ProductDetailsItem[];
-  addToCart: (item: ProductDetailsItem) => void;
-  removeFromCart: (_id: string) => void;
+interface CartItem {
+  _id: string;
+  name: string;
+  price: number;
+  img: string;
+  brand?: string;
+  quantity?: number;
+}
+
+interface CartStore {
+  items: CartItem[];
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
+  clearCart: () => void;
   totalPrice: () => number;
-};
+}
 
-export const useCartStore = create<CartState>((set, get) => ({
-  items: [],
-  addToCart: (item) => {
-    const existing = get().items.find((p) => p._id === item._id);
-    if (!existing) {
-      set((state) => ({
-        items: [...state.items, item],
-      }));
+export const useCartStore = create<CartStore>()(
+  persist(
+    (set, get) => ({
+      items: [],
+
+      addToCart: (item) =>
+        set((state) => {
+          const existingItem = state.items.find((i) => i._id === item._id);
+          if (existingItem) {
+            return {
+              items: state.items.map((i) =>
+                i._id === item._id
+                  ? { ...i, quantity: (i.quantity || 1) + 1 }
+                  : i
+              ),
+            };
+          }
+          return { items: [...state.items, { ...item, quantity: 1 }] };
+        }),
+
+      removeFromCart: (id) =>
+        set((state) => ({
+          items: state.items.filter((item) => item._id !== id),
+        })),
+
+      updateQuantity: (id, quantity) =>
+        set((state) => ({
+          items: state.items.map((item) =>
+            item._id === id ? { ...item, quantity } : item
+          ),
+        })),
+
+      clearCart: () => set({ items: [] }),
+
+      totalPrice: () => {
+        const { items } = get();
+        return items.reduce(
+          (total, item) => total + item.price * (item.quantity || 1),
+          0
+        );
+      },
+    }),
+    {
+      name: 'cart-storage',
     }
-  },
-  removeFromCart: (_id) => {
-    set((state) => ({
-      items: state.items.filter((p) => p._id !== _id),
-    }));
-  },
-  totalPrice: () => {
-    return get().items.reduce((acc, curr) => acc + Number(curr.price), 0);
-  },
-}));
+  )
+);

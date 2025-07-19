@@ -125,7 +125,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
             onClick={() => handleMenuAction('profile')}
             className="cursor-pointer"
           >
-            <User className="mr-2 h-4 w-4" />
+            <User className="mr-2 size-4" />
             <span>Profile</span>
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
@@ -134,7 +134,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
             onClick={() => handleMenuAction('orders')}
             className="cursor-pointer"
           >
-            <ShoppingBag className="mr-2 h-4 w-4" />
+            <ShoppingBag className="mr-2 size-4" />
             <span>My Orders</span>
             <DropdownMenuShortcut>⌘O</DropdownMenuShortcut>
           </DropdownMenuItem>
@@ -143,18 +143,18 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
             onClick={() => handleMenuAction('wishlist')}
             className="cursor-pointer"
           >
-            <Heart className="mr-2 h-4 w-4" />
+            <Heart className="mr-2 size-4" />
             <span>Wishlist</span>
             <DropdownMenuShortcut>⌘W</DropdownMenuShortcut>
           </DropdownMenuItem>
 
           <DropdownMenuItem className="cursor-pointer">
-            <CreditCard className="mr-2 h-4 w-4" />
+            <CreditCard className="mr-2 size-4" />
             <span>Payment Methods</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem className="cursor-pointer">
-            <Bell className="mr-2 h-4 w-4" />
+            <Bell className="mr-2 size-4" />
             <span>Notifications</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -166,9 +166,9 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               {theme === 'dark' ? (
-                <Sun className="mr-2 h-4 w-4" />
+                <Sun className="mr-2 size-4" />
               ) : (
-                <Moon className="mr-2 h-4 w-4" />
+                <Moon className="mr-2 size-4" />
               )}
               <span>Dark Mode</span>
             </div>
@@ -184,7 +184,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
           onClick={() => handleMenuAction('settings')}
           className="cursor-pointer"
         >
-          <Settings className="mr-2 h-4 w-4" />
+          <Settings className="mr-2 size-4" />
           <span>Settings</span>
           <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
         </DropdownMenuItem>
@@ -196,7 +196,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
           onClick={() => handleMenuAction('logout')}
           className="cursor-pointer text-destructive focus:text-destructive"
         >
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut className="mr-2 size-4" />
           <span>Log out</span>
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
