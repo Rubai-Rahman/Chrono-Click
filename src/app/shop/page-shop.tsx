@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Product from '@/components/main/home/Product';
+import Product from '@/components/main/home/product';
 import { useQuery } from '@tanstack/react-query';
 import { fetchProducts, Product as ProductItem } from '@/api-lib/products';
 
