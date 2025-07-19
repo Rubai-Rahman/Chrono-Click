@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import useProducts from '@/hooks/useProducts'; // Updated import path
-import Product from './product'; // Updated import path
+import Product from './product';
 
 const Products = () => {
   const { products, isLoading, isError, error } = useProducts();

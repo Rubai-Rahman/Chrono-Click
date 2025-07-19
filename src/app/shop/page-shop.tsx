@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import Product from '@/components/main/home/product';
 import { useQuery } from '@tanstack/react-query';
 import { fetchProducts, Product as ProductItem } from '@/api-lib/products';
+import Product from '@/components/main/home/product';
 
 const ShopPageContent = () => {
   const [page, setPage] = useState<number>(0);

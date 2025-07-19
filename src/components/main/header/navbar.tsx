@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import logo from '../../../public/favicon.png';
+import logo from '../../../../public/favicon.png';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
 import { Suspense, lazy } from 'react';
-import Cart from '../cart/cart';
+import Cart from '../../cart/cart';
 import { navItems } from '@/lib/constant';
 
-const ProfileMenu = lazy(() => import('../profile/profile-menu'));
+const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
 
 const Navbar = () => {
   const auth = true;
