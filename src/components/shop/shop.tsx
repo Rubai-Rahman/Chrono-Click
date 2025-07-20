@@ -1,5 +1,5 @@
 import type { Product as ProductType } from '@/api-lib/products';
-import Product from '../main/home/product';
+import Product from './product';
 import {
   Pagination,
   PaginationContent,

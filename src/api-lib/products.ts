@@ -37,6 +37,10 @@ export const fetchPages = async (
   const res = await axiosInstance.get(`/${path}?page=${page}&size=${size}`);
   return res.data;
 };
+export const fetchData = async (path: string): Promise<ProductsResponse> => {
+  const res = await axiosInstance.get(`/${path}`);
+  return res.data;
+};
 
 export const fetchProductDetails = async (
   productId: string

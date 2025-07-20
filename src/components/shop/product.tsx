@@ -53,7 +53,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
     router.push(`/products/${_id}`);
   };
 
-  const { items, addToCart } = useCartStore();
+  const { addToCart } = useCartStore();
 
   return (
     <Card className="group w-full sm:max-w-xs md:max-w-sm lg:max-w-md rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 bg-card/60 backdrop-blur-md border">
