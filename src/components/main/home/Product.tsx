@@ -56,14 +56,15 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   const { items, addToCart } = useCartStore();
 
   return (
-    <Card className="group w-full max-w-sm rounded-2xl overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-500 bg-card/60 backdrop-blur-md">
+    <Card className="group w-full sm:max-w-xs md:max-w-sm lg:max-w-md rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 bg-card/60 backdrop-blur-md border">
       <CardContent className="p-0">
         {/* Image */}
-        <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40">
+        <div className="w-full relative overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40 flex justify-center">
           <Image
             src={img || '/placeholder.svg?height=300&width=300&text=Watch'}
             alt={name}
-            fill
+            width={250}
+            height={300}
             className="object-cover transition-transform duration-700 group-hover:scale-110"
           />
 
@@ -116,11 +117,11 @@ const Product: React.FC<ProductProps> = ({ product }) => {
             {name}
           </h3>
 
-          {product.description && (
+          {/* {product.description && (
             <p className="text-sm text-muted-foreground line-clamp-2">
               {product.description}
             </p>
-          )}
+          )} */}
 
           {/* Rating */}
           {product.rating && (

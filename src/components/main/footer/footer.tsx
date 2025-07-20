@@ -62,7 +62,7 @@ const Footer = () => {
     <footer className="bg-background  py-10 mt-20">
       <div className="container mx-auto px-4">
         {/* Top Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
           {sections.map((section, idx) => (
             <div key={idx}>
               <h2 className="text-primary text-lg font-semibold mb-4">
