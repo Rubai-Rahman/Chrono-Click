@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} mx-auto antialiased overflow-x-hidden `}
+        className={`${geistSans.variable} ${geistMono.variable} w-full antialiased overflow-x-hidden `}
       >
         <Providers>
           <Navbar />

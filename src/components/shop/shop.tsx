@@ -32,8 +32,8 @@ const Shop = ({
           Find Your Watch
         </h2>
       </div>
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="container mx-auto  space-y-5 ">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
           {products.map((product) => (
             <Product key={product._id} product={product} />
           ))}
@@ -43,7 +43,17 @@ const Shop = ({
             <PaginationItem>
               <PaginationPrevious
                 href="#"
-                onClick={() => onPageChange(currentPage - 1)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (currentPage === 0) return; // disabled হলে কাজ বন্ধ
+                  onPageChange(currentPage - 1);
+                }}
+                className={
+                  currentPage === 0
+                    ? 'opacity-50 pointer-events-none select-none'
+                    : ''
+                }
+                aria-disabled={currentPage === 0}
               />
             </PaginationItem>
             {[...Array(totalPages)].map((_, index) => (
@@ -51,7 +61,10 @@ const Shop = ({
                 <PaginationLink
                   href="#"
                   isActive={index === currentPage}
-                  onClick={() => onPageChange(index)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onPageChange(index);
+                  }}
                 >
                   {index + 1}
                 </PaginationLink>
@@ -60,7 +73,17 @@ const Shop = ({
             <PaginationItem>
               <PaginationNext
                 href="#"
-                onClick={() => onPageChange(currentPage + 1)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (currentPage === totalPages - 1) return; // disabled হলে কাজ বন্ধ
+                  onPageChange(currentPage + 1);
+                }}
+                className={
+                  currentPage === totalPages - 1
+                    ? 'opacity-50 pointer-events-none select-none'
+                    : ''
+                }
+                aria-disabled={currentPage === totalPages - 1}
               />
             </PaginationItem>
           </PaginationContent>

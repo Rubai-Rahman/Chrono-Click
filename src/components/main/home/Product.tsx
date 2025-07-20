@@ -56,25 +56,24 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   const { items, addToCart } = useCartStore();
 
   return (
-    <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-card/50 backdrop-blur-sm">
+    <Card className="group w-full max-w-sm rounded-2xl overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-500 bg-card/60 backdrop-blur-md">
       <CardContent className="p-0">
-        {/* Image Container */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40">
+        {/* Image */}
+        <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40">
           <Image
             src={img || '/placeholder.svg?height=300&width=300&text=Watch'}
             alt={name}
-            width={300}
-            height={300}
-            className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
           />
 
           {/* Overlay Actions */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
             <div className="flex gap-2">
               <Button
                 size="icon"
                 variant="secondary"
-                className="rounded-full bg-white/90 hover:bg-white shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
+                className="rounded-full shadow-md transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
                 onClick={handleDetails}
               >
                 <Eye className="w-4 h-4" />
@@ -82,46 +81,41 @@ const Product: React.FC<ProductProps> = ({ product }) => {
               <Button
                 size="icon"
                 variant="secondary"
-                className="rounded-full bg-white/90 hover:bg-white shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75"
+                className="rounded-full shadow-md transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75"
               >
                 <Heart className="w-4 h-4" />
               </Button>
             </div>
           </div>
 
-          {/* Stock Badge */}
+          {/* Badges */}
           {!product.inStock && (
             <Badge variant="destructive" className="absolute top-3 left-3">
               Out of Stock
             </Badge>
           )}
-
-          {/* Category Badge */}
           {product.category && (
             <Badge
               variant="secondary"
-              className="absolute top-3 right-3 bg-white/90"
+              className="absolute top-3 right-3 bg-white/90 text-black"
             >
               {product.category}
             </Badge>
           )}
         </div>
 
-        {/* Content */}
+        {/* Card Content */}
         <div className="p-6 space-y-4">
-          {/* Brand */}
           {product.brand && (
-            <p className="text-sm text-muted-foreground font-medium tracking-wide uppercase">
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
               {product.brand}
             </p>
           )}
 
-          {/* Title */}
-          <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
             {name}
           </h3>
 
-          {/* Description */}
           {product.description && (
             <p className="text-sm text-muted-foreground line-clamp-2">
               {product.description}
@@ -143,18 +137,16 @@ const Product: React.FC<ProductProps> = ({ product }) => {
             </div>
           )}
 
-          {/* Price and Action */}
+          {/* Price and Add to Cart */}
           <div className="flex items-center justify-between pt-2">
-            <div className="space-y-1">
-              <p className="text-2xl font-bold text-primary">
-                {formatPrice(price)}
-              </p>
-            </div>
+            <p className="text-xl font-bold text-primary">
+              {formatPrice(price)}
+            </p>
 
             <Button
               disabled={!product.inStock}
               onClick={() => addToCart(product)}
-              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
+              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-md hover:shadow-xl transition-all duration-300 group/btn"
             >
               <ShoppingCart className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
               {product.inStock ? 'Add to Cart' : 'Sold Out'}
