@@ -23,7 +23,7 @@ const Navbar = () => {
       <div className="container mx-auto">
         <div className="flex h-16 items-center justify-between px-4">
           {/* Logo Section */}
-          <Link href="/home" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-3 group">
             <div className="relative">
               <div className="absolute inset-0 bg-primary/20 rounded-full blur-sm group-hover:blur-md transition-all duration-300"></div>
               <Image
