@@ -1,52 +1,29 @@
 'use client';
-
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchProducts, Product as ProductItem } from '@/api-lib/products';
+import { useState } from 'react';
 import Product from '@/components/main/home/product';
+import { useQuery } from '@tanstack/react-query';
+import { fetchPages } from '@/api-lib/products';
+import { notFound } from 'next/navigation';
+import { ErrorResultMessage } from '@/components/ui/data-result-message';
+import ProductSkeleton from '@/components/skeletons/product-skeleton';
 
 const ShopPageContent = () => {
   const [page, setPage] = useState<number>(0);
   const size: number = 12;
 
-  const { data, isLoading, isError, error } = useQuery<
-    {
-      products: ProductItem[];
-      count: number;
-    },
-    Error
-  >({
-    queryKey: ['shopProducts', page, size],
-    queryFn: () => fetchProducts(page, size),
-    keepPreviousData: true,
+  const {
+    data: products,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ['products', page, size],
+    queryFn: () => fetchPages(page, size, 'products'),
+    placeholderData: (previousData) => previousData,
   });
 
-  const products = data?.products || [];
-  const pageCount = data ? Math.ceil(data.count / size) : 0;
-
-  if (isLoading) {
-    return (
-      <div className="text-center py-8">
-        <h4 className="text-lg font-semibold text-gray-600">
-          LATEST WATCHES YOU CAN&apos;T RESIST!
-        </h4>
-        <h2 className="text-4xl font-bold text-gray-800 mt-2">
-          Find Your Watch
-        </h2>
-        <div className="flex justify-center my-4">
-          <div className="loader"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="text-center py-8 text-red-500">
-        Error: {error?.message}
-      </div>
-    );
-  }
+  if (isPending) return <ProductSkeleton />;
+  if (isError) return <ErrorResultMessage />;
+  if (!products) return notFound();
 
   return (
     <>
@@ -60,7 +37,7 @@ const ShopPageContent = () => {
       </div>
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {products.map((product) => (
+          {products.products.map((product) => (
             <Product key={product._id} product={product} />
           ))}
         </div>

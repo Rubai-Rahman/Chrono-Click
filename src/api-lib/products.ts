@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export interface Product {
   _id: string;
   name: string;
@@ -27,17 +29,13 @@ export interface ProductData {
   details: string;
 }
 
-export const fetchProducts = async (
+export const fetchPages = async (
   page: number,
-  size: number
+  size: number,
+  path: string
 ): Promise<ProductsResponse> => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/products?page=${page}&size=${size}`
-  );
-  if (!res.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return res.json();
+  const res = await axios.get(`/${path}?page=${page}&size=${size}`);
+  return res.data;
 };
 
 export const fetchProductDetails = async (
