@@ -48,7 +48,7 @@ const Slider = () => {
                   </p>
                   <Link
                     href={slide.link}
-                    className="px-8 py-3 border border-primary hover:bg-primary text-primary-foreground transition-colors duration-300"
+                    className="px-6 md:px-9 lg:px-9 py-3 md:py-4 border border-primary hover:bg-primary text-primary-foreground transition-colors duration-300"
                   >
                     Explore
                   </Link>
