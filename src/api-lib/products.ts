@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from '@/lib/axios';
 
 export interface Product {
   _id: string;
@@ -34,7 +34,7 @@ export const fetchPages = async (
   size: number,
   path: string
 ): Promise<ProductsResponse> => {
-  const res = await axios.get(`/${path}?page=${page}&size=${size}`);
+  const res = await axiosInstance.get(`/${path}?page=${page}&size=${size}`);
   return res.data;
 };
 

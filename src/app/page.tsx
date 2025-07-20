@@ -15,7 +15,7 @@ const HomePage = () => {
   return (
     <div className="">
       <Slider />
-      <Products />
+      {/* <Products /> */}
       <Banner />
       <Testimonials />
       <News />
