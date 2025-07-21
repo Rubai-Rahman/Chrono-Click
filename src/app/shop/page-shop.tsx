@@ -16,7 +16,7 @@ const ShopPageContent = () => {
 
   const {
     data: products,
-    isPending,
+    isLoading,
     isError,
   } = useQuery({
     queryKey: ['products', page, size],
@@ -24,7 +24,7 @@ const ShopPageContent = () => {
     placeholderData: (previousData) => previousData,
   });
 
-  if (isPending) return <ProductSkeleton />;
+  if (isLoading) return <ProductSkeleton />;
   if (isError) return <ErrorResultMessage />;
   if (!products) return notFound();
 

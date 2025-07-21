@@ -13,14 +13,14 @@ import Link from 'next/link';
 const FeaturedProducts = () => {
   const {
     data: products,
-    isPending,
+    isLoading,
     isError,
   } = useQuery({
     queryKey: ['products'],
     queryFn: () => fetchData('products'),
   });
 
-  if (isPending) return <FeaturedProductSkeleton />;
+  if (isLoading) return <FeaturedProductSkeleton />;
   if (isError) return <ErrorResultMessage />;
   if (!products) return <NotFoundMessage />;
 
