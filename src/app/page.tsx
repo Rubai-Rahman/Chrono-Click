@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 import Banner from '@/components/main/home/banner';
-import Testimonials from '@/components/main/home/review';
 import News from '@/components/main/home/news';
 import Newsletter from '@/components/main/home/news-letter';
 import Slider from '@/components/main/home/slider';
 import FeaturedProducts from '@/components/main/home/featured products';
 import Review from '@/components/main/home/review';
+import Brands from '@/components/main/home/brands';
 
 export const metadata: Metadata = {
   title: 'Chrono Click - Home',
@@ -18,6 +18,7 @@ const HomePage = () => {
       <Slider />
       <FeaturedProducts />
       <Banner />
+      <Brands />
       <Review />
       <News />
       <Newsletter />

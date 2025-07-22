@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -7,6 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import Autoplay from 'embla-carousel-autoplay';
 import { useQuery } from '@tanstack/react-query';
 import NewsItem from './news-Item';
 import { NewsType } from '@/api-lib/api-type';
@@ -18,6 +19,15 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 const News = () => {
+  const plugin = useRef(
+    Autoplay({
+      delay: 3000,
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+      playOnInit: true,
+    })
+  );
+
   const {
     data: news,
     isLoading,
@@ -27,11 +37,8 @@ const News = () => {
     queryFn: () => fetchData<NewsType[]>('news'),
   });
 
-  if (isLoading) return;
-  <CardSkeleton />;
-
-  if (isError && !news) return;
-  <ErrorResultMessage />;
+  if (isLoading) return <CardSkeleton />;
+  if (isError && !news) return <ErrorResultMessage />;
 
   return (
     <section className=" bg-gradient-to-br from-background via-muted/10 to-background relative overflow-hidden">
@@ -55,18 +62,19 @@ const News = () => {
             opts={{
               align: 'start',
               loop: true,
+              skipSnaps: false,
+              dragFree: false,
             }}
             className="w-full"
+            plugins={[plugin.current]}
+            onMouseEnter={() => plugin.current.stop()}
+            onMouseLeave={() => plugin.current.play()}
           >
             <CarouselContent className="-ml-4">
-              {news?.map((item, index) => (
+              {news?.map((item) => (
                 <CarouselItem
                   key={item._id}
                   className="pl-4 md:basis-1/2 lg:basis-1/3"
-                  style={{
-                    animationDelay: `${index * 100}ms`,
-                    animation: 'fadeInUp 0.6s ease-out forwards',
-                  }}
                 >
                   <div className="p-1 h-full">
                     <NewsItem item={item} />
@@ -84,7 +92,7 @@ const News = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="text-center mt-16">
+        <div className="text-center mt-16 max-w-7xl">
           <div className="inline-flex flex-col items-center gap-6 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 shadow-lg">
             <div className="text-center">
               <h3 className="text-2xl font-bold text-foreground mb-2">

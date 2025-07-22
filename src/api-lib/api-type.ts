@@ -19,3 +19,13 @@ export type ReviewType = {
   verified?: boolean;
   rating?: number;
 };
+
+export interface ProductType {
+  _id: string;
+  name: string;
+  price: number;
+  img: string;
+  details: string;
+  quantity?: string;
+  
+}

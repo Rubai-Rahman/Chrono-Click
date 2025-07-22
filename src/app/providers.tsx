@@ -1,6 +1,7 @@
 'use client';
 
 import { ThemeProvider } from '@/components/providers/theme-prvider';
+import { Toaster } from '@/components/ui/sonner';
 import {
   DefaultError,
   isServer,
@@ -96,6 +97,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         disableTransitionOnChange
       >
         {children}
+        <Toaster />
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
     </QueryClientProvider>

@@ -2,7 +2,7 @@
 import React from 'react';
 import Product from '../../shop/product';
 import { useQuery } from '@tanstack/react-query';
-import { fetchData } from '@/api-lib/products';
+import { fetchData, ProductsResponse } from '@/api-lib/products';
 import {
   ErrorResultMessage,
   NotFoundMessage,
@@ -17,7 +17,7 @@ const FeaturedProducts = () => {
     isError,
   } = useQuery({
     queryKey: ['products'],
-    queryFn: () => fetchData('products'),
+    queryFn: () => fetchData<ProductsResponse>('products'),
   });
 
   if (isLoading) return <FeaturedProductSkeleton />;
