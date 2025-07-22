@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import ManageOrdersPageContent from "./page-manageOrders";
+import type { Metadata } from 'next';
+import ManageOrdersPageContent from './page-manageOrders';
 
 export const metadata: Metadata = {
-  title: "Chrono Click - Manage Orders",
-  description: "Manage all customer orders.",
+  title: 'Manage Orders - Chrono Click',
+  description: 'Manage all customer orders and track their status.',
 };
 
 const ManageOrdersPage = () => {

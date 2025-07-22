@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import MakeAdminPageContent from "./page-makeAdmin";
+import type { Metadata } from 'next';
+import MakeAdminPageContent from './page-makeAdmin';
 
 export const metadata: Metadata = {
-  title: "Chrono Click - Make Admin",
-  description: "Grant admin privileges to a user.",
+  title: 'Make Admin - Chrono Click',
+  description: 'Manage user roles and permissions.',
 };
 
 const MakeAdminPage = () => {

@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import ReviewPageContent from "./page-review";
+import type { Metadata } from 'next';
+import ReviewPageContent from './page-review';
 
 export const metadata: Metadata = {
-  title: "Chrono Click - Add Review",
-  description: "Add a review for Chrono Click products.",
+  title: 'Reviews - Chrono Click',
+  description: 'Write and manage your product reviews.',
 };
 
 const ReviewPage = () => {

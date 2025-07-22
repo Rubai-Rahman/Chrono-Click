@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
-import LoginPageContent from "./page-login";
+import type { Metadata } from 'next';
+import LoginPageContent from './page-login';
 
 export const metadata: Metadata = {
-  title: "Chrono Click - Login",
-  description: "Login to your Chrono Click account.",
+  title: 'Login - Chrono Click',
+  description:
+    'Sign in to your Chrono Click account to access exclusive features.',
 };
 
 const LoginPage = () => {

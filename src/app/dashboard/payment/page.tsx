@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import PaymentPageContent from "./page-payment";
+import type { Metadata } from 'next';
+import PaymentPageContent from './page-payment';
 
 export const metadata: Metadata = {
-  title: "Chrono Click - Payment",
-  description: "Payment options for your orders.",
+  title: 'Payment - Chrono Click',
+  description: 'Complete your payment securely.',
 };
 
 const PaymentPage = () => {

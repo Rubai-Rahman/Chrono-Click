@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
-import SignUpPageContent from "./page-signup";
+import type { Metadata } from 'next';
+import SignupPageContent from './page-signup';
 
 export const metadata: Metadata = {
-  title: "Chrono Click - Sign Up",
-  description: "Create a new Chrono Click account.",
+  title: 'Sign Up - Chrono Click',
+  description:
+    'Create your Chrono Click account to start your premium timepiece journey.',
 };
 
-const SignUpPage = () => {
-  return <SignUpPageContent />;
+const SignupPage = () => {
+  return <SignupPageContent />;
 };
 
-export default SignUpPage;
+export default SignupPage;

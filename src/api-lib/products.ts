@@ -1,4 +1,7 @@
 import axiosInstance from '@/lib/axios';
+import { getMockProduct, getMockProducts } from '@/lib/sample-products';
+import { getMockOrders } from '@/lib/sample-orders';
+import { getMockReviewableProducts } from '@/lib/sample-reviews';
 
 export interface Product {
   _id: string;
@@ -39,6 +42,29 @@ export const fetchPages = async (
 };
 
 export const fetchData = async <T>(path: string): Promise<T> => {
+  // // For demonstration purposes, use mock data for various routes
+  // if (path === 'products') {
+  //   return getMockProducts() as T;
+  // }
+
+  // if (path.startsWith('product/')) {
+  //   const productId = path.split('/')[1];
+  //   const product = getMockProduct(productId);
+  //   if (product) {
+  //     return product as T;
+  //   }
+  //   throw new Error('Product not found');
+  // }
+
+  // if (path === 'orders/my' || path === 'orders/all') {
+  //   return getMockOrders() as T;
+  // }
+
+  // if (path === 'reviews/products') {
+  //   return getMockReviewableProducts() as T;
+  // }
+
+  // // For other routes, use the actual API
   const res = await axiosInstance.get<T>(`/${path}`);
   return res.data;
 };
