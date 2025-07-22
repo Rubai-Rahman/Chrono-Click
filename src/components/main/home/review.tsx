@@ -10,13 +10,13 @@ import {
 } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { useQuery } from '@tanstack/react-query';
 import { fetchData } from '@/api-lib/products';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
-import { Star, Quote, Users, Award, Sparkles } from 'lucide-react';
+import { Quote, Users, Award, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { StarRating } from '@/components/ui/render-start';
+import CardSkeleton from '@/components/skeletons/review-skeleton';
 
 export type ReviewType = {
   _id: string;
@@ -40,47 +40,11 @@ const Review = () => {
     queryFn: () => fetchData<ReviewType[]>('review'),
   });
 
-  console.log('reviews', reviews);
+  if (isLoading) return;
+  <CardSkeleton />;
 
-  if (isLoading) {
-    return (
-      <section className="py-20 bg-gradient-to-br from-background via-muted/10 to-background">
-        <div className="container mx-auto px-4">
-          {/* Loading Header */}
-          <div className="text-center mb-16">
-            <Skeleton className="h-8 w-64 mx-auto mb-4" />
-            <Skeleton className="h-6 w-96 mx-auto" />
-          </div>
-
-          {/* Loading Carousel */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <Card key={index} className="overflow-hidden">
-                <CardContent className="p-6">
-                  <div className="flex flex-col items-center space-y-4">
-                    <Skeleton className="w-20 h-20 rounded-full" />
-                    <Skeleton className="h-6 w-32" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-3/4" />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (isError && !reviews) {
-    return (
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <ErrorResultMessage />
-        </div>
-      </section>
-    );
-  }
+  if (isError && !reviews) return;
+  <ErrorResultMessage />;
 
   if (!reviews?.length) {
     return (
@@ -162,7 +126,6 @@ const Review = () => {
               loop: true,
             }}
             className="w-full"
-            onSelect={(index) => setCurrentSlide(index)}
           >
             <CarouselContent className="-ml-4">
               {reviews.map((item, index) => (
@@ -256,19 +219,6 @@ const Review = () => {
               <CarouselNext className="relative inset-0 translate-y-0 bg-primary/10 hover:bg-primary/20 border-primary/20" />
             </div>
           </Carousel>
-        </div>
-
-        {/* Call to Action */}
-        <div className="text-center mt-16">
-          <div className="inline-flex flex-col items-center gap-4 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 shadow-lg">
-            <h3 className="text-2xl font-bold text-foreground">
-              Join Our Happy Customers
-            </h3>
-            <p className="text-muted-foreground max-w-md">
-              Experience the quality and craftsmanship that our customers love.
-              Start your journey today.
-            </p>
-          </div>
         </div>
       </div>
     </section>
