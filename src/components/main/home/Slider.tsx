@@ -14,7 +14,7 @@ import { slides } from '@/lib/constant';
 import { useRef } from 'react';
 
 const Slider = () => {
-  const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
+  const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: false }));
 
   return (
     <div className="w-full overflow-hidden">
@@ -25,8 +25,8 @@ const Slider = () => {
         }}
         className="w-full"
         plugins={[plugin.current]}
-        onMouseEnter={plugin.current.stop}
-        onMouseLeave={plugin.current.reset}
+        onMouseEnter={() => plugin.current.stop()}
+        onMouseLeave={() => plugin.current.play()}
       >
         <CarouselContent>
           {slides.map((slide, index) => (

@@ -5,8 +5,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,9 +12,10 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchData } from '@/api-lib/products';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import { Quote, Users, Award, Sparkles } from 'lucide-react';
-import { useState } from 'react';
+import { useRef } from 'react';
 import { StarRating } from '@/components/ui/render-start';
 import CardSkeleton from '@/components/skeletons/review-skeleton';
+import Autoplay from 'embla-carousel-autoplay';
 
 export type ReviewType = {
   _id: string;
@@ -29,7 +28,7 @@ export type ReviewType = {
 };
 
 const Review = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: false }));
 
   const {
     data: reviews,
@@ -64,11 +63,6 @@ const Review = () => {
 
   return (
     <section className="py-20 bg-gradient-to-br from-background via-muted/10 to-background relative overflow-hidden">
-      {/* Background Decorations */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
-
       <div className="container mx-auto px-4 relative z-10">
         {/* Header Section */}
         <div className="text-center mb-16">
@@ -125,6 +119,9 @@ const Review = () => {
               align: 'start',
               loop: true,
             }}
+            plugins={[plugin.current]}
+            onMouseEnter={() => plugin.current.stop()}
+            onMouseLeave={() => plugin.current.play()}
             className="w-full"
           >
             <CarouselContent className="-ml-4">
@@ -198,26 +195,6 @@ const Review = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-
-            {/* Custom Navigation */}
-            <div className="flex items-center justify-center gap-4 mt-8">
-              <CarouselPrevious className="relative inset-0 translate-y-0 bg-primary/10 hover:bg-primary/20 border-primary/20" />
-              <div className="flex gap-2">
-                {Array.from({ length: Math.ceil(reviews.length / 3) }).map(
-                  (_, index) => (
-                    <div
-                      key={index}
-                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                        Math.floor(currentSlide / 3) === index
-                          ? 'bg-primary w-8'
-                          : 'bg-muted-foreground/30'
-                      }`}
-                    />
-                  )
-                )}
-              </div>
-              <CarouselNext className="relative inset-0 translate-y-0 bg-primary/10 hover:bg-primary/20 border-primary/20" />
-            </div>
           </Carousel>
         </div>
       </div>

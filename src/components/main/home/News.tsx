@@ -14,7 +14,7 @@ import { fetchData } from '@/api-lib/products';
 import CardSkeleton from '@/components/skeletons/review-skeleton';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Clock, TrendingUp } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 const News = () => {
