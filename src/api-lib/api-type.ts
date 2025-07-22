@@ -9,3 +9,13 @@ export interface NewsType {
   date: string;
   img: string;
 }
+
+export type ReviewType = {
+  _id: string;
+  name: string;
+  comment: string;
+  img: string;
+  location?: string;
+  verified?: boolean;
+  rating?: number;
+};

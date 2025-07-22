@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, User, ArrowRight, Bookmark } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { NewsType } from '@/api-lib/type';
+import type { NewsType } from '@/api-lib/api-type';
 
 interface NewsItemProps {
   item: NewsType;
@@ -27,9 +27,7 @@ const NewsItem = ({ item }: NewsItemProps) => {
         {/* Image Container */}
         <div className="relative overflow-hidden">
           <Image
-            src={
-              item.img || '/placeholder.svg?height=240&width=400&text=News'
-            }
+            src={item.img || '/placeholder.svg?height=240&width=400&text=News'}
             alt={item.name}
             width={400}
             height={240}

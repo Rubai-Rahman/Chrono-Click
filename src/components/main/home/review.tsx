@@ -16,16 +16,7 @@ import { useRef } from 'react';
 import { StarRating } from '@/components/ui/render-start';
 import CardSkeleton from '@/components/skeletons/review-skeleton';
 import Autoplay from 'embla-carousel-autoplay';
-
-export type ReviewType = {
-  _id: string;
-  name: string;
-  comment: string;
-  img: string;
-  location?: string;
-  verified?: boolean;
-  rating?: number;
-};
+import { ReviewType } from '@/api-lib/api-type';
 
 const Review = () => {
   const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: false }));

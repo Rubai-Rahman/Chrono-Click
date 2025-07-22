@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/carousel';
 import { useQuery } from '@tanstack/react-query';
 import NewsItem from './news-Item';
-import { NewsType } from '@/api-lib/type';
+import { NewsType } from '@/api-lib/api-type';
 import { fetchData } from '@/api-lib/products';
 import CardSkeleton from '@/components/skeletons/review-skeleton';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
@@ -36,9 +36,6 @@ const News = () => {
   return (
     <section className=" bg-gradient-to-br from-background via-muted/10 to-background relative overflow-hidden">
       {/* Background Decorations */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Header Section */}
