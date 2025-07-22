@@ -18,9 +18,9 @@ const HomePage = () => {
       <Slider />
       <FeaturedProducts />
       <Banner />
-      <Brands />
       <Review />
       <News />
+      <Brands />
       <Newsletter />
     </div>
   );

@@ -4,6 +4,7 @@ import './globals.css';
 import Navbar from '@/components/main/header/navbar';
 import Footer from '@/components/main/footer/footer';
 import BackToTop from '@/components/ui/back-to-top';
+import ScrollRestoration from '@/components/ui/scroll-restoration';
 import Providers from './providers';
 
 const geistSans = Geist({
@@ -32,6 +33,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} w-full antialiased overflow-x-hidden `}
       >
         <Providers>
+          <ScrollRestoration />
           <Navbar />
           {children}
           <Footer />
