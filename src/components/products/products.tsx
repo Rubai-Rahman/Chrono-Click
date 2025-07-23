@@ -1,5 +1,5 @@
 import type { ProductType } from '@/api-lib/api-type';
-import Product from './product';
+import Product from '../product/product';
 import PageWrapper from '@/components/layout/page-wrapper';
 import {
   Pagination,

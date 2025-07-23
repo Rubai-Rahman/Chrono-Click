@@ -128,66 +128,6 @@
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
   }
-
-  /* Consistent container patterns */
-  .container-base {
-    @apply mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 max-w-screen-2xl;
-  }
-
-  .container-narrow {
-    @apply mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 max-w-5xl;
-  }
-
-  .container-wide {
-    @apply mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 max-w-none;
-  }
-
-  .container-full {
-    @apply w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16;
-  }
-
-  /* Section spacing patterns */
-  .section-sm {
-    @apply py-8 sm:py-12;
-  }
-
-  .section-md {
-    @apply py-12 sm:py-16 lg:py-20;
-  }
-
-  .section-lg {
-    @apply py-16 sm:py-20 lg:py-24;
-  }
-
-  .section-xl {
-    @apply py-20 sm:py-24 lg:py-32;
-  }
-
-  /* Card spacing patterns */
-  .card-padding-sm {
-    @apply p-4 sm:p-6;
-  }
-
-  .card-padding-md {
-    @apply p-6 sm:p-8;
-  }
-
-  .card-padding-lg {
-    @apply p-8 sm:p-10 lg:p-12;
-  }
-
-  /* Consistent gap patterns */
-  .gap-responsive-sm {
-    @apply gap-3 sm:gap-4;
-  }
-
-  .gap-responsive-md {
-    @apply gap-4 sm:gap-6 xl:gap-8;
-  }
-
-  .gap-responsive-lg {
-    @apply gap-6 sm:gap-8 xl:gap-10;
-  }
 }
 
 /* Custom styles for product pages */
