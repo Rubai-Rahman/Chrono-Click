@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import ShopPageContent from './page-shop';
+import ProductsPageContent from './page-products';
 
 export const metadata: Metadata = {
   title: 'Chrono Click - Shop',
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const ShopPage = () => {
-  return <ShopPageContent />;
+  return <ProductsPageContent />;
 };
 
 export default ShopPage;

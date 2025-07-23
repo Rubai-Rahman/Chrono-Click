@@ -5,9 +5,9 @@ import { fetchPages } from '@/api-lib/products';
 import { notFound, useSearchParams, useRouter } from 'next/navigation';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import ProductSkeleton from '@/components/skeletons/product-skeleton';
-import Shop from '@/components/shop/shop';
+import Products from '@/components/products/products';
 
-const ShopPageContent = () => {
+const ProductsPageContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -37,7 +37,7 @@ const ShopPageContent = () => {
   };
 
   return (
-    <Shop
+    <Products
       products={products.products}
       totalPages={totalPages}
       currentPage={page}
@@ -46,4 +46,4 @@ const ShopPageContent = () => {
   );
 };
 
-export default ShopPageContent;
+export default ProductsPageContent;

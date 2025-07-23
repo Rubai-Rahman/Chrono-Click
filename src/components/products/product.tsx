@@ -50,7 +50,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   const router = useRouter();
 
   const handleDetails = () => {
-    router.push(`/products/${_id}`);
+    router.push(`/product/${_id}`);
   };
 
   const { addToCart } = useCartStore();

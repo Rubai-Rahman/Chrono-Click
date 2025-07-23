@@ -1,4 +1,4 @@
-import type { Product as ProductType } from '@/api-lib/api-type';
+import type { ProductType } from '@/api-lib/api-type';
 import Product from './product';
 import {
   Pagination,
@@ -16,7 +16,7 @@ interface ShopProps {
   onPageChange: (page: number) => void;
 }
 
-const Shop = ({
+const Products = ({
   products,
   totalPages,
   currentPage,
@@ -75,7 +75,7 @@ const Shop = ({
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (currentPage === totalPages - 1) return; // disabled হলে কাজ বন্ধ
+                  if (currentPage === totalPages - 1) return;
                   onPageChange(currentPage + 1);
                 }}
                 className={
@@ -93,4 +93,4 @@ const Shop = ({
   );
 };
 
-export default Shop;
+export default Products;

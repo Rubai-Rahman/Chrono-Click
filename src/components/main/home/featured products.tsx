@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import Product from '../../shop/product';
+import Product from '../../products/product';
 import { useQuery } from '@tanstack/react-query';
 import { fetchData, ProductsResponse } from '@/api-lib/products';
 import {
