@@ -29,15 +29,15 @@ const INCONSISTENT_PATTERNS = [
 
 // Recommended replacements
 const RECOMMENDATIONS = {
-  'container mx-auto px-4': 'container-base',
-  'py-8': 'section-sm',
-  'py-10': 'section-md',
-  'py-12': 'section-md',
-  'py-16': 'section-lg',
-  'p-6': 'card-padding-md',
-  'p-8': 'card-padding-lg',
-  'gap-4': 'gap-responsive-md',
-  'gap-6': 'gap-responsive-lg',
+  'container mx-auto px-4': '',
+  'py-8': '',
+  'py-10': '',
+  'py-12': '',
+  'py-16': '',
+  'p-6': '',
+  'p-8': '',
+  'gap-4': '',
+  'gap-6': '',
 };
 
 function checkFile(filePath) {
@@ -124,18 +124,10 @@ if (Object.keys(results).length === 0) {
   });
 
   console.log('💡 Tips:');
-  console.log(
-    '   - Use container-base, container-narrow, or container-wide for containers'
-  );
-  console.log(
-    '   - Use section-sm, section-md, section-lg, section-xl for section spacing'
-  );
-  console.log(
-    '   - Use card-padding-sm, card-padding-md, card-padding-lg for card padding'
-  );
-  console.log(
-    '   - Use gap-responsive-sm, gap-responsive-md, gap-responsive-lg for gaps'
-  );
+  console.log('   - Use , , or  for containers');
+  console.log('   - Use , , ,  for section spacing');
+  console.log('   - Use , ,  for card padding');
+  console.log('   - Use , ,  for gaps');
   console.log('   - See SPACING_SYSTEM.md for complete documentation');
 }
 

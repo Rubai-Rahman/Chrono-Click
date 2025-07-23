@@ -23,6 +23,7 @@ const FeaturedProducts = () => {
 
   if (isLoading) return <FeaturedProductSkeleton />;
   if (isError) return <ErrorResultMessage />;
+  moved;
   if (!products) return <NotFoundMessage />;
 
   const random = products.products.sort(() => 0.5 - Math.random()).slice(0, 4);
@@ -38,7 +39,7 @@ const FeaturedProducts = () => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-responsive-md justify-items-center mb-12 sm:mb-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-col-5 gap-4 justify-items-center mb-12 sm:mb-16">
         {random.map((product) => (
           <Product key={product._id} product={product} />
         ))}

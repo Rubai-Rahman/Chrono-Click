@@ -123,7 +123,7 @@ const Review = () => {
                 className="pl-4 md:basis-1/2 lg:basis-1/3"
               >
                 <Card className="group h-full bg-card/70 border-0 shadow-lg hover:shadow-xl backdrop-blur">
-                  <CardContent className="card-padding-md h-full flex flex-col">
+                  <CardContent className=" h-full flex flex-col">
                     <div className="mb-6">
                       <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20">
                         <Quote className="w-6 h-6 text-primary" />

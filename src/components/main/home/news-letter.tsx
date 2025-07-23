@@ -70,7 +70,7 @@ const Newsletter = () => {
           <CardContent className="p-0">
             <div className="grid lg:grid-cols-2">
               {/* Left Side - Content */}
-              <div className="card-padding-lg">
+              <div className="">
                 <div className="mb-8">
                   <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm mb-6">
                     <Bell className="w-4 h-4" />
@@ -167,7 +167,7 @@ const Newsletter = () => {
                 </p>
               </div>
 
-              <div className="bg-primary/10 card-padding-lg flex items-center justify-center">
+              <div className="bg-primary/10  flex items-center justify-center">
                 <div className="text-center">
                   <div className="w-32 h-32 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Bell className="w-16 h-16 text-primary" />

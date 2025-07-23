@@ -21,17 +21,17 @@ const PageWrapper: React.FC<PageWrapperProps> = ({
   as: Component = 'section',
 }) => {
   const containerClass = {
-    base: 'container-base',
-    narrow: 'container-narrow',
-    wide: 'container-wide',
-    full: 'container-full',
+    base: 'container mx-auto',
+    narrow: '',
+    wide: '',
+    full: '',
   }[containerSize];
 
   const spacingClass = {
-    sm: 'section-sm',
-    md: 'section-md',
-    lg: 'section-lg',
-    xl: 'section-xl',
+    sm: '',
+    md: '',
+    lg: '',
+    xl: '',
   }[spacing];
 
   return (

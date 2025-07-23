@@ -11,14 +11,14 @@ const Brands = () => {
       containerSize="wide"
       className="bg-gradient-to-br from-primary/5 to-accent/5"
     >
-      <div className="bg-card rounded-2xl card-padding-lg">
+      <div className="bg-card rounded-2xl ">
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-2xl font-semibold text-primary mb-4">
             OUR BRANDS
           </h2>
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-10 gap-responsive-md items-center">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-10  items-center">
           {brands.map((brand, index) => (
             <div
               key={index}

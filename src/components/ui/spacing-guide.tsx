@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 
 const SpacingGuide = () => {
   return (
-    <div className="container-base section-md">
+    <div className=" ">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">Spacing System Guide</h1>
         <p className="text-muted-foreground">
@@ -26,20 +26,20 @@ const SpacingGuide = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Badge variant="outline">container-base</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Standard container with responsive padding: container mx-auto
                 px-4 sm:px-6 lg:px-8
               </p>
             </div>
             <div className="space-y-2">
-              <Badge variant="outline">container-narrow</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Narrow container for content: max-w-4xl
               </p>
             </div>
             <div className="space-y-2">
-              <Badge variant="outline">container-wide</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Wide container for full sections: max-w-7xl
               </p>
@@ -54,25 +54,25 @@ const SpacingGuide = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Badge variant="outline">section-sm</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Small sections: py-8 sm:py-12
               </p>
             </div>
             <div className="space-y-2">
-              <Badge variant="outline">section-md</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Medium sections (most common): py-12 sm:py-16 lg:py-20
               </p>
             </div>
             <div className="space-y-2">
-              <Badge variant="outline">section-lg</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Large sections: py-16 sm:py-20 lg:py-24
               </p>
             </div>
             <div className="space-y-2">
-              <Badge variant="outline">section-xl</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Extra large sections: py-20 sm:py-24 lg:py-32
               </p>
@@ -87,19 +87,19 @@ const SpacingGuide = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Badge variant="outline">card-padding-sm</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Small card padding: p-4 sm:p-6
               </p>
             </div>
             <div className="space-y-2">
-              <Badge variant="outline">card-padding-md</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Medium card padding: p-6 sm:p-8
               </p>
             </div>
             <div className="space-y-2">
-              <Badge variant="outline">card-padding-lg</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Large card padding: p-8 sm:p-10 lg:p-12
               </p>
@@ -114,19 +114,19 @@ const SpacingGuide = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Badge variant="outline">gap-responsive-sm</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Small responsive gap: gap-3 sm:gap-4
               </p>
             </div>
             <div className="space-y-2">
-              <Badge variant="outline">gap-responsive-md</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Medium responsive gap: gap-4 sm:gap-6
               </p>
             </div>
             <div className="space-y-2">
-              <Badge variant="outline">gap-responsive-lg</Badge>
+              <Badge variant="outline"></Badge>
               <p className="text-sm text-muted-foreground">
                 Large responsive gap: gap-6 sm:gap-8
               </p>
@@ -143,8 +143,8 @@ const SpacingGuide = () => {
             <div>
               <h4 className="font-semibold mb-2">Standard Page Section</h4>
               <code className="text-sm bg-muted p-2 rounded block">
-                {`<section className="section-md">
-  <div className="container-base">
+                {`<section className="">
+  <div className="">
     <!-- content -->
   </div>
 </section>`}
@@ -154,7 +154,7 @@ const SpacingGuide = () => {
             <div>
               <h4 className="font-semibold mb-2">Product Grid</h4>
               <code className="text-sm bg-muted p-2 rounded block">
-                {`<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-responsive-md">
+                {`<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
   <!-- products -->
 </div>`}
               </code>
@@ -164,7 +164,7 @@ const SpacingGuide = () => {
               <h4 className="font-semibold mb-2">Card Component</h4>
               <code className="text-sm bg-muted p-2 rounded block">
                 {`<Card>
-  <CardContent className="card-padding-md">
+  <CardContent className="">
     <!-- content -->
   </CardContent>
 </Card>`}
