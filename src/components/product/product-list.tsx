@@ -1,4 +1,4 @@
-import type { Product as ProductType } from '@/api-lib/products';
+import type { ProductType } from '@/api-lib/api-type';
 import Product from '@/components/products/product';
 import {
   Pagination,

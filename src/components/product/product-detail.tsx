@@ -2,11 +2,20 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { ProductType } from '@/app/product/[id]/page-product-detail';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb';
 import { useCartStore } from '@/store/useCartStore';
+import { StarRating } from '@/components/ui/render-star';
 import {
   Heart,
   Share2,
@@ -17,35 +26,17 @@ import {
   Check,
   Minus,
   Plus,
-  Star,
 } from 'lucide-react';
+import { ProductType } from '@/api-lib/api-type';
 
-interface ProductDetailProps {
-  product: ProductType;
-}
-
-const renderStars = (rating = 0) => {
-  const stars = [];
-  for (let i = 1; i <= 5; i++) {
-    stars.push(
-      <Star
-        key={i}
-        className={`w-4 h-4 ${
-          i <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
-        }`}
-      />
-    );
-  }
-  return stars;
-};
-
-export default function ProductDetail({ product }: ProductDetailProps) {
-  const [quantity, setQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+export default function ProductDetail({ product }: { product: ProductType }) {
+  console.log('products', product);
   const { addToCart } = useCartStore();
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   const handleQuantityChange = (change: number) => {
-    setQuantity(Math.max(1, quantity + change));
+    setQuantity((prev) => Math.max(1, prev + change));
   };
 
   const handleAddToCart = () => {
@@ -58,33 +49,55 @@ export default function ProductDetail({ product }: ProductDetailProps) {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/5 to-background">
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
-          <span>Home</span>
-          <span>/</span>
-          <span>Products</span>
-          <span>/</span>
-          <span className="text-foreground font-medium">{product.name}</span>
-        </nav>
+        <Breadcrumb className="mb-8">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/products">Products</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            {product.category && (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href={`/products?category=${product.category}`}>
+                      {product.category}
+                    </Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+              </>
+            )}
+            <BreadcrumbItem>
+              <BreadcrumbPage>{product.name}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          {/* Image */}
-          <div className="space-y-4">
-            <div className="relative group">
-              <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-muted/20 to-muted/5 border border-border/50">
-                <Image
-                  src={product.img || '/placeholder.svg?height=600&width=600'}
-                  alt={product.name}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                {!product.inStock && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <Badge variant="destructive" className="text-lg px-4 py-2">
-                      Out of Stock
-                    </Badge>
-                  </div>
-                )}
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Product Image */}
+          <div className="relative group">
+            <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-muted/20 to-muted/5 border border-border/50 shadow-lg">
+              <Image
+                src={product.img || '/placeholder.svg?height=600&width=600'}
+                alt={product.name}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              {!product.inStock && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <Badge variant="destructive" className="text-lg px-4 py-2">
+                    Out of Stock
+                  </Badge>
+                </div>
+              )}
             </div>
           </div>
 
@@ -92,7 +105,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           <div className="space-y-6">
             {/* Header */}
             <div>
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-4">
                 {product.brand && (
                   <Badge
                     variant="secondary"
@@ -101,7 +114,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                     {product.brand}
                   </Badge>
                 )}
-                {product.inStock && (
+                {product.inStock ? (
                   <Badge
                     variant="secondary"
                     className="bg-green-100 text-green-800"
@@ -109,8 +122,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                     <Check className="w-3 h-3 mr-1" />
                     In Stock
                   </Badge>
+                ) : (
+                  <Badge variant="destructive">Out of Stock</Badge>
                 )}
               </div>
+
               <h1 className="text-4xl font-bold text-foreground mb-4">
                 {product.name}
               </h1>
@@ -119,9 +135,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               {product.rating && (
                 <div className="flex items-center gap-4 mb-4">
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center">
-                      {renderStars(product.rating)}
-                    </div>
+                    <StarRating rating={product.rating} />
                     <span className="font-semibold">{product.rating}</span>
                   </div>
                   <span className="text-muted-foreground">
@@ -139,17 +153,17 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             </div>
 
             {/* Description */}
-            {(product.description || product.details) && (
+            {product.description && (
               <p className="text-muted-foreground leading-relaxed">
-                {product.description || product.details}
+                {product.description}
               </p>
             )}
 
             {/* Category */}
             {product.category && (
-              <div>
+              <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-muted-foreground">
-                  Category:{' '}
+                  Category:
                 </span>
                 <Badge variant="outline">{product.category}</Badge>
               </div>
@@ -186,7 +200,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               <div className="flex gap-4">
                 <Button
                   size="lg"
-                  className="flex-1 h-12 text-lg font-semibold"
+                  className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
                   disabled={!product.inStock}
                   onClick={handleAddToCart}
                 >
@@ -213,27 +227,31 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
             {/* Trust Badges */}
             <div className="grid grid-cols-3 gap-4 pt-6">
-              <div className="flex flex-col items-center text-center p-4 bg-card/50 rounded-lg border border-border/50">
-                <Truck className="w-8 h-8 text-primary mb-2" />
-                <span className="text-sm font-medium">Free Shipping</span>
-                <span className="text-xs text-muted-foreground">
-                  On orders $50+
-                </span>
-              </div>
-              <div className="flex flex-col items-center text-center p-4 bg-card/50 rounded-lg border border-border/50">
-                <RotateCcw className="w-8 h-8 text-primary mb-2" />
-                <span className="text-sm font-medium">30-Day Returns</span>
-                <span className="text-xs text-muted-foreground">
-                  Easy returns
-                </span>
-              </div>
-              <div className="flex flex-col items-center text-center p-4 bg-card/50 rounded-lg border border-border/50">
-                <Shield className="w-8 h-8 text-primary mb-2" />
-                <span className="text-sm font-medium">2-Year Warranty</span>
-                <span className="text-xs text-muted-foreground">
-                  Full coverage
-                </span>
-              </div>
+              <Card>
+                <CardContent className="p-0">
+                  <Truck className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <h4 className="text-sm font-medium">Free Shipping</h4>
+                  <p className="text-xs text-muted-foreground">
+                    On orders $50+
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="p-4 text-center">
+                <CardContent className="p-0">
+                  <RotateCcw className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <h4 className="text-sm font-medium">30-Day Returns</h4>
+                  <p className="text-xs text-muted-foreground">Easy returns</p>
+                </CardContent>
+              </Card>
+
+              <Card className="p-4 text-center">
+                <CardContent className="p-0">
+                  <Shield className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <h4 className="text-sm font-medium">2-Year Warranty</h4>
+                  <p className="text-xs text-muted-foreground">Full coverage</p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>

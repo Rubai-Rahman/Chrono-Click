@@ -1,18 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-interface CartItem {
-  _id: string;
-  name: string;
-  price: number;
-  img: string;
-  brand?: string;
-  quantity?: number;
-}
+import { CartItem, ProductType } from '@/api-lib/api-type';
 
 interface CartStore {
   items: CartItem[];
-  addToCart: (item: CartItem) => void;
+  addToCart: (item: ProductType) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;

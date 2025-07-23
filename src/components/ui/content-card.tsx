@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { StarRating } from '@/components/ui/render-start';
+import { StarRating } from '@/components/ui/render-star';
 
 interface ContentCardProps {
   id: string;

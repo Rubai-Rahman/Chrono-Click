@@ -13,7 +13,7 @@ import { fetchData } from '@/api-lib/products';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import { Quote, Users, Award, Sparkles } from 'lucide-react';
 import { useRef } from 'react';
-import { StarRating } from '@/components/ui/render-start';
+import { StarRating } from '@/components/ui/render-star';
 import CardSkeleton from '@/components/skeletons/review-skeleton';
 import Autoplay from 'embla-carousel-autoplay';
 import { ReviewType } from '@/api-lib/api-type';

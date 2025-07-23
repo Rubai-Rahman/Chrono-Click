@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description: 'View detailed information about our premium products.',
 };
 
-export default function ProductPage() {
-  return <ProductDetailPageContent />;
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>; // ✅ Promise in Next.js 15+
+}) {
+  const { id } = await params;
+  return <ProductDetailPageContent productId={id} />;
 }

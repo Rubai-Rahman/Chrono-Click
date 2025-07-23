@@ -8,42 +8,16 @@ import { Button } from '@/components/ui/button';
 import { Eye, Heart, ShoppingCart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-
-interface Product {
-  _id: string;
-  name: string;
-  description?: string;
-  price: number;
-  img: string;
-  inStock?: boolean;
-  category?: string;
-  brand?: string;
-  rating?: number;
-  reviews?: number;
-}
-
-interface ProductProps {
-  product: Product;
-}
-
-const renderStars = (rating = 0) => {
-  const stars = [];
-  for (let i = 1; i <= 5; i++) {
-    stars.push(
-      <span
-        key={i}
-        className={i <= rating ? 'text-yellow-400' : 'text-gray-300'}
-      >
-        ★
-      </span>
-    );
-  }
-  return stars;
-};
+import { StarRating } from '../ui/render-star';
+import { ProductType } from '@/api-lib/api-type';
 
 const formatPrice = (price: number) => {
   return `$${Number(price).toFixed(2)}`;
 };
+
+interface ProductProps {
+  product: ProductType;
+}
 
 const Product: React.FC<ProductProps> = ({ product }) => {
   const { _id, name, price, img } = product;
@@ -116,18 +90,11 @@ const Product: React.FC<ProductProps> = ({ product }) => {
           <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
             {name}
           </h3>
-
-          {/* {product.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {product.description}
-            </p>
-          )} */}
-
           {/* Rating */}
           {product.rating && (
             <div className="flex items-center gap-2">
               <div className="flex items-center">
-                {renderStars(product.rating)}
+                <StarRating rating={product.rating} />
               </div>
               <span className="text-sm font-medium text-foreground">
                 {product.rating}
