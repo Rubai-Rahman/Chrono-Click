@@ -80,7 +80,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
         </div>
 
         {/* Card Content */}
-        <div className="p-6 space-y-4">
+        <div className="card-padding-md space-y-4">
           {product.brand && (
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
               {product.brand}

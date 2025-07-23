@@ -8,6 +8,7 @@ import {
   NotFoundMessage,
 } from '@/components/ui/data-result-message';
 import FeaturedProductSkeleton from '@/components/skeletons/featured-product-skeleton';
+import PageWrapper from '@/components/layout/page-wrapper';
 import Link from 'next/link';
 
 const FeaturedProducts = () => {
@@ -27,29 +28,31 @@ const FeaturedProducts = () => {
   const random = products.products.sort(() => 0.5 - Math.random()).slice(0, 4);
 
   return (
-    <>
-      <div className="text-center py-8">
-        <h4 className="text-lg font-semibold text-foreground">
+    <PageWrapper spacing="md" containerSize="base">
+      <div className="text-center mb-12 sm:mb-16">
+        <h4 className="text-lg font-semibold text-foreground mb-4">
           LATEST WATCHES YOU CAN&apos;T RESIST!
         </h4>
-        <h2 className="text-4xl font-bold text-primary mt-2">
+        <h2 className="text-4xl font-bold text-primary">
           Universal Timekeepers of the world
         </h2>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-responsive-md justify-items-center mb-12 sm:mb-16">
         {random.map((product) => (
           <Product key={product._id} product={product} />
         ))}
       </div>
-      <div className="flex justify-center my-8">
+
+      <div className="flex justify-center">
         <Link
           href="/shop"
-          className="px-6 md:px-9 lg:px-9 py-3 md:py-4 border border-primary hover:bg-primary text-foreground transition-colors duration-300"
+          className="px-8 py-4 sm:px-10 sm:py-5 border border-primary hover:bg-primary text-foreground transition-colors duration-300 rounded-lg"
         >
           Explore
         </Link>
       </div>
-    </>
+    </PageWrapper>
   );
 };
 

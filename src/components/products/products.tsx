@@ -1,5 +1,6 @@
 import type { ProductType } from '@/api-lib/api-type';
 import Product from './product';
+import PageWrapper from '@/components/layout/page-wrapper';
 import {
   Pagination,
   PaginationContent,
@@ -23,21 +24,21 @@ const Products = ({
   onPageChange,
 }: ShopProps) => {
   return (
-    <>
-      <div className="text-center py-8">
-        <h4 className="text-lg font-semibold text-foreground">
+    <PageWrapper spacing="md" containerSize="base">
+      <div className="text-center mb-12 sm:mb-16">
+        <h4 className="text-lg font-semibold text-foreground mb-4">
           LATEST WATCHES YOU CAN&apos;T RESIST!
         </h4>
-        <h2 className="text-4xl font-bold text-primary mt-2">
-          Find Your Watch
-        </h2>
+        <h2 className="text-4xl font-bold text-primary">Find Your Watch</h2>
       </div>
-      <div className="container mx-auto  space-y-5 ">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
-          {products.map((product) => (
-            <Product key={product._id} product={product} />
-          ))}
-        </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-responsive-md justify-items-center mb-12 sm:mb-16">
+        {products.map((product) => (
+          <Product key={product._id} product={product} />
+        ))}
+      </div>
+
+      <div className="flex justify-center">
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -45,7 +46,7 @@ const Products = ({
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (currentPage === 0) return; // disabled হলে কাজ বন্ধ
+                  if (currentPage === 0) return;
                   onPageChange(currentPage - 1);
                 }}
                 className={
@@ -89,7 +90,7 @@ const Products = ({
           </PaginationContent>
         </Pagination>
       </div>
-    </>
+    </PageWrapper>
   );
 };
 
