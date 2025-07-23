@@ -92,7 +92,7 @@ const News = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="text-center mt-16 max-w-7xl">
+        <div className="text-center  max-w-7xl">
           <div className="inline-flex flex-col items-center gap-6 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 shadow-lg">
             <div className="text-center">
               <h3 className="text-2xl font-bold text-foreground mb-2">

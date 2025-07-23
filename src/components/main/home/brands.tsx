@@ -1,88 +1,15 @@
 'use client';
 
+import { brands } from '@/lib/constant';
 import Image from 'next/image';
-
-// Brand data - Add your own image URLs here
-const brands = [
-  {
-    name: 'CARTIER',
-    logo: '/brands/cartier.png', // Add your image to public/brands/ folder
-    alt: 'Cartier logo',
-  },
-  {
-    name: 'CASIO',
-    logo: '/brands/casio.png',
-    alt: 'Casio logo',
-  },
-  {
-    name: 'CITIZEN',
-    logo: '/brands/citizen.png',
-    alt: 'Citizen logo',
-  },
-  {
-    name: 'SEIKO',
-    logo: '/brands/seiko.png',
-    alt: 'Seiko logo',
-  },
-  {
-    name: 'TIMEX',
-    logo: '/brands/timex.png',
-    alt: 'Timex logo',
-  },
-  {
-    name: 'TITAN',
-    logo: '/brands/titan.png',
-    alt: 'Titan logo',
-  },
-  {
-    name: 'MONTBLANC',
-    logo: '/brands/montblanc.png',
-    alt: 'Montblanc logo',
-  },
-  {
-    name: 'ROLEX',
-    logo: '/brands/rolex.png',
-    alt: 'Rolex logo',
-  },
-  {
-    name: 'OMEGA',
-    logo: '/brands/omega.png',
-    alt: 'Omega logo',
-  },
-  {
-    name: 'TAG HEUER',
-    logo: '/brands/tag-heuer.png',
-    alt: 'TAG Heuer logo',
-  },
-  {
-    name: 'BREITLING',
-    logo: '/brands/breitling.png',
-    alt: 'Breitling logo',
-  },
-  {
-    name: 'FOSSIL',
-    logo: '/brands/fossil.png',
-    alt: 'Fossil logo',
-  },
-  {
-    name: 'TISSOT',
-    logo: '/brands/tissot.png',
-    alt: 'Tissot logo',
-  },
-  {
-    name: 'LONGINES',
-    logo: '/brands/longines.png',
-    alt: 'Longines logo',
-  },
-];
 
 const Brands = () => {
   return (
-    <section className="py-12 bg-foreground/50">
+    <section className="py-12 bg-card/70">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-priamry mb-4">
+          <h2 className="text-lg font-semibold text-primary mb-4">
             OUR BRANDS
           </h2>
         </div>
