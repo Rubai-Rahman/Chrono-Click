@@ -22,7 +22,7 @@ export default function Error({
         <div className="bg-white rounded-lg shadow-lg p-8">
           {/* Error Icon */}
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
-            <AlertTriangle className="h-8 w-8 text-red-600" />
+            <AlertTriangle className="h-8 w-8 text-destructive" />
           </div>
 
           {/* Error Message */}
@@ -31,8 +31,8 @@ export default function Error({
           </h1>
 
           <p className="text-gray-600 mb-6">
-            We encountered an unexpected error. Don't worry, our team has been
-            notified and we're working to fix it.
+            We encountered an unexpected error. Don&apos;t worry, our team has
+            been notified and we&apos;re working to fix it.
           </p>
 
           {/* Error Details (only in development) */}

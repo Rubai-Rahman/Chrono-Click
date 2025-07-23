@@ -44,9 +44,9 @@ const News = () => {
     <section className=" bg-gradient-to-br from-background via-muted/10 to-background relative overflow-hidden">
       {/* Background Decorations */}
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 py-6 space-y-8 relative z-10">
         {/* Header Section */}
-        <div className="text-center mb-16">
+        <div className="text-center">
           <h2 className="text-lg font-semibold text-muted-foreground mb-4 tracking-wide uppercase">
             Time is Precious ... Check Out Now
           </h2>
@@ -92,8 +92,8 @@ const News = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="text-center  max-w-7xl">
-          <div className="inline-flex flex-col items-center gap-6 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 shadow-lg">
+        <div className="w-full">
+          <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-lg flex flex-col items-center gap-6 p-8">
             <div className="text-center">
               <h3 className="text-2xl font-bold text-foreground mb-2">
                 Want to read more?

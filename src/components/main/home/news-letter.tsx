@@ -59,7 +59,7 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-primary/5 to-accent/5 relative">
+    <section className="py-10 bg-gradient-to-br from-primary/5 to-accent/5 relative">
       <div className="container mx-auto px-4">
         <div className="max-w-7xl mx-auto">
           <Card className="shadow-xl bg-card/90">
