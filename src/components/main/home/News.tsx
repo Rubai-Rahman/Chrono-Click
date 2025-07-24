@@ -17,7 +17,6 @@ import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import PageWrapper from '@/components/layout/page-wrapper';
 
 const News = () => {
   const plugin = useRef(
@@ -42,11 +41,7 @@ const News = () => {
   if (isError && !news) return <ErrorResultMessage />;
 
   return (
-    <PageWrapper
-      spacing="md"
-      containerSize="base"
-      className="bg-gradient-to-br from-background via-muted/10 to-background relative overflow-hidden"
-    >
+    <div className="bg-gradient-to-br from-background via-muted/10 to-background relative overflow-hidden">
       {/* Background Decorations */}
       <div className="space-y-8 sm:space-y-12 relative z-10">
         {/* Header Section */}
@@ -120,7 +115,7 @@ const News = () => {
           </div>
         </div>
       </div>
-    </PageWrapper>
+    </div>
   );
 };
 

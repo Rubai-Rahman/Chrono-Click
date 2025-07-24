@@ -43,22 +43,18 @@ const Review = () => {
 
   if (!reviews.length) {
     return (
-      <PageWrapper spacing="md" containerSize="base" className="text-center">
+      <div className="text-center">
         <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
         <h3 className="text-xl font-semibold mb-2">No reviews yet</h3>
         <p className="text-muted-foreground">
           Be the first to share your experience!
         </p>
-      </PageWrapper>
+      </div>
     );
   }
 
   return (
-    <PageWrapper
-      spacing="md"
-      containerSize="base"
-      className="bg-gradient-to-br from-background via-muted/10 to-background relative"
-    >
+    <div className="bg-gradient-to-br from-background via-muted/10 to-background relative">
       {/* Header */}
       <div className="text-center mb-12 sm:mb-16">
         <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
@@ -178,7 +174,7 @@ const Review = () => {
           </CarouselContent>
         </Carousel>
       </div>
-    </PageWrapper>
+    </div>
   );
 };
 
