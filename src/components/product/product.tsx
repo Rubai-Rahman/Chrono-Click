@@ -31,7 +31,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
 
   return (
     <Card className="group w-full sm:max-w-xs md:max-w-sm lg:max-w-md rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 bg-card/60 backdrop-blur-md border">
-      <CardContent className="p-0">
+      <CardContent className="p-2">
         {/* Image */}
         <div className="w-full relative overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40 flex justify-center">
           <Image

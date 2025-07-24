@@ -24,7 +24,7 @@ const Products = ({
   onPageChange,
 }: ShopProps) => {
   return (
-    <PageWrapper spacing="md" containerSize="base">
+    <div>
       <div className="text-center mb-12 sm:mb-16">
         <h4 className="text-lg font-semibold text-foreground mb-4">
           LATEST WATCHES YOU CAN&apos;T RESIST!
@@ -90,7 +90,7 @@ const Products = ({
           </PaginationContent>
         </Pagination>
       </div>
-    </PageWrapper>
+    </div>
   );
 };
 
