@@ -14,7 +14,7 @@ import { slides } from '@/lib/constant';
 import { useRef } from 'react';
 
 const Slider = () => {
-  const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: false }));
+  const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: false }));
 
   return (
     <div className="w-full overflow-hidden">
