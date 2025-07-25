@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import FeaturedProducts from '@/components/main/home/featured products';
+import FeaturedProducts from '@/components/main/home/featured-products';
 import Review from '@/components/main/home/review';
 import Brands from '@/components/main/home/brands';
 import Slider from '@/components/main/home/slider';
