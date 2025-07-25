@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/form';
 import { Mail, Send, Sparkles, Gift, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import PageWrapper from '@/components/layout/page-wrapper';
 
 // Zod schema for email validation
 const newsletterSchema = z.object({

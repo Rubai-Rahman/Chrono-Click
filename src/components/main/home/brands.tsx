@@ -2,7 +2,6 @@
 
 import { brands } from '@/lib/constant';
 import Image from 'next/image';
-import PageWrapper from '@/components/layout/page-wrapper';
 
 const Brands = () => {
   return (

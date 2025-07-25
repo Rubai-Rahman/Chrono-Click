@@ -8,7 +8,6 @@ import {
   NotFoundMessage,
 } from '@/components/ui/data-result-message';
 import FeaturedProductSkeleton from '@/components/skeletons/featured-product-skeleton';
-import PageWrapper from '@/components/layout/page-wrapper';
 import Link from 'next/link';
 
 const FeaturedProducts = () => {
@@ -39,7 +38,7 @@ const FeaturedProducts = () => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 2xl:grid-col-6 gap-4 justify-items-center mb-12 sm:mb-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-col-6 gap-4 justify-items-center mb-12 sm:mb-16 ">
         {random.map((product) => (
           <Product key={product._id} product={product} />
         ))}

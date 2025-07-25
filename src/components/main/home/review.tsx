@@ -17,7 +17,6 @@ import { StarRating } from '@/components/ui/render-star';
 import CardSkeleton from '@/components/skeletons/review-skeleton';
 import Autoplay from 'embla-carousel-autoplay';
 import { ReviewType } from '@/api-lib/api-type';
-import PageWrapper from '@/components/layout/page-wrapper';
 
 const Review = () => {
   const plugin = useRef(
