@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/data-result-message';
 import FeaturedProductSkeleton from '@/components/skeletons/featured-product-skeleton';
 import Link from 'next/link';
+import Container from '@/components/layout/container';
 
 const FeaturedProducts = () => {
   const {
@@ -28,7 +29,7 @@ const FeaturedProducts = () => {
   const random = products.products.sort(() => 0.5 - Math.random()).slice(0, 6);
 
   return (
-    <div>
+    <Container>
       <div className="text-center mb-12 sm:mb-16">
         <h4 className="text-lg font-semibold text-foreground mb-4">
           LATEST WATCHES YOU CAN&apos;T RESIST!
@@ -38,7 +39,7 @@ const FeaturedProducts = () => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-4 justify-items-center mb-12 sm:mb-16 ">
+      <div className="responsive-grid mb-12 sm:mb-16 ">
         {random.map((product) => (
           <Product key={product._id} product={product} />
         ))}
@@ -46,13 +47,13 @@ const FeaturedProducts = () => {
 
       <div className="flex justify-center">
         <Link
-          href="/shop"
+          href="/products"
           className="px-8 py-4 sm:px-10 sm:py-5 border border-primary hover:bg-primary text-foreground transition-colors duration-300 rounded-lg"
         >
           Explore
         </Link>
       </div>
-    </div>
+    </Container>
   );
 };
 

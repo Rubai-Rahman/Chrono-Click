@@ -216,3 +216,13 @@ body::-webkit-scrollbar-thumb:hover,
 .dark *::-webkit-scrollbar-thumb:hover {
   background-color: oklch(0.7033 0.0948 83.89);
 }
+
+.responsive-space-x {
+  @apply px-2 md:px-6 lg:px-8 xl:px-10 2xl:px-12;
+}
+.responsive-space-y {
+  @apply py-2 md-py-6;
+}
+.responsive-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-4 justify-items-center;
+}

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 const HomePage = () => {
   return (
-    <div className="px-6 flex flex-col gap-y-3">
+    <div className="">
       <Slider />
       <FeaturedProducts />
       <Banner />
