@@ -8,6 +8,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import Container from '../layout/container';
 
 interface ShopProps {
   products: ProductType[];
@@ -23,7 +24,7 @@ const Products = ({
   onPageChange,
 }: ShopProps) => {
   return (
-    <div>
+    <Container>
       <div className="text-center mb-12 sm:mb-16">
         <h4 className="text-lg font-semibold text-foreground mb-4">
           LATEST WATCHES YOU CAN&apos;T RESIST!
@@ -31,13 +32,13 @@ const Products = ({
         <h2 className="text-4xl font-bold text-primary">Find Your Watch</h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  justify-items-center mb-12 sm:mb-16">
+      <div className="responsive-grid">
         {products.map((product) => (
           <Product key={product._id} product={product} />
         ))}
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center py-4">
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -89,7 +90,7 @@ const Products = ({
           </PaginationContent>
         </Pagination>
       </div>
-    </div>
+    </Container>
   );
 };
 

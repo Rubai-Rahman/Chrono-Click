@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
 import useAuth from '@/hooks/useAuth';
 
@@ -18,25 +17,6 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
-
-  const {
-    allContexts: { signInUser },
-  } = useAuth();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    try {
-      await signInUser(email, password);
-      router.push('/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex">
@@ -66,23 +46,6 @@ const LoginForm = () => {
         <div className="w-full max-w-md space-y-8">
           {/* Header */}
           <div className="text-center">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <Image
-                src="/favicon.png"
-                alt="Chrono Click"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-              <div>
-                <h2 className="text-2xl font-bold text-primary">
-                  CHRONO CLICK
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Premium Timepieces
-                </p>
-              </div>
-            </div>
             <h3 className="text-3xl font-bold text-foreground">Sign In</h3>
             <p className="text-muted-foreground mt-2">
               Enter your credentials to access your account
@@ -95,7 +58,7 @@ const LoginForm = () => {
               <CardTitle className="text-center">Welcome Back</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form className="space-y-6">
                 {error && (
                   <div className="p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg">
                     <p className="text-red-800 dark:text-red-200 text-sm">
@@ -202,7 +165,7 @@ const LoginForm = () => {
 
               <div className="mt-6 text-center">
                 <p className="text-muted-foreground">
-                  Don't have an account?{' '}
+                  Don&apos;t have an account?{' '}
                   <Link
                     href="/signup"
                     className="text-primary hover:text-primary/80 font-medium"

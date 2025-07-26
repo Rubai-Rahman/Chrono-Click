@@ -18,7 +18,7 @@ import { navItems } from '@/lib/constant';
 const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
 
 const Navbar = () => {
-  const auth = true;
+  const auth = false;
 
   return (
     <nav className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -86,7 +86,7 @@ const Navbar = () => {
             ) : (
               <div className="flex items-center gap-2">
                 <Button variant="ghost" asChild>
-                  <Link href="/login">Sign In</Link>
+                  <Link href="/login">Log In</Link>
                 </Button>
               </div>
             )}
@@ -159,7 +159,7 @@ const Navbar = () => {
                           asChild
                           className="w-full bg-transparent"
                         >
-                          <Link href="/login">Sign In</Link>
+                          <Link href="/login">Log In</Link>
                         </Button>
                         <Button
                           asChild

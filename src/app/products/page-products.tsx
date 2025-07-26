@@ -12,7 +12,7 @@ const ProductsPageContent = () => {
   const router = useRouter();
 
   const page = Number(searchParams.get('page') || '0');
-  const size = 12;
+  const size = 16;
 
   const {
     data: products,
