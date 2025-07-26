@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import icon from '../../../../public/favicon.png';
-import { Facebook, Instagram, Linkedin, X } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
 const Footer = () => {
   const sections = [
@@ -55,12 +55,12 @@ const Footer = () => {
       href: 'https://www.linkedin.com/in/rubai-rahman-116707216/',
       icon: <Linkedin />,
     },
-    { href: 'https://twitter.com/home', icon: <X /> },
+    { href: 'https://twitter.com/home', icon: <Twitter /> },
   ];
 
   return (
     <footer className="bg-background  py-10 mt-20">
-      <div className="container mx-auto px-4">
+      <div className="w-full mx-auto responsive-space-x">
         {/* Top Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
           {sections.map((section, idx) => (

@@ -3,7 +3,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import logo from '../../../../public/favicon.png';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Menu, User } from 'lucide-react';
 import { Suspense, lazy } from 'react';
@@ -101,6 +106,7 @@ const Navbar = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[280px] sm:w-[350px]">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 <div className="flex flex-col h-full">
                   {/* Mobile Header */}
                   <div className="flex items-center gap-3 pb-6 border-b border-border">
