@@ -3,27 +3,30 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Mail, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-
-type FormData = {
-  email: string;
-};
+import {
+  forgotPasswordSchema,
+  ForgotPasswordFormData,
+} from '@/lib/validations/auth';
 
 const ForgotPasswordForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+  });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { resetPassword, isLoading } = useAuth();
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
       await resetPassword(data.email);
       setIsSubmitted(true);
@@ -98,13 +101,7 @@ const ForgotPasswordForm = () => {
                     type="email"
                     placeholder="Enter your email"
                     className="pl-10"
-                    {...register('email', {
-                      required: 'Email is required',
-                      pattern: {
-                        value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                        message: 'Invalid email format',
-                      },
-                    })}
+                    {...register('email')}
                   />
                 </div>
                 {errors.email && (

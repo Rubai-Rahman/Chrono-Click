@@ -44,9 +44,9 @@ const LoginForm = () => {
     const credentials = DEMO_CREDENTIALS[type];
     setValue('email', credentials.email);
     setValue('password', credentials.password);
-  
+  };
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: LoginFormData) => {
     try {
       await login(data);
     } catch (error) {
@@ -118,13 +118,7 @@ const LoginForm = () => {
                         type="email"
                         placeholder="Enter your email"
                         className="pl-10"
-                        {...register('email', {
-                          required: 'Email is required',
-                          pattern: {
-                            value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                            message: 'Invalid email format',
-                          },
-                        })}
+                        {...register('email')}
                       />
                     </div>
                     {errors.email && (
@@ -148,13 +142,7 @@ const LoginForm = () => {
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Enter your password"
                         className="pl-10 pr-10"
-                        {...register('password', {
-                          required: 'Password is required',
-                          minLength: {
-                            value: 6,
-                            message: 'Password must be at least 6 characters',
-                          },
-                        })}
+                        {...register('password')}
                       />
                       <button
                         type="button"
@@ -187,6 +175,38 @@ const LoginForm = () => {
                   >
                     Forgot password?
                   </Link>
+                </div>
+
+                {/* Demo Credentials Section */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <TestTube className="w-4 h-4" />
+                    <span>Quick Demo Access</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 h-9 text-xs"
+                      onClick={() => fillDemoCredentials('admin')}
+                      disabled={isLoading}
+                    >
+                      <Shield className="w-3 h-3 mr-1" />
+                      Admin Demo
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 h-9 text-xs"
+                      onClick={() => fillDemoCredentials('user')}
+                      disabled={isLoading}
+                    >
+                      <User className="w-3 h-3 mr-1" />
+                      User Demo
+                    </Button>
+                  </div>
                 </div>
 
                 <Button

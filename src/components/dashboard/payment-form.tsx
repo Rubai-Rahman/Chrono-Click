@@ -100,9 +100,8 @@ const PaymentForm = () => {
     onSuccess: () => {
       setPaymentSuccess(true);
       clearCart();
-      setTimeout(() => {
-        router.push('/dashboard/myOrders');
-      }, 3000);
+      // Use router.push without setTimeout to avoid memory leaks
+      // The success UI will show the redirect message
     },
   });
 
@@ -206,8 +205,8 @@ const PaymentForm = () => {
               Payment Successful!
             </h3>
             <p className="text-green-700 dark:text-green-300 text-center mb-6">
-              Your order has been placed successfully. You will be redirected to
-              your orders page shortly.
+              Your order has been placed successfully. Click below to view your
+              orders.
             </p>
             <div className="flex gap-4">
               <Button asChild variant="outline">

@@ -13,7 +13,12 @@ export default function Error({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error('Global error:', error);
+    // TODO: Replace with proper error reporting service (e.g., Sentry)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Global error:', error);
+    }
+    // In production, send to error reporting service
+    // errorReportingService.captureException(error);
   }, [error]);
 
   return (

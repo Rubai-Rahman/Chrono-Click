@@ -4,18 +4,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-
-type FormData = {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  displayName: string;
-};
+import { signupSchema, SignupFormData } from '@/lib/validations/auth';
+import { PasswordStrength } from '@/components/ui/password-strength';
 
 const SignupForm = () => {
   const {
@@ -23,7 +19,9 @@ const SignupForm = () => {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<FormData>();
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+  });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -36,7 +34,7 @@ const SignupForm = () => {
 
   const password = watch('password');
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: SignupFormData) => {
     try {
       await registerUser({
         email: data.email,
@@ -113,13 +111,7 @@ const SignupForm = () => {
                         type="text"
                         placeholder="Enter your full name"
                         className="pl-10"
-                        {...register('displayName', {
-                          required: 'Full name is required',
-                          minLength: {
-                            value: 2,
-                            message: 'Name must be at least 2 characters',
-                          },
-                        })}
+                        {...register('displayName')}
                       />
                     </div>
                     {errors.displayName && (
@@ -143,13 +135,7 @@ const SignupForm = () => {
                         type="email"
                         placeholder="Enter your email"
                         className="pl-10"
-                        {...register('email', {
-                          required: 'Email is required',
-                          pattern: {
-                            value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                            message: 'Invalid email format',
-                          },
-                        })}
+                        {...register('email')}
                       />
                     </div>
                     {errors.email && (
@@ -173,13 +159,7 @@ const SignupForm = () => {
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Create a password"
                         className="pl-10 pr-10"
-                        {...register('password', {
-                          required: 'Password is required',
-                          minLength: {
-                            value: 6,
-                            message: 'Password must be at least 6 characters',
-                          },
-                        })}
+                        {...register('password')}
                       />
                       <button
                         type="button"
@@ -198,6 +178,7 @@ const SignupForm = () => {
                         {errors.password.message}
                       </p>
                     )}
+                    <PasswordStrength password={password || ''} />
                   </div>
 
                   <div>
@@ -214,11 +195,7 @@ const SignupForm = () => {
                         type={showConfirmPassword ? 'text' : 'password'}
                         placeholder="Confirm your password"
                         className="pl-10 pr-10"
-                        {...register('confirmPassword', {
-                          required: 'Please confirm your password',
-                          validate: (value) =>
-                            value === password || 'Passwords do not match',
-                        })}
+                        {...register('confirmPassword')}
                       />
                       <button
                         type="button"

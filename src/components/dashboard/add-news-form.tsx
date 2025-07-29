@@ -22,6 +22,7 @@ import {
   X,
   Image as ImageIcon,
 } from 'lucide-react';
+import { useSuccessMessage } from '@/hooks/useSuccessMessage';
 
 interface NewsData {
   title: string;
@@ -44,7 +45,7 @@ const AddNewsForm = () => {
     status: 'draft',
   });
   const [newTag, setNewTag] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [success, triggerSuccess] = useSuccessMessage();
 
   const queryClient = useQueryClient();
 
@@ -59,7 +60,7 @@ const AddNewsForm = () => {
       return response.json();
     },
     onSuccess: () => {
-      setSuccess(true);
+      triggerSuccess();
       setNewsData({
         title: '',
         content: '',
@@ -70,7 +71,6 @@ const AddNewsForm = () => {
         status: 'draft',
       });
       queryClient.invalidateQueries({ queryKey: ['news'] });
-      setTimeout(() => setSuccess(false), 3000);
     },
     onError: (error) => {
       console.error('Error creating news:', error);

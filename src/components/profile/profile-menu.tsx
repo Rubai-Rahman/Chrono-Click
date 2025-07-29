@@ -26,20 +26,15 @@ import {
   Bell,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
+import { useHydration } from '@/hooks/useHydration';
 
 const ProfileMenu = () => {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const isHydrated = useHydration();
   const { user, logout } = useAuth();
   const router = useRouter();
-
-  // Avoid hydration mismatch
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -67,7 +62,7 @@ const ProfileMenu = () => {
     }
   };
 
-  if (!mounted) {
+  if (!isHydrated) {
     return <CircleUserRound className="size-6 text-muted-foreground" />;
   }
 

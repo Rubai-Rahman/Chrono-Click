@@ -8,24 +8,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Package, CheckCircle, Loader2 } from 'lucide-react';
+import { useSuccessMessage } from '@/hooks/useSuccessMessage';
 
 const AddProductForm = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [details, setDetails] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [success, triggerSuccess] = useSuccessMessage();
 
   const queryClient = useQueryClient();
 
   const addProductMutation = useMutation({
     mutationFn: addProduct,
     onSuccess: () => {
-      setSuccess(true);
+      triggerSuccess();
       setName('');
       setPrice('');
       setDetails('');
       queryClient.invalidateQueries({ queryKey: ['products'] });
-      setTimeout(() => setSuccess(false), 3000);
     },
     onError: (error) => {
       console.error('Error adding product:', error);
