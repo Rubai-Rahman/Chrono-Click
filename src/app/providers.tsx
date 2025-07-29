@@ -1,6 +1,6 @@
 'use client';
 
-import { ThemeProvider } from '@/components/providers/theme-prvider';
+import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthProvider } from '@/Contexts/AuthProvider/AuthProvider';
 import {

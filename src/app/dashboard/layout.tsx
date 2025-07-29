@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import useAuth from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -22,6 +21,7 @@ import {
   X,
   ChevronRight,
 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -30,9 +30,8 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const {
-    allContexts: { logOut, admin },
-  } = useAuth();
+  const { logout, user } = useAuth();
+  const admin = user?.email?.includes('admin') || false;
 
   const userMenuItems = [
     {
@@ -65,7 +64,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     return pathname.startsWith(href);
   };
 
-  const MenuItem = ({ href, icon: Icon, label, exact = false }: any) => (
+  const MenuItem = ({
+    href,
+    icon: Icon,
+    label,
+    exact = false,
+  }: {
+    href: string;
+    icon: React.ComponentType<{ className?: string }>;
+    label: string;
+    exact?: boolean;
+  }) => (
     <Link
       href={href}
       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group ${
@@ -165,7 +174,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <Button
               variant="outline"
               className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10"
-              onClick={logOut}
+              onClick={() => logout()}
             >
               <LogOut className="w-5 h-5" />
               Log out
