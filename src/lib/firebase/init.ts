@@ -1,7 +1,11 @@
-import firebaseConfig from "./config";
-import { initializeApp } from "firebase/app";
+import firebaseConfig from './config';
+import { initializeApp, getApps } from 'firebase/app';
 
+// Initialize Firebase only if it hasn't been initialized already
 const FirebaseInitialize = () => {
-  initializeApp(firebaseConfig);
+  if (getApps().length === 0) {
+    initializeApp(firebaseConfig);
+  }
 };
+
 export default FirebaseInitialize;

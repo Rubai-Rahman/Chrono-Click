@@ -14,11 +14,12 @@ import { Menu, User } from 'lucide-react';
 import { Suspense, lazy } from 'react';
 import Cart from '../../cart/cart';
 import { navItems } from '@/lib/constant';
+import { useAuth } from '@/hooks/useAuth';
 
 const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
 
 const Navbar = () => {
-  const auth = false;
+  const { isAuthenticated } = useAuth();
 
   return (
     <nav className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -73,7 +74,7 @@ const Navbar = () => {
             </div>
 
             {/* Profile/Auth */}
-            {auth ? (
+            {isAuthenticated ? (
               <Suspense
                 fallback={
                   <Button variant="ghost" size="icon">
@@ -142,7 +143,7 @@ const Navbar = () => {
 
                   {/* Mobile Auth Section */}
                   <div className="mt-auto pt-6 border-t border-border">
-                    {auth ? (
+                    {isAuthenticated ? (
                       <div className="px-3">
                         <Suspense
                           fallback={
@@ -165,7 +166,7 @@ const Navbar = () => {
                           asChild
                           className="w-full bg-gradient-to-r from-primary to-primary/80"
                         >
-                          <Link href="/register">Sign Up</Link>
+                          <Link href="/signup">Sign Up</Link>
                         </Button>
                       </div>
                     )}

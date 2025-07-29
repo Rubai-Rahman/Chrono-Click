@@ -1,14 +1,5 @@
-import type { Metadata } from 'next';
-import SignupPageContent from './page-signup';
+import SignupForm from '@/components/auth/signup-form';
 
-export const metadata: Metadata = {
-  title: 'Sign Up - Chrono Click',
-  description:
-    'Create your Chrono Click account to start your premium timepiece journey.',
-};
-
-const SignupPage = () => {
-  return <SignupPageContent />;
-};
-
-export default SignupPage;
+export default function SignupPage() {
+  return <SignupForm />;
+}

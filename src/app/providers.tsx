@@ -2,6 +2,7 @@
 
 import { ThemeProvider } from '@/components/providers/theme-prvider';
 import { Toaster } from '@/components/ui/sonner';
+import { AuthProvider } from '@/Contexts/AuthProvider/AuthProvider';
 import {
   DefaultError,
   isServer,
@@ -90,15 +91,17 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="light"
-        enableSystem
-        disableTransitionOnChange
-      >
-        {children}
-        <Toaster />
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
+      </AuthProvider>
       <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
     </QueryClientProvider>
   );

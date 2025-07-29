@@ -27,18 +27,14 @@ import {
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 
-interface ProfileMenuProps {
-  user?: {
-    name?: string;
-    email?: string;
-    avatar?: string;
-  };
-}
-
-const ProfileMenu = ({ user }: ProfileMenuProps) => {
+const ProfileMenu = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user, logout } = useAuth();
+  const router = useRouter();
 
   // Avoid hydration mismatch
   useEffect(() => {
@@ -52,21 +48,19 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
   const handleMenuAction = (action: string) => {
     switch (action) {
       case 'profile':
-        console.log('Navigate to profile');
-        // Add your navigation logic here
+        router.push('/dashboard/profile');
         break;
       case 'orders':
-        console.log('Navigate to orders');
+        router.push('/orders');
         break;
       case 'wishlist':
-        console.log('Navigate to wishlist');
+        router.push('/dashboard/wishlist');
         break;
       case 'settings':
-        console.log('Navigate to settings');
+        router.push('/dashboard/settings');
         break;
       case 'logout':
-        console.log('Logout user');
-        // Add your logout logic here
+        logout();
         break;
       default:
         break;
@@ -85,14 +79,16 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
           size="icon"
           className="relative h-10 w-10 rounded-full"
         >
-          {user?.avatar ? (
+          {user?.photoURL ? (
             <Avatar className="h-10 w-10">
               <AvatarImage
-                src={user.avatar || '/placeholder.svg'}
-                alt={user.name || 'User'}
+                src={user.photoURL || '/placeholder.svg'}
+                alt={user.displayName || 'User'}
               />
               <AvatarFallback>
-                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                {user.displayName
+                  ? user.displayName.charAt(0).toUpperCase()
+                  : 'U'}
               </AvatarFallback>
             </Avatar>
           ) : (
@@ -108,7 +104,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">
-                  {user.name || 'User'}
+                  {user.displayName || 'User'}
                 </p>
                 <p className="text-xs leading-none text-muted-foreground">
                   {user.email || 'user@example.com'}
