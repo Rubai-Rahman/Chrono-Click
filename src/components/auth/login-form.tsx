@@ -4,33 +4,54 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  ArrowRight,
+  TestTube,
+  User,
+  Shield,
+} from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-
-type FormData = {
-  email: string;
-  password: string;
-};
+import {
+  loginSchema,
+  LoginFormData,
+  DEMO_CREDENTIALS,
+} from '@/lib/validations/auth';
 
 const LoginForm = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
   const [showPassword, setShowPassword] = useState(false);
   const { login, googleSignIn, isLoading, loginError } = useAuth();
+
+  // Demo credentials handler
+  const fillDemoCredentials = (type: 'admin' | 'user') => {
+    const credentials = DEMO_CREDENTIALS[type];
+    setValue('email', credentials.email);
+    setValue('password', credentials.password);
+  
 
   const onSubmit = async (data: FormData) => {
     try {
       await login(data);
     } catch (error) {
       // Error is handled by the useAuth hook
-      console.error('Login failed:', error);
+      // Error is handled by useAuth hook with toast notifications
     }
   };
 
@@ -240,20 +261,7 @@ const LoginForm = () => {
                 </p>
               </div>
 
-              <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-                <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  Demo Credentials
-                </h4>
-                <div className="space-y-1 text-xs text-muted-foreground">
-                  <p>
-                    <strong>Admin:</strong> admin@chronoclick.com / admin123
-                  </p>
-                  <p>
-                    <strong>User:</strong> user@chronoclick.com / user123
-                  </p>
-                </div>
-              </div>
+              {/* Demo credentials removed for security */}
             </CardContent>
           </Card>
         </div>

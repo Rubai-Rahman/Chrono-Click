@@ -28,7 +28,7 @@ const ForgotPasswordForm = () => {
       await resetPassword(data.email);
       setIsSubmitted(true);
     } catch (error) {
-      console.error('Password reset failed:', error);
+      // Error is handled by useAuth hook with toast notifications
     }
   };
 
@@ -47,9 +47,9 @@ const ForgotPasswordForm = () => {
                 <Mail className="w-8 h-8 text-green-600" />
               </div>
               <p className="text-muted-foreground">
-                We've sent a password reset link to your email address. Please
-                check your inbox and follow the instructions to reset your
-                password.
+                We&apos;ve sent a password reset link to your email address.
+                Please check your inbox and follow the instructions to reset
+                your password.
               </p>
               <Button asChild className="w-full">
                 <Link href="/login">
@@ -72,8 +72,8 @@ const ForgotPasswordForm = () => {
             Forgot Password?
           </h3>
           <p className="text-muted-foreground mt-2">
-            Enter your email address and we'll send you a link to reset your
-            password.
+            Enter your email address and we&apos;ll send you a link to reset
+            your password.
           </p>
         </div>
 

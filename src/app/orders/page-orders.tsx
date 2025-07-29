@@ -1,13 +1,13 @@
-"use client"; 
+'use client';
 
-import React from "react";
-import { useCartStore } from "@/store/useCartStore";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Trash2 } from "lucide-react"; 
-import { useMutation } from "@tanstack/react-query";
-import { placeOrder } from "@/api-lib/orders";
-import { useAuth } from "@/Contexts/AuthProvider/AuthProvider";
+import React from 'react';
+import { useCartStore } from '@/store/useCartStore';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { Trash2 } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import { placeOrder } from '@/api-lib/orders';
+import { useAuth } from '@/hooks/useAuth';
 
 const OrdersPageContent = () => {
   const { user } = useAuth();
@@ -17,11 +17,11 @@ const OrdersPageContent = () => {
   const orderMutation = useMutation({
     mutationFn: placeOrder,
     onSuccess: () => {
-      clearCart(); 
-      router.push("/payment"); 
+      clearCart();
+      router.push('/payment');
     },
     onError: (error) => {
-      console.error("Error placing order:", error);
+      console.error('Error placing order:', error);
     },
   });
 
@@ -45,7 +45,13 @@ const OrdersPageContent = () => {
               <li key={product._id} className="p-4">
                 <div className="flex items-center">
                   <div className="w-16 h-16 mr-4 flex-shrink-0">
-                    <Image src={product.img} alt={product.name} width={64} height={64} className="object-cover rounded" />
+                    <Image
+                      src={product.img}
+                      alt={product.name}
+                      width={64}
+                      height={64}
+                      className="object-cover rounded"
+                    />
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">{product.name}</p>
@@ -62,9 +68,16 @@ const OrdersPageContent = () => {
             ))}
           </ul>
           <div className="p-4 flex justify-between items-center bg-gray-50">
-            <span className="text-lg font-semibold">Subtotal ({items.length}) items</span>
-            <span className="text-xl font-bold">Total: $ {totalPrice().toFixed(2)}</span>
-            <button onClick={handleOrder} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+            <span className="text-lg font-semibold">
+              Subtotal ({items.length}) items
+            </span>
+            <span className="text-xl font-bold">
+              Total: $ {totalPrice().toFixed(2)}
+            </span>
+            <button
+              onClick={handleOrder}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+            >
               Check Out
             </button>
           </div>

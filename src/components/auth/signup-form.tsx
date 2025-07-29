@@ -44,7 +44,7 @@ const SignupForm = () => {
         displayName: data.displayName,
       });
     } catch (error) {
-      console.error('Registration failed:', error);
+      // Error is handled by useAuth hook with toast notifications
     }
   };
 

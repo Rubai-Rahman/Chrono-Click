@@ -31,6 +31,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const { logout, user } = useAuth();
+  // TODO: Implement proper role-based admin check using Firestore
+  // For now, using email-based check (should be replaced with role-based system)
   const admin = user?.email?.includes('admin') || false;
 
   const userMenuItems = [
