@@ -60,7 +60,20 @@ export async function middleware(request: NextRequest) {
       }
 
       // Check admin access
+      console.log(
+        '🛡️ Middleware - Decoded token admin claim:',
+        decodedToken.admin
+      );
+      console.log('🛡️ Middleware - Is admin route:', isAdminRoute);
+      console.log(
+        '🛡️ Middleware - Admin access granted:',
+        isAdminRoute ? decodedToken.admin : 'N/A'
+      );
+
       if (isAdminRoute && !decodedToken.admin) {
+        console.log(
+          '❌ Middleware - Admin access denied, redirecting to dashboard'
+        );
         return NextResponse.redirect(new URL('/dashboard', request.url));
       }
 

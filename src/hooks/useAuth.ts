@@ -146,6 +146,13 @@ export const useAuth = () => {
     },
   });
 
+  const isAdmin = user?.role === 'admin';
+
+  // Debug admin status
+  console.log('🎣 useAuth Hook - User:', user?.email);
+  console.log('🎣 useAuth Hook - User role:', user?.role);
+  console.log('🎣 useAuth Hook - Is admin:', isAdmin);
+
   return {
     // State
     user,
@@ -157,7 +164,7 @@ export const useAuth = () => {
       logoutMutation.isPending ||
       isPending,
     isAuthenticated: !!user,
-    isAdmin: user?.role === 'admin',
+    isAdmin,
 
     // Actions
     login: loginMutation.mutate,

@@ -14,6 +14,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (user) {
         console.log('✅ Setting user in auth provider');
+        console.log('👤 User role:', user.role);
+        console.log('🔐 Is Admin:', user.role === 'admin');
         setUser(user);
         // Set HTTP cookie for middleware
         await setAuthCookie();
