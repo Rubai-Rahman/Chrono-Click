@@ -6,6 +6,10 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { toast } from 'sonner';
 import { FirebaseError } from 'firebase/app';
 import { clearAuthCookie } from '@/lib/auth/cookie-sync';
+import {
+  getPostLoginRedirect,
+  clearReturnUrl,
+} from '@/lib/auth/redirect-utils';
 
 export const useAuth = () => {
   const { user, isLoading, setUser, setLoading, reset } = useAuthStore();
@@ -32,8 +36,12 @@ export const useAuth = () => {
       setUser(user);
       setLoading(false);
       toast.success('Welcome back!');
+
+      const redirectUrl = getPostLoginRedirect();
+      console.log('🔄 Redirecting after login to:', redirectUrl);
+
       startTransition(() => {
-        router.push('/dashboard');
+        router.push(redirectUrl);
       });
     },
     onError: (error: FirebaseError) => {
@@ -69,8 +77,12 @@ export const useAuth = () => {
       setUser(user);
       setLoading(false);
       toast.success('Account created successfully!');
+
+      const redirectUrl = getPostLoginRedirect();
+      console.log('🔄 Redirecting after registration to:', redirectUrl);
+
       startTransition(() => {
-        router.push('/dashboard');
+        router.push(redirectUrl);
       });
     },
     onError: (error: FirebaseError) => {
@@ -96,8 +108,12 @@ export const useAuth = () => {
 
       setLoading(false);
       toast.success('Welcome!');
+
+      const redirectUrl = getPostLoginRedirect();
+      console.log('🔄 Redirecting after Google sign-in to:', redirectUrl);
+
       startTransition(() => {
-        router.push('/dashboard');
+        router.push(redirectUrl);
       });
     },
     onError: (error: FirebaseError) => {

@@ -30,7 +30,10 @@ export async function middleware(request: NextRequest) {
 
   // If no token and accessing protected route, redirect to login
   if ((isProtectedRoute || isAdminRoute) && !token) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    const loginUrl = new URL('/login', request.url);
+    // Store the intended URL as a query parameter
+    loginUrl.searchParams.set('returnUrl', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   // If token exists, verify it

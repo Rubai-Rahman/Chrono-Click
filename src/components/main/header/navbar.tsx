@@ -15,6 +15,7 @@ import { Suspense, lazy } from 'react';
 import Cart from '../../cart/cart';
 import { navItems } from '@/lib/constant';
 import { useAuth } from '@/hooks/useAuth';
+import { LoginLink } from '@/components/auth/login-link';
 
 const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
 
@@ -87,7 +88,7 @@ const Navbar = () => {
             ) : (
               <div className="flex items-center gap-2">
                 <Button variant="ghost" asChild>
-                  <Link href="/login">Log In</Link>
+                  <LoginLink>Log In</LoginLink>
                 </Button>
               </div>
             )}
@@ -160,7 +161,7 @@ const Navbar = () => {
                           asChild
                           className="w-full bg-transparent"
                         >
-                          <Link href="/login">Log In</Link>
+                          <LoginLink>Log In</LoginLink>
                         </Button>
                         <Button
                           asChild
