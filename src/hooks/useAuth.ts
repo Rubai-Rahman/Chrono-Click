@@ -5,10 +5,11 @@ import { authService, mapFirebaseUser } from '@/lib/firebase/auth';
 import { useAuthStore } from '@/store/useAuthStore';
 import { toast } from 'sonner';
 import { FirebaseError } from 'firebase/app';
-import { clearAuthCookie } from '@/lib/auth/cookie-sync';
+import { clearAuthCookie, setAuthCookie } from '@/lib/auth/cookie-sync';
 import {
   getPostLoginRedirect,
   clearReturnUrl,
+  isProtectedRoute,
 } from '@/lib/auth/redirect-utils';
 
 export const useAuth = () => {
@@ -32,17 +33,22 @@ export const useAuth = () => {
     onMutate: () => {
       setLoading(true);
     },
-    onSuccess: (user) => {
+    onSuccess: async (user) => {
       setUser(user);
       setLoading(false);
       toast.success('Welcome back!');
 
+      // Set auth cookie first
+      await setAuthCookie();
+
       const redirectUrl = getPostLoginRedirect();
       console.log('🔄 Redirecting after login to:', redirectUrl);
 
-      startTransition(() => {
-        router.push(redirectUrl);
-      });
+      // Clear the return URL after getting it
+      clearReturnUrl();
+
+      // Redirect after cookie is set
+      window.location.href = redirectUrl;
     },
     onError: (error: FirebaseError) => {
       setLoading(false);
@@ -73,17 +79,22 @@ export const useAuth = () => {
     onMutate: () => {
       setLoading(true);
     },
-    onSuccess: (user) => {
+    onSuccess: async (user) => {
       setUser(user);
       setLoading(false);
       toast.success('Account created successfully!');
 
+      // Set auth cookie first
+      await setAuthCookie();
+
       const redirectUrl = getPostLoginRedirect();
       console.log('🔄 Redirecting after registration to:', redirectUrl);
 
-      startTransition(() => {
-        router.push(redirectUrl);
-      });
+      // Clear the return URL after getting it
+      clearReturnUrl();
+
+      // Redirect after cookie is set
+      window.location.href = redirectUrl;
     },
     onError: (error: FirebaseError) => {
       setLoading(false);
@@ -102,19 +113,24 @@ export const useAuth = () => {
     onMutate: () => {
       setLoading(true);
     },
-    onSuccess: (user) => {
+    onSuccess: async (user) => {
       console.log('🎉 Google sign-in successful, setting user:', user);
       setUser(user);
 
       setLoading(false);
       toast.success('Welcome!');
 
+      // Set auth cookie first
+      await setAuthCookie();
+
       const redirectUrl = getPostLoginRedirect();
       console.log('🔄 Redirecting after Google sign-in to:', redirectUrl);
 
-      startTransition(() => {
-        router.push(redirectUrl);
-      });
+      // Clear the return URL after getting it
+      clearReturnUrl();
+
+      // Redirect after cookie is set
+      window.location.href = redirectUrl;
     },
     onError: (error: FirebaseError) => {
       setLoading(false);
@@ -137,9 +153,15 @@ export const useAuth = () => {
       reset();
       queryClient.clear(); // Clear all cached data
       toast.success('Logged out successfully');
-      startTransition(() => {
-        router.push('/login');
-      });
+
+      // Only redirect to login if user is on a protected route
+      // For public routes, just show the toast
+      const currentPath = window.location.pathname;
+      if (isProtectedRoute(currentPath)) {
+        startTransition(() => {
+          router.push('/login');
+        });
+      }
     },
     onError: (error: Error) => {
       setLoading(false);

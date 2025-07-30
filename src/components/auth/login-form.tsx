@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
@@ -25,6 +25,7 @@ import {
   LoginFormData,
   DEMO_CREDENTIALS,
 } from '@/lib/validations/auth';
+import { setReturnUrl, setReferrerUrl } from '@/lib/auth/redirect-utils';
 
 const LoginForm = () => {
   const {
@@ -38,6 +39,30 @@ const LoginForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const { login, googleSignIn, isLoading, loginError } = useAuth();
+
+  // Store referrer URL when component mounts (if not already stored)
+  useEffect(() => {
+    // Only store referrer if there's no returnUrl in URL params and no stored returnUrl
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasReturnUrl = urlParams.get('returnUrl');
+    const hasStoredUrl = sessionStorage.getItem('returnUrl');
+
+    if (!hasReturnUrl && !hasStoredUrl && document.referrer) {
+      const referrerUrl = new URL(document.referrer);
+      // Only store if referrer is from same origin and not an auth page
+      if (referrerUrl.origin === window.location.origin) {
+        const referrerPath = referrerUrl.pathname;
+        if (
+          !referrerPath.startsWith('/login') &&
+          !referrerPath.startsWith('/signup') &&
+          !referrerPath.startsWith('/forgot-password')
+        ) {
+          console.log('📍 Storing referrer URL:', referrerPath);
+          setReferrerUrl(referrerPath);
+        }
+      }
+    }
+  }, []);
 
   // Demo credentials handler
   const fillDemoCredentials = (type: 'admin' | 'user') => {

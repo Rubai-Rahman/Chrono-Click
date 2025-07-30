@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { setReturnUrl } from '@/lib/auth/redirect-utils';
+import { setReferrerUrl } from '@/lib/auth/redirect-utils';
 
 interface LoginLinkProps {
   children: React.ReactNode;
@@ -14,8 +14,12 @@ export const LoginLink = ({ children, className }: LoginLinkProps) => {
 
   const handleClick = () => {
     // Store current path for redirect after login
-    if (pathname !== '/login' && pathname !== '/signup') {
-      setReturnUrl(pathname);
+    if (
+      pathname !== '/login' &&
+      pathname !== '/signup' &&
+      pathname !== '/forgot-password'
+    ) {
+      setReferrerUrl(pathname);
     }
   };
 
