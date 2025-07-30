@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
@@ -16,6 +16,16 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+    // Add timeout and retry configuration
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    minimumCacheTTL: 60,
+    // Reduce timeout for faster failures
+    unoptimized: false,
+  },
+  // Add experimental features for better error handling
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
   },
 };
 

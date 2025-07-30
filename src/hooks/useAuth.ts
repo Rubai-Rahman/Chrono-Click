@@ -5,9 +5,10 @@ import { authService, mapFirebaseUser } from '@/lib/firebase/auth';
 import { useAuthStore } from '@/store/useAuthStore';
 import { toast } from 'sonner';
 import { FirebaseError } from 'firebase/app';
+import { clearAuthCookie } from '@/lib/auth/cookie-sync';
 
 export const useAuth = () => {
-  const { user, isLoading, setUser, setLoading, clearAuth } = useAuthStore();
+  const { user, isLoading, setUser, setLoading, reset } = useAuthStore();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isPending, startTransition] = useTransition();
@@ -22,7 +23,7 @@ export const useAuth = () => {
       password: string;
     }) => {
       const userCredential = await authService.signInWithEmail(email, password);
-      return mapFirebaseUser(userCredential.user);
+      return await mapFirebaseUser(userCredential.user);
     },
     onMutate: () => {
       setLoading(true);
@@ -59,7 +60,7 @@ export const useAuth = () => {
         password,
         displayName
       );
-      return mapFirebaseUser(userCredential.user);
+      return await mapFirebaseUser(userCredential.user);
     },
     onMutate: () => {
       setLoading(true);
@@ -84,13 +85,15 @@ export const useAuth = () => {
   const googleSignInMutation = useMutation({
     mutationFn: async () => {
       const userCredential = await authService.signInWithGoogle();
-      return mapFirebaseUser(userCredential.user);
+      return await mapFirebaseUser(userCredential.user);
     },
     onMutate: () => {
       setLoading(true);
     },
     onSuccess: (user) => {
+      console.log('🎉 Google sign-in successful, setting user:', user);
       setUser(user);
+
       setLoading(false);
       toast.success('Welcome!');
       startTransition(() => {
@@ -109,12 +112,13 @@ export const useAuth = () => {
   const logoutMutation = useMutation({
     mutationFn: async () => {
       await authService.signOut();
+      await clearAuthCookie(); // Clear HTTP cookie
     },
     onMutate: () => {
       setLoading(true);
     },
     onSuccess: () => {
-      clearAuth();
+      reset();
       queryClient.clear(); // Clear all cached data
       toast.success('Logged out successfully');
       startTransition(() => {
@@ -153,6 +157,7 @@ export const useAuth = () => {
       logoutMutation.isPending ||
       isPending,
     isAuthenticated: !!user,
+    isAdmin: user?.role === 'admin',
 
     // Actions
     login: loginMutation.mutate,

@@ -1,48 +1,53 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export interface User {
+export interface AuthUser {
   uid: string;
   email: string;
   displayName: string;
   photoURL?: string;
   emailVerified: boolean;
+  role: 'user' | 'admin';
 }
 
-interface AuthStore {
-  user: User | null;
+interface AuthState {
+  user: AuthUser | null;
   isLoading: boolean;
   isInitialized: boolean;
-  setUser: (user: User | null) => void;
-  setLoading: (loading: boolean) => void;
-  setInitialized: (initialized: boolean) => void;
-  clearAuth: () => void;
+  error: string | null;
 }
 
-export const useAuthStore = create<AuthStore>()(
+interface AuthActions {
+  setUser: (user: AuthUser | null) => void;
+  setLoading: (loading: boolean) => void;
+  setInitialized: (initialized: boolean) => void;
+  setError: (error: string | null) => void;
+  reset: () => void;
+}
+
+export const useAuthStore = create<AuthState & AuthActions>()(
   persist(
     (set) => ({
       user: null,
-      isLoading: false,
+      isLoading: true,
       isInitialized: false,
+      error: null,
 
-      setUser: (user) => set({ user }),
+      setUser: (user) => set({ user, error: null }),
       setLoading: (isLoading) => set({ isLoading }),
       setInitialized: (isInitialized) => set({ isInitialized }),
-
-      clearAuth: () =>
+      setError: (error) => set({ error }),
+      reset: () =>
         set({
           user: null,
           isLoading: false,
-          isInitialized: true,
+          isInitialized: false,
+          error: null,
         }),
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({
-        user: state.user,
-        isInitialized: state.isInitialized,
-      }),
+      partialize: (state) => ({ user: state.user }), // Only persist user data
     }
   )
 );

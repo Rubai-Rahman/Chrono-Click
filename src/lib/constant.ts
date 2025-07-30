@@ -2,7 +2,7 @@ const auth = true;
 export const navItems = [
   { name: 'Home', href: '/' },
   { name: 'Products', href: '/products' },
-  { name: 'Order', href: '/order' },
+  { name: 'Orders', href: '/orders' },
   ...(auth ? [{ name: 'Dashboard', href: '/dashboard' }] : []),
 ];
 

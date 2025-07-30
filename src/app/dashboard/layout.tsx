@@ -30,10 +30,18 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const { logout, user } = useAuth();
-  // TODO: Implement proper role-based admin check using Firestore
-  // For now, using email-based check (should be replaced with role-based system)
-  const admin = user?.email?.includes('admin') || false;
+  const { logout, user, isLoading } = useAuth();
+
+  // Show loading while auth is initializing
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+  // Use proper role-based admin check
+  const admin = user?.role === 'admin';
 
   const userMenuItems = [
     {

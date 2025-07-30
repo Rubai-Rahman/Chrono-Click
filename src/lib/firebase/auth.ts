@@ -1,23 +1,17 @@
 import {
-  getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
   onAuthStateChanged,
-  User as FirebaseUser,
   updateProfile,
   sendPasswordResetEmail,
   UserCredential,
+  User,
 } from 'firebase/auth';
-import { initializeApp, getApps } from 'firebase/app';
-import firebaseConfig from './config';
-
-// Initialize Firebase only if it hasn't been initialized already
-const app =
-  getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-export const auth = getAuth(app);
+import { auth } from './config';
+import { AuthUser } from '@/store/useAuthStore';
 
 // Google provider
 const googleProvider = new GoogleAuthProvider();
@@ -25,16 +19,37 @@ googleProvider.setCustomParameters({
   prompt: 'select_account',
 });
 
+// Helper function to determine user role
+const getUserRole = async (user: User): Promise<'user' | 'admin'> => {
+  try {
+    const idTokenResult = await user.getIdTokenResult();
+    // Check for admin claim - must be explicitly true
+    return idTokenResult.claims.admin === true ? 'admin' : 'user';
+  } catch (error) {
+    console.error('Error getting user role:', error);
+    // Default to 'user' role on error for security
+    return 'user';
+  }
+};
+// Convert Firebase User to AuthUser
+export const mapFirebaseUser = async (
+  user: User | null
+): Promise<AuthUser | null> => {
+  if (!user) return null;
+
+  const role = await getUserRole(user);
+
+  return {
+    uid: user.uid,
+    email: user.email || '',
+    displayName: user.displayName || '',
+    photoURL: user.photoURL || '',
+    role,
+    emailVerified: user.emailVerified,
+  };
+};
 // Auth service functions
 export const authService = {
-  // Sign in with email and password
-  signInWithEmail: async (
-    email: string,
-    password: string
-  ): Promise<UserCredential> => {
-    return await signInWithEmailAndPassword(auth, email, password);
-  },
-
   // Create user with email and password
   createUserWithEmail: async (
     email: string,
@@ -55,6 +70,13 @@ export const authService = {
     return userCredential;
   },
 
+  // Sign in with email and password
+  signInWithEmail: async (
+    email: string,
+    password: string
+  ): Promise<UserCredential> => {
+    return await signInWithEmailAndPassword(auth, email, password);
+  },
   // Sign in with Google
   signInWithGoogle: async (): Promise<UserCredential> => {
     return await signInWithPopup(auth, googleProvider);
@@ -71,25 +93,22 @@ export const authService = {
   },
 
   // Get current user
-  getCurrentUser: (): FirebaseUser | null => {
+  getCurrentUser: (): User | null => {
     return auth.currentUser;
   },
 
-  // Auth state observer
-  onAuthStateChanged: (callback: (user: FirebaseUser | null) => void) => {
-    return onAuthStateChanged(auth, callback);
+  // Auth State Listener
+  onAuthStateChanged: (callback: (user: AuthUser | null) => void) => {
+    return onAuthStateChanged(auth, async (user) => {
+      const authUser = await mapFirebaseUser(user);
+      callback(authUser);
+    });
   },
-};
 
-// Helper function to convert Firebase user to app user
-export const mapFirebaseUser = (firebaseUser: FirebaseUser | null) => {
-  if (!firebaseUser) return null;
-
-  return {
-    uid: firebaseUser.uid,
-    email: firebaseUser.email || '',
-    displayName: firebaseUser.displayName || '',
-    photoURL: firebaseUser.photoURL || '',
-    emailVerified: firebaseUser.emailVerified,
-  };
+  // Get ID Token
+  getIdToken: async (forceRefresh = false) => {
+    const user = auth.currentUser;
+    if (!user) return null;
+    return await user.getIdToken(forceRefresh);
+  },
 };

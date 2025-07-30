@@ -1,86 +1,93 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Define protected routes
-const protectedRoutes = ['/dashboard'];
+const protectedRoutes = ['/dashboard', '/orders', '/checkout'];
 const authRoutes = ['/login', '/signup', '/forgot-password'];
+const adminRoutes = [
+  '/admin',
+  '/admin-dashboard',
+  '/dashboard/manageOrders',
+  '/dashboard/makeAdmin',
+  '/dashboard/addProduct',
+  '/dashboard/manageProduct',
+  '/dashboard/addNews',
+];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // Check if the current path is a protected route
+  const token =
+    request.cookies.get('auth-token')?.value ||
+    request.cookies.get('auth-token-backup')?.value;
+  console.log('🔍 Middleware - Path:', pathname);
+  console.log('🔍 Middleware - Token:', token);
+  console.log('🔍 Middleware - All cookies:', request.cookies.getAll());
+  // Check if route requires authentication
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
-
-  // Check if the current path is an auth route
+  const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
-  // Get auth token from cookies
-  const authToken = request.cookies.get('auth-storage')?.value;
+  // If no token and accessing protected route, redirect to login
+  if ((isProtectedRoute || isAdminRoute) && !token) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
 
-  let isAuthenticated = false;
-  let userRole = null;
-
-  if (authToken) {
+  // If token exists, verify it
+  if (token) {
     try {
-      // Parse the auth storage to check if user exists
-      const authData = JSON.parse(authToken);
-      isAuthenticated = !!authData?.state?.user;
-      userRole = authData?.state?.user?.role || null;
-    } catch (error) {
-      // Invalid token format - clear the cookie
-      console.warn('Invalid auth token format:', error);
-      isAuthenticated = false;
+      // Call our API route to verify the token
+      const verifyResponse = await fetch(
+        new URL('/api/auth/verify', request.url),
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token }),
+        }
+      );
 
-      // Clear invalid cookie
+      if (!verifyResponse.ok) {
+        throw new Error('Token verification failed');
+      }
+
+      const decodedToken = await verifyResponse.json();
+
+      // If accessing auth routes while authenticated, redirect to dashboard
+      if (isAuthRoute) {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
+
+      // Check admin access
+      if (isAdminRoute && !decodedToken.admin) {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
+
+      // Add user info to headers for API routes
       const response = NextResponse.next();
-      response.cookies.delete('auth-storage');
+      response.headers.set('x-user-id', decodedToken.uid);
+      response.headers.set(
+        'x-user-role',
+        decodedToken.admin ? 'admin' : 'user'
+      );
+
+      return response;
+    } catch (error) {
+      console.log(error);
+      const response =
+        isProtectedRoute || isAdminRoute
+          ? NextResponse.redirect(new URL('/login', request.url))
+          : NextResponse.next();
+
+      response.cookies.delete('auth-token');
       return response;
     }
-  }
-
-  // Redirect unauthenticated users from protected routes to login
-  if (isProtectedRoute && !isAuthenticated) {
-    const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('redirect', pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  // Redirect authenticated users from auth routes to dashboard
-  if (isAuthRoute && isAuthenticated) {
-    const redirectUrl =
-      request.nextUrl.searchParams.get('redirect') || '/dashboard';
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
-  }
-
-  // Add user info to headers for server components (optional)
-  if (isAuthenticated) {
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-user-authenticated', 'true');
-    if (userRole) {
-      requestHeaders.set('x-user-role', userRole);
-    }
-
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|public).*)',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };

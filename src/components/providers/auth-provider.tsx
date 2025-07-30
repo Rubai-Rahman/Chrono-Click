@@ -1,26 +1,32 @@
 'use client';
 
 import React, { useEffect, ReactNode, useCallback } from 'react';
-import { User as FirebaseUser } from 'firebase/auth';
-import { authService, mapFirebaseUser } from '@/lib/firebase/auth';
-import { useAuthStore } from '@/store/useAuthStore';
+import { authService } from '@/lib/firebase/auth';
+import { useAuthStore, AuthUser } from '@/store/useAuthStore';
+import { setAuthCookie, clearAuthCookie } from '@/lib/auth/cookie-sync';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const { setUser, setInitialized, clearAuth } = useAuthStore();
+  const { setUser, setInitialized, reset } = useAuthStore();
 
   const handleAuthStateChange = useCallback(
-    (firebaseUser: FirebaseUser | null) => {
-      const user = mapFirebaseUser(firebaseUser);
+    async (user: AuthUser | null) => {
+      console.log('🔥 Firebase auth state changed:', user);
 
       if (user) {
+        console.log('✅ Setting user in auth provider');
         setUser(user);
+        // Set HTTP cookie for middleware
+        await setAuthCookie();
       } else {
-        clearAuth();
+        console.log('❌ Clearing auth in auth provider');
+        reset();
+        // Clear HTTP cookie
+        await clearAuthCookie();
       }
 
       setInitialized(true);
     },
-    [setUser, setInitialized, clearAuth]
+    [setUser, setInitialized, reset]
   );
 
   useEffect(() => {

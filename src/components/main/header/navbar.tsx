@@ -19,7 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
 
 const Navbar = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <nav className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
