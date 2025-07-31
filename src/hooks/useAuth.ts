@@ -1,248 +1,166 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+'use client';
+
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
-import { authService, mapFirebaseUser } from '@/lib/firebase/auth';
-import { useAuthStore } from '@/store/useAuthStore';
 import { toast } from 'sonner';
-import { FirebaseError } from 'firebase/app';
-import { clearAuthCookie, setAuthCookie } from '@/lib/auth/cookie-sync';
-import {
-  getPostLoginRedirect,
-  clearReturnUrl,
-  isProtectedRoute,
-} from '@/lib/auth/redirect-utils';
+import { useAuthStore } from '@/store/useAuthStore';
+import { authService } from '@/lib/firebase/auth';
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+interface RegisterData {
+  email: string;
+  password: string;
+  displayName: string;
+}
 
 export const useAuth = () => {
-  const { user, isLoading, setUser, setLoading, reset } = useAuthStore();
   const router = useRouter();
-  const queryClient = useQueryClient();
-  const [isPending, startTransition] = useTransition();
+  const {
+    user,
+    isLoading,
+    isInitialized,
+    error,
+    setUser,
+    setLoading,
+    setInitialized,
+    setError,
+    reset,
+  } = useAuthStore();
 
-  // Login mutation
-  const loginMutation = useMutation({
-    mutationFn: async ({
-      email,
-      password,
-    }: {
-      email: string;
-      password: string;
-    }) => {
-      const userCredential = await authService.signInWithEmail(email, password);
-      return await mapFirebaseUser(userCredential.user);
-    },
-    onMutate: () => {
-      setLoading(true);
-    },
-    onSuccess: async (user) => {
+  // Initialize auth state listener
+  useEffect(() => {
+    const unsubscribe = authService.onAuthStateChanged((user) => {
       setUser(user);
       setLoading(false);
-      toast.success('Welcome back!');
-
-      // Set auth cookie first
-      await setAuthCookie();
-
-      const redirectUrl = getPostLoginRedirect();
-      console.log('🔄 Redirecting after login to:', redirectUrl);
-
-      // Clear the return URL after getting it
-      clearReturnUrl();
-
-      // Redirect after cookie is set
-      window.location.href = redirectUrl;
-    },
-    onError: (error: FirebaseError) => {
-      setLoading(false);
-      const errorMessage = getAuthErrorMessage(error.code);
-      toast.error(errorMessage);
-      throw error;
-    },
-  });
-
-  // Register mutation
-  const registerMutation = useMutation({
-    mutationFn: async ({
-      email,
-      password,
-      displayName,
-    }: {
-      email: string;
-      password: string;
-      displayName: string;
-    }) => {
-      const userCredential = await authService.createUserWithEmail(
-        email,
-        password,
-        displayName
-      );
-      return await mapFirebaseUser(userCredential.user);
-    },
-    onMutate: () => {
-      setLoading(true);
-    },
-    onSuccess: async (user) => {
-      setUser(user);
-      setLoading(false);
-      toast.success('Account created successfully!');
-
-      // Set auth cookie first
-      await setAuthCookie();
-
-      const redirectUrl = getPostLoginRedirect();
-      console.log('🔄 Redirecting after registration to:', redirectUrl);
-
-      // Clear the return URL after getting it
-      clearReturnUrl();
-
-      // Redirect after cookie is set
-      window.location.href = redirectUrl;
-    },
-    onError: (error: FirebaseError) => {
-      setLoading(false);
-      const errorMessage = getAuthErrorMessage(error.code);
-      toast.error(errorMessage);
-      throw error;
-    },
-  });
-
-  // Google sign in mutation
-  const googleSignInMutation = useMutation({
-    mutationFn: async () => {
-      const userCredential = await authService.signInWithGoogle();
-      return await mapFirebaseUser(userCredential.user);
-    },
-    onMutate: () => {
-      setLoading(true);
-    },
-    onSuccess: async (user) => {
-      console.log('🎉 Google sign-in successful, setting user:', user);
-      setUser(user);
-
-      setLoading(false);
-      toast.success('Welcome!');
-
-      // Set auth cookie first
-      await setAuthCookie();
-
-      const redirectUrl = getPostLoginRedirect();
-      console.log('🔄 Redirecting after Google sign-in to:', redirectUrl);
-
-      // Clear the return URL after getting it
-      clearReturnUrl();
-
-      // Redirect after cookie is set
-      window.location.href = redirectUrl;
-    },
-    onError: (error: FirebaseError) => {
-      setLoading(false);
-      const errorMessage = getAuthErrorMessage(error.code);
-      toast.error(errorMessage);
-      throw error;
-    },
-  });
-
-  // Logout mutation
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      await authService.signOut();
-      await clearAuthCookie(); // Clear HTTP cookie
-    },
-    onMutate: () => {
-      setLoading(true);
-    },
-    onSuccess: () => {
-      reset();
-      queryClient.clear(); // Clear all cached data
-      toast.success('Logged out successfully');
-
-      // Only redirect to login if user is on a protected route
-      // For public routes, just show the toast
-      const currentPath = window.location.pathname;
-      if (isProtectedRoute(currentPath)) {
-        startTransition(() => {
-          router.push('/login');
-        });
+      if (!isInitialized) {
+        setInitialized(true);
       }
-    },
-    onError: (error: Error) => {
-      setLoading(false);
-      toast.error('Failed to logout');
-      console.error('Logout error:', error);
-    },
-  });
+    });
 
-  // Password reset mutation
-  const resetPasswordMutation = useMutation({
-    mutationFn: async (email: string) => {
-      await authService.resetPassword(email);
-    },
-    onSuccess: () => {
-      toast.success('Password reset email sent!');
-    },
-    onError: (error: FirebaseError) => {
-      const errorMessage = getAuthErrorMessage(error.code);
+    return () => unsubscribe();
+  }, [setUser, setLoading, setInitialized, isInitialized]);
+
+  const login = async (data: LoginData) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      await authService.signInWithEmail(data.email, data.password);
+
+      toast.success('Welcome back!');
+      router.push('/dashboard');
+    } catch (error: any) {
+      const errorMessage =
+        error.code === 'auth/invalid-credential'
+          ? 'Invalid email or password'
+          : error.message || 'Login failed';
+
+      setError(errorMessage);
       toast.error(errorMessage);
-    },
-  });
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const isAdmin = user?.role === 'admin';
+  const register = async (data: RegisterData) => {
+    try {
+      setLoading(true);
+      setError(null);
 
-  // Debug admin status
-  console.log('🎣 useAuth Hook - User:', user?.email);
-  console.log('🎣 useAuth Hook - User role:', user?.role);
-  console.log('🎣 useAuth Hook - Is admin:', isAdmin);
+      await authService.createUserWithEmail(
+        data.email,
+        data.password,
+        data.displayName
+      );
+
+      toast.success('Account created successfully!');
+      router.push('/dashboard');
+    } catch (error: any) {
+      const errorMessage =
+        error.code === 'auth/email-already-in-use'
+          ? 'An account with this email already exists'
+          : error.message || 'Registration failed';
+
+      setError(errorMessage);
+      toast.error(errorMessage);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const googleSignIn = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      await authService.signInWithGoogle();
+
+      toast.success('Welcome!');
+      router.push('/dashboard');
+    } catch (error: any) {
+      const errorMessage = error.message || 'Google sign-in failed';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      setLoading(true);
+      await authService.signOut();
+      reset();
+      toast.success('Signed out successfully');
+      router.push('/');
+    } catch (error: any) {
+      toast.error('Sign out failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetPassword = async (email: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      await authService.resetPassword(email);
+      toast.success('Password reset email sent!');
+    } catch (error: any) {
+      const errorMessage =
+        error.code === 'auth/user-not-found'
+          ? 'No account found with this email'
+          : error.message || 'Password reset failed';
+
+      setError(errorMessage);
+      toast.error(errorMessage);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return {
     // State
     user,
-    isLoading:
-      isLoading ||
-      loginMutation.isPending ||
-      registerMutation.isPending ||
-      googleSignInMutation.isPending ||
-      logoutMutation.isPending ||
-      isPending,
-    isAuthenticated: !!user,
-    isAdmin,
+    isLoading,
+    isInitialized,
+    loginError: error ? { message: error } : null,
+    registerError: error ? { message: error } : null,
 
     // Actions
-    login: loginMutation.mutate,
-    register: registerMutation.mutate,
-    googleSignIn: googleSignInMutation.mutate,
-    logout: logoutMutation.mutate,
-    resetPassword: resetPasswordMutation.mutate,
-
-    // Mutation states
-    loginError: loginMutation.error,
-    registerError: registerMutation.error,
-    isLoginPending: loginMutation.isPending,
-    isRegisterPending: registerMutation.isPending,
+    login,
+    register: register,
+    googleSignIn,
+    logout,
+    resetPassword,
   };
-};
-
-// Helper function to get user-friendly error messages
-const getAuthErrorMessage = (errorCode: string): string => {
-  switch (errorCode) {
-    case 'auth/user-not-found':
-      return 'No account found with this email address.';
-    case 'auth/wrong-password':
-      return 'Incorrect password. Please try again.';
-    case 'auth/invalid-email':
-      return 'Please enter a valid email address.';
-    case 'auth/user-disabled':
-      return 'This account has been disabled.';
-    case 'auth/email-already-in-use':
-      return 'An account with this email already exists.';
-    case 'auth/weak-password':
-      return 'Password should be at least 6 characters long.';
-    case 'auth/network-request-failed':
-      return 'Network error. Please check your connection.';
-    case 'auth/too-many-requests':
-      return 'Too many failed attempts. Please try again later.';
-    case 'auth/popup-closed-by-user':
-      return 'Sign-in was cancelled.';
-    case 'auth/cancelled-popup-request':
-      return 'Sign-in was cancelled.';
-    default:
-      return 'An error occurred. Please try again.';
-  }
 };

@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 
 export interface AuthUser {
   uid: string;
@@ -25,29 +24,21 @@ interface AuthActions {
   reset: () => void;
 }
 
-export const useAuthStore = create<AuthState & AuthActions>()(
-  persist(
-    (set) => ({
+export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
+  user: null,
+  isLoading: true,
+  isInitialized: false,
+  error: null,
+
+  setUser: (user) => set({ user, error: null }),
+  setLoading: (isLoading) => set({ isLoading }),
+  setInitialized: (isInitialized) => set({ isInitialized }),
+  setError: (error) => set({ error }),
+  reset: () =>
+    set({
       user: null,
-      isLoading: true,
+      isLoading: false,
       isInitialized: false,
       error: null,
-
-      setUser: (user) => set({ user, error: null }),
-      setLoading: (isLoading) => set({ isLoading }),
-      setInitialized: (isInitialized) => set({ isInitialized }),
-      setError: (error) => set({ error }),
-      reset: () =>
-        set({
-          user: null,
-          isLoading: false,
-          isInitialized: false,
-          error: null,
-        }),
     }),
-    {
-      name: 'auth-storage',
-      partialize: (state) => ({ user: state.user }), // Only persist user data
-    }
-  )
-);
+}));

@@ -19,44 +19,12 @@ googleProvider.setCustomParameters({
   prompt: 'select_account',
 });
 
-// Helper function to determine user role
+// Helper function to determine user role from Firebase claims only
 const getUserRole = async (user: User): Promise<'user' | 'admin'> => {
   try {
-    // First try Firebase custom claims
     const idTokenResult = await user.getIdTokenResult();
-    console.log('🔍 Token claims:', idTokenResult.claims);
-    console.log('🔍 Admin claim value:', idTokenResult.claims.admin);
-
-    // If Firebase claims exist, use them
-    if (idTokenResult.claims.admin !== undefined) {
-      const isAdmin = idTokenResult.claims.admin === true;
-      const role = isAdmin ? 'admin' : 'user';
-      console.log('🔐 Role from Firebase claims:', role);
-      return role;
-    }
-
-    // Fallback: Check MongoDB backend
-    console.log('🔍 No Firebase claims found, checking MongoDB backend...');
-    const backendResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${user.email}`
-    );
-
-    if (backendResponse.ok) {
-      const userData = await backendResponse.json();
-      console.log('📊 Backend user data:', userData);
-
-      const isAdmin = userData.admin === true;
-      const role = isAdmin ? 'admin' : 'user';
-      console.log('🔐 Role from MongoDB:', role);
-
-      return role;
-    }
-
-    console.log('🔐 Defaulting to user role');
-    return 'user';
-  } catch (error) {
-    console.error('Error getting user role:', error);
-    // Default to 'user' role on error for security
+    return idTokenResult.claims.admin === true ? 'admin' : 'user';
+  } catch {
     return 'user';
   }
 };
