@@ -101,11 +101,4 @@ export const authService = {
       callback(authUser);
     });
   },
-
-  // Get ID Token
-  getIdToken: async (forceRefresh = false) => {
-    const user = auth.currentUser;
-    if (!user) return null;
-    return await user.getIdToken(forceRefresh);
-  },
 };
