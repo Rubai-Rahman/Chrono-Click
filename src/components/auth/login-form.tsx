@@ -24,6 +24,7 @@ import {
   LoginFormData,
   DEMO_CREDENTIALS,
 } from '@/lib/validations/auth';
+import { toast } from 'sonner';
 // No need to import redirect utils - middleware handles redirects
 
 const LoginForm = () => {
@@ -50,7 +51,9 @@ const LoginForm = () => {
     try {
       await login(data);
     } catch (error) {
-      // Error handling is done in the useAuth hook
+      toast.error(
+        error instanceof Error ? error.message : 'Something went wrong'
+      );
     }
   };
 

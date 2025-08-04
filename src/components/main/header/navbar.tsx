@@ -14,14 +14,11 @@ import { Menu, User } from 'lucide-react';
 import { Suspense, lazy } from 'react';
 import Cart from '../../cart/cart';
 import { navItems } from '@/lib/constant';
-import { useAuth } from '@/hooks/useAuth';
-import { LoginLink } from '@/components/auth/login-link';
 
 const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
 
 const Navbar = () => {
-  const { isAuthenticated, user } = useAuth();
-
+  const isAuthenticated = false;
   return (
     <nav className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       {/* Top bar with subtle gradient */}
@@ -88,7 +85,7 @@ const Navbar = () => {
             ) : (
               <div className="flex items-center gap-2">
                 <Button variant="ghost" asChild>
-                  <LoginLink>Log In</LoginLink>
+                  <Link href="/login">Log In</Link>
                 </Button>
               </div>
             )}
@@ -161,7 +158,7 @@ const Navbar = () => {
                           asChild
                           className="w-full bg-transparent"
                         >
-                          <LoginLink>Log In</LoginLink>
+                          <Link href="/login">Log In</Link>
                         </Button>
                         <Button
                           asChild
