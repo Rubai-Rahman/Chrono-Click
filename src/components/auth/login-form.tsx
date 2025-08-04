@@ -68,16 +68,6 @@ const LoginForm = () => {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent" />
-        <div className="absolute inset-0 flex items-center justify-center p-12">
-          <div className="text-center text-white">
-            <h1 className="text-5xl font-bold mb-6">Welcome Back!</h1>
-            <p className="text-xl opacity-90 max-w-md">
-              Sign in to access your account and continue your premium timepiece
-              journey.
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Right Side */}
@@ -213,7 +203,7 @@ const LoginForm = () => {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 text-lg font-semibold"
+                  className="w-full h-12 text-lg font-semibold data-error-disable"
                   disabled={isLoading}
                 >
                   {isLoading ? (
