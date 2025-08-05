@@ -63,7 +63,7 @@ export const DEMO_CREDENTIALS = {
     password: 'Admin123!',
   },
   user: {
-    email: 'user@chronoclick.com',
-    password: 'User123!',
+    email: 'test1@gmail.com',
+    password: 'SrongTestter#1',
   },
 } as const;

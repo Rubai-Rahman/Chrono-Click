@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { authService } from '@/lib/firebase/auth';
+import { GoogleAuthProvider } from 'firebase/auth';
 
 interface LoginData {
   email: string;
@@ -49,11 +50,15 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
 
-      await authService.signInWithEmail(data.email, data.password);
+      const result = await authService.signInWithEmail(
+        data.email,
+        data.password
+      );
+      console.log('result', result);
 
       toast.success('Welcome back!');
       router.push('/dashboard');
-    } catch (error: any) {
+    } catch (error: Error) {
       const errorMessage =
         error.code === 'auth/invalid-credential'
           ? 'Invalid email or password'
@@ -72,15 +77,15 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
 
-      await authService.createUserWithEmail(
+      const registerResult = await authService.createUserWithEmail(
         data.email,
         data.password,
         data.displayName
       );
-
+      console.log('registerResult', registerResult);
       toast.success('Account created successfully!');
       router.push('/dashboard');
-    } catch (error: any) {
+    } catch (error: Error) {
       const errorMessage =
         error.code === 'auth/email-already-in-use'
           ? 'An account with this email already exists'
@@ -99,7 +104,11 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
 
-      await authService.signInWithGoogle();
+      const result = await authService.signInWithGoogle();
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+
+      const user = result.user;
 
       toast.success('Welcome!');
       router.push('/dashboard');

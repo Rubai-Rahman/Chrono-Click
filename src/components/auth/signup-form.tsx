@@ -12,6 +12,7 @@ import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { signupSchema, SignupFormData } from '@/lib/validations/auth';
 import { PasswordStrength } from '@/components/ui/password-strength';
+import { toast } from 'sonner';
 
 const SignupForm = () => {
   const {
@@ -42,7 +43,9 @@ const SignupForm = () => {
         displayName: data.displayName,
       });
     } catch (error) {
-      // Error handling is done in the useAuth hook
+      toast.error(
+        error instanceof Error ? error.message : 'Something went wrong'
+      );
     }
   };
 
