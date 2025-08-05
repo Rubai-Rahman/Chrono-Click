@@ -38,7 +38,7 @@ const LoginForm = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const { login, googleSignIn, isLoading, loginError } = useAuth();
+  const { googleSignIn, isLoading } = useAuth();
 
   // Demo credentials handler
   const fillDemoCredentials = (type: 'admin' | 'user') => {
@@ -50,9 +50,10 @@ const LoginForm = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await loginAction(data);
+      // Success - user will be redirected by the server action
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Something went wrong'
+        error instanceof Error ? error.message : 'Invalid email or password'
       );
     }
   };
@@ -87,14 +88,6 @@ const LoginForm = () => {
 
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {loginError && (
-                  <div className="p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg">
-                    <p className="text-red-800 dark:text-red-200 text-sm">
-                      {loginError.message}
-                    </p>
-                  </div>
-                )}
-
                 <div className="space-y-4">
                   <div>
                     <label
