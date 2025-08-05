@@ -25,7 +25,7 @@ import {
   DEMO_CREDENTIALS,
 } from '@/lib/validations/auth';
 import { toast } from 'sonner';
-// No need to import redirect utils - middleware handles redirects
+import { loginAction } from '@/app/actions/auth';
 
 const LoginForm = () => {
   const {
@@ -49,7 +49,7 @@ const LoginForm = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data);
+      await loginAction(data);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : 'Something went wrong'

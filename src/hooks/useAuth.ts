@@ -35,6 +35,7 @@ export const useAuth = () => {
   // Initialize auth state listener
   useEffect(() => {
     const unsubscribe = authService.onAuthStateChanged((user) => {
+      console.log('userindside initialize', user);
       setUser(user);
       setLoading(false);
       if (!isInitialized) {
@@ -50,12 +51,12 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
 
-      const result = await authService.signInWithEmail(
+      const userCred = await authService.signInWithEmail(
         data.email,
         data.password
       );
-      console.log('result', result);
-
+      const idToken = await userCred.user.getIdToken();
+      console.log('idtoken', idToken);
       toast.success('Welcome back!');
       router.push('/dashboard');
     } catch (error: Error) {
@@ -77,12 +78,11 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
 
-      const registerResult = await authService.createUserWithEmail(
+      await authService.createUserWithEmail(
         data.email,
         data.password,
         data.displayName
       );
-      console.log('registerResult', registerResult);
       toast.success('Account created successfully!');
       router.push('/dashboard');
     } catch (error: Error) {

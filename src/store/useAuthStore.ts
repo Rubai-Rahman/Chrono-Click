@@ -7,6 +7,7 @@ export interface AuthUser {
   photoURL?: string;
   emailVerified: boolean;
   role: 'user' | 'admin';
+  token?: string;
 }
 
 interface AuthState {
