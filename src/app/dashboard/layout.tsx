@@ -42,9 +42,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   }
   // Use proper role-based admin check
   const admin = user?.role === 'admin';
-  console.log('🏠 Dashboard - User:', user?.email);
-  console.log('🏠 Dashboard - User role:', user?.role);
-  console.log('🏠 Dashboard - Is admin:', admin);
+  // console.log('🏠 Dashboard - User:', user?.email);
+  // console.log('🏠 Dashboard - User role:', user?.role);
+  // console.log('🏠 Dashboard - Is admin:', admin);
 
   const userMenuItems = [
     {

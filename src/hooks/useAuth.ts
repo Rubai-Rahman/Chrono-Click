@@ -45,27 +45,27 @@ export const useAuth = () => {
     return () => unsubscribe();
   }, [setUser, setLoading, setInitialized, isInitialized]);
 
-  const login = async (data: LoginData) => {
-    try {
-      setLoading(true);
-      setError(null);
-      await authService.signInWithEmail(data.email, data.password);
+  // const login = async (data: LoginData) => {
+  //   try {
+  //     setLoading(true);
+  //     setError(null);
+  //     await authService.signInWithEmail(data.email, data.password);
 
-      toast.success('Welcome back!');
-      router.push('/dashboard');
-    } catch (error: Error) {
-      const errorMessage =
-        error.code === 'auth/invalid-credential'
-          ? 'Invalid email or password'
-          : error.message || 'Login failed';
+  //     toast.success('Welcome back!');
+  //     router.push('/dashboard');
+  //   } catch (error: Error) {
+  //     const errorMessage =
+  //       error.code === 'auth/invalid-credential'
+  //         ? 'Invalid email or password'
+  //         : error.message || 'Login failed';
 
-      setError(errorMessage);
-      toast.error(errorMessage);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     setError(errorMessage);
+  //     toast.error(errorMessage);
+  //     throw error;
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const register = async (data: RegisterData) => {
     try {
@@ -99,10 +99,8 @@ export const useAuth = () => {
       setError(null);
 
       const result = await authService.signInWithGoogle();
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
-
-      const user = result.user;
+      const idToken = await result.user.getIdToken();
+      console.log('token', idToken, 'result', result);
 
       toast.success('Welcome!');
       router.push('/dashboard');
@@ -160,7 +158,6 @@ export const useAuth = () => {
     registerError: error ? { message: error } : null,
 
     // Actions
-    login,
     register: register,
     googleSignIn,
     logout,

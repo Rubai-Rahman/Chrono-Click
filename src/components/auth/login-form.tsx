@@ -18,14 +18,15 @@ import {
   User,
   Shield,
 } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
 import {
   loginSchema,
   LoginFormData,
   DEMO_CREDENTIALS,
 } from '@/lib/validations/auth';
 import { toast } from 'sonner';
-import { loginAction } from '@/app/actions/authAction';
+import { authService } from '@/lib/firebase/auth';
+import { useAuthStore } from '@/store/useAuthStore';
+import { loginAction, saveUser } from '@/app/actions/authAction';
 
 const LoginForm = () => {
   const {
@@ -38,8 +39,18 @@ const LoginForm = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const { googleSignIn, isLoading } = useAuth();
-
+  // const { googleSignIn, isLoading } = useAuth();
+  const {
+    user,
+    isLoading,
+    isInitialized,
+    error,
+    setUser,
+    setLoading,
+    setInitialized,
+    setError,
+    reset,
+  } = useAuthStore();
   // Demo credentials handler
   const fillDemoCredentials = (type: 'admin' | 'user') => {
     const credentials = DEMO_CREDENTIALS[type];
@@ -54,6 +65,30 @@ const LoginForm = () => {
       toast.error(
         error instanceof Error ? error.message : 'Invalid email or password'
       );
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const result = await authService.signInWithGoogle();
+      const idToken = await result.user.getIdToken();
+      await saveUser(
+        result.user.email || 'test@gmail.com',
+        result.user.displayName || '',
+        result.user.photoURL || '',
+        idToken
+      );
+      toast.success('Welcome!');
+    } catch (error) {
+      const errorMessage = error.message || 'Google sign-in failed';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -229,7 +264,7 @@ const LoginForm = () => {
                 type="button"
                 variant="outline"
                 className="w-full h-12"
-                onClick={() => googleSignIn()}
+                onClick={() => handleGoogleSignIn()}
                 disabled={isLoading}
               >
                 G Continue with Google

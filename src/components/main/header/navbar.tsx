@@ -15,14 +15,12 @@ import { Suspense, lazy } from 'react';
 import Cart from '../../cart/cart';
 import { navItems } from '@/lib/constant';
 import { useAuth } from '@/hooks/useAuth';
-import { authService } from '@/lib/firebase/auth';
 
 const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
 
 const Navbar = () => {
   const { user, isLoading } = useAuth();
   const isAuthenticated = user?.uid;
-  console.log('user', user);
 
   return (
     <nav className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

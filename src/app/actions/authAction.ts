@@ -11,18 +11,7 @@ export async function loginAction(data: { email: string; password: string }) {
     const userCred = await authService.signInWithEmail(email, password);
     const idToken = await userCred.user.getIdToken();
 
-    const userData = await saveUser(
-      email,
-      userCred.user.displayName || '',
-      idToken
-    );
-
-    // Create session with user data
-    await createSession(idToken, {
-      email: userData.email,
-      name: userData.name,
-      role: userData.role || 'user',
-    });
+    await saveUser(email, userCred.user.displayName || '', idToken);
   } catch (error: unknown) {
     return {
       errors: {
@@ -31,14 +20,14 @@ export async function loginAction(data: { email: string; password: string }) {
     };
   }
 
-  // Redirect to dashboard on success
   redirect('/dashboard');
 }
 
 export const saveUser = async (
   email: string,
   displayName: string,
-  idToken: string
+  idToken: string,
+  photoURL?: string
 ) => {
   try {
     const response = await axiosInstance.put(
@@ -46,6 +35,7 @@ export const saveUser = async (
       {
         email,
         name: displayName,
+        photoURL: photoURL,
         role: 'user',
       },
       {
@@ -54,11 +44,17 @@ export const saveUser = async (
         },
       }
     );
-    const userData =
-      typeof response.data === 'string'
-        ? JSON.parse(response.data)
-        : response.data;
+    const userData = response.data;
 
+    console.log('userDatain server', userData);
+
+    await createSession(idToken, {
+      email: userData.email || email,
+      name: userData.name || displayName,
+      role: userData.role || 'user',
+    });
+
+    // Return the user data for the frontend
     return userData;
   } catch (error) {
     console.error('Error saving user:', error);
@@ -69,7 +65,6 @@ export const saveUser = async (
 export async function logoutAction() {
   try {
     await authService.signOut();
-
     await deleteSession();
   } catch (error) {
     console.error('Logout error:', error);
