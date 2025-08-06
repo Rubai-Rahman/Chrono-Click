@@ -5,12 +5,6 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { authService } from '@/lib/firebase/auth';
-import { GoogleAuthProvider } from 'firebase/auth';
-
-interface LoginData {
-  email: string;
-  password: string;
-}
 
 interface RegisterData {
   email: string;
@@ -114,20 +108,6 @@ export const useAuth = () => {
     }
   };
 
-  const logout = async () => {
-    try {
-      setLoading(true);
-      await authService.signOut();
-      reset();
-      toast.success('Signed out successfully');
-      router.push('/');
-    } catch (error: any) {
-      toast.error('Sign out failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const resetPassword = async (email: string) => {
     try {
       setLoading(true);
@@ -160,7 +140,6 @@ export const useAuth = () => {
     // Actions
     register: register,
     googleSignIn,
-    logout,
     resetPassword,
   };
 };

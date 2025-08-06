@@ -34,7 +34,7 @@ import { logoutAction } from '@/app/actions/authAction';
 const ProfileMenu = () => {
   const { theme, setTheme } = useTheme();
   const isHydrated = useHydration();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
 
   const toggleTheme = () => {

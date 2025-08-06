@@ -72,7 +72,6 @@ const LoginForm = () => {
     try {
       setLoading(true);
       setError(null);
-
       const result = await authService.signInWithGoogle();
       const idToken = await result.user.getIdToken();
       await saveUser(

@@ -31,7 +31,7 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const { logout, user, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
   const handleLogout = () => {
     logoutAction();
   };
