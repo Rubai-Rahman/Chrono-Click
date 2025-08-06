@@ -25,7 +25,7 @@ import {
   DEMO_CREDENTIALS,
 } from '@/lib/validations/auth';
 import { toast } from 'sonner';
-import { loginAction } from '@/app/actions/auth';
+import { loginAction } from '@/app/actions/authAction';
 
 const LoginForm = () => {
   const {
@@ -50,7 +50,6 @@ const LoginForm = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await loginAction(data);
-      // Success - user will be redirected by the server action
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : 'Invalid email or password'
