@@ -29,6 +29,7 @@ import { useTheme } from 'next-themes';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useHydration } from '@/hooks/useHydration';
+import { logoutAction } from '@/app/actions/authAction';
 
 const ProfileMenu = () => {
   const { theme, setTheme } = useTheme();
@@ -55,7 +56,7 @@ const ProfileMenu = () => {
         router.push('/dashboard/settings');
         break;
       case 'logout':
-        logout();
+        logoutAction();
         break;
       default:
         break;
