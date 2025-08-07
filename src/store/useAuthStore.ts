@@ -3,9 +3,9 @@ import { create } from 'zustand';
 export interface AuthUser {
   email: string;
   name: string;
+  displayName?: string;
   photoURL?: string;
   role: 'user' | 'admin';
-  token?: string;
 }
 
 interface AuthState {

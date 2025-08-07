@@ -27,12 +27,13 @@ const SignupForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { googleSignIn, isLoading, registerError } = useAuth();
+  const { googleSignIn, isLoading, registerError, setLoading } = useAuth();
 
   const password = watch('password');
 
   const onSubmit = async (data: SignupFormData) => {
     try {
+      setLoading(true);
       const result = await registerAction({
         email: data.email,
         password: data.password,
@@ -49,6 +50,8 @@ const SignupForm = () => {
       toast.error(
         error instanceof Error ? error.message : 'Something went wrong'
       );
+    } finally {
+      setLoading(false);
     }
   };
 
