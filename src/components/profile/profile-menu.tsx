@@ -78,13 +78,11 @@ const ProfileMenu = () => {
           {user?.photoURL ? (
             <Avatar className="h-10 w-10">
               <AvatarImage
-                src={user.photoURL || '/placeholder.svg'}
-                alt={user.displayName || 'User'}
+                src={user?.photoURL || '/placeholder.svg'}
+                alt={user?.name || 'User'}
               />
               <AvatarFallback>
-                {user.displayName
-                  ? user.displayName.charAt(0).toUpperCase()
-                  : 'U'}
+                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
               </AvatarFallback>
             </Avatar>
           ) : (
@@ -100,7 +98,7 @@ const ProfileMenu = () => {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">
-                  {user.displayName || 'User'}
+                  {user.name || user.name || 'User'}
                 </p>
                 <p className="text-xs leading-none text-muted-foreground">
                   {user.email || 'user@example.com'}

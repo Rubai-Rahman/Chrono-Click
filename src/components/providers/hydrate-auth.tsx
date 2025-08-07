@@ -16,6 +16,8 @@ export const HydrateAuth = ({
   useEffect(() => {
     if (session?.user) {
       setUser(session.user);
+    } else {
+      setUser(null);
     }
     setInitialized(true);
   }, [session, setUser, setInitialized]);
