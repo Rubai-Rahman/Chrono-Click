@@ -39,28 +39,6 @@ export const useAuth = () => {
     return () => unsubscribe();
   }, [setUser, setLoading, setInitialized, isInitialized]);
 
-  // const login = async (data: LoginData) => {
-  //   try {
-  //     setLoading(true);
-  //     setError(null);
-  //     await authService.signInWithEmail(data.email, data.password);
-
-  //     toast.success('Welcome back!');
-  //     router.push('/dashboard');
-  //   } catch (error: Error) {
-  //     const errorMessage =
-  //       error.code === 'auth/invalid-credential'
-  //         ? 'Invalid email or password'
-  //         : error.message || 'Login failed';
-
-  //     setError(errorMessage);
-  //     toast.error(errorMessage);
-  //     throw error;
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const register = async (data: RegisterData) => {
     try {
       setLoading(true);
@@ -108,26 +86,26 @@ export const useAuth = () => {
     }
   };
 
-  const resetPassword = async (email: string) => {
-    try {
-      setLoading(true);
-      setError(null);
+  // const resetPassword = async (email: string) => {
+  //   try {
+  //     setLoading(true);
+  //     setError(null);
 
-      await authService.resetPassword(email);
-      toast.success('Password reset email sent!');
-    } catch (error: any) {
-      const errorMessage =
-        error.code === 'auth/user-not-found'
-          ? 'No account found with this email'
-          : error.message || 'Password reset failed';
+  //     await authService.resetPassword(email);
+  //     toast.success('Password reset email sent!');
+  //   } catch (error: any) {
+  //     const errorMessage =
+  //       error.code === 'auth/user-not-found'
+  //         ? 'No account found with this email'
+  //         : error.message || 'Password reset failed';
 
-      setError(errorMessage);
-      toast.error(errorMessage);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     setError(errorMessage);
+  //     toast.error(errorMessage);
+  //     throw error;
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return {
     // State
@@ -140,6 +118,5 @@ export const useAuth = () => {
     // Actions
     register: register,
     googleSignIn,
-    resetPassword,
   };
 };

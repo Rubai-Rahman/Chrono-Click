@@ -4,6 +4,34 @@ import { createSession, deleteSession, getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import axiosInstance from '@/lib/axios';
 
+export async function registerAction(data: {
+  email: string;
+  password: string;
+  displayName: string;
+}) {
+  try {
+    const userCred = await authService.createUserWithEmail(
+      data.email,
+      data.password,
+      data.displayName
+    );
+    const idToken = await userCred.user.getIdToken();
+
+    const userData = await saveUser(data.email, data.displayName, idToken);
+    console.log('Registration successful for user:', userData);
+  } catch (error: unknown) {
+    console.error('Registration error:', error);
+    return {
+      errors: {
+        email: ['Registration failed. Please try again.'],
+      },
+    };
+  }
+
+  // Redirect to dashboard on success
+  redirect('/dashboard');
+}
+
 export async function loginAction(data: { email: string; password: string }) {
   const { email, password } = data;
 
@@ -74,6 +102,13 @@ export async function logoutAction() {
   redirect('/');
 }
 
+export async function resetPasswordAction(email: string) {
+  try {
+    await authService.resetPassword(email);
+  } catch (error) {
+    console.log('error', error);
+  }
+}
 // Make user admin (requires admin privileges)
 export async function makeUserAdmin(adminEmail: string) {
   try {

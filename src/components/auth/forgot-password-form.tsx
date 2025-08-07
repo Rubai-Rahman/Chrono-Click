@@ -13,6 +13,7 @@ import {
   forgotPasswordSchema,
   ForgotPasswordFormData,
 } from '@/lib/validations/auth';
+import { resetPasswordAction } from '@/app/actions/authAction';
 
 const ForgotPasswordForm = () => {
   const {
@@ -24,11 +25,11 @@ const ForgotPasswordForm = () => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { resetPassword, isLoading } = useAuth();
+  const { isLoading } = useAuth();
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      await resetPassword(data.email);
+      await resetPasswordAction(data.email);
       setIsSubmitted(true);
     } catch (error) {
       // Error is handled by useAuth hook with toast notifications

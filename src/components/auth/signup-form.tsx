@@ -13,6 +13,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { signupSchema, SignupFormData } from '@/lib/validations/auth';
 import { PasswordStrength } from '@/components/ui/password-strength';
 import { toast } from 'sonner';
+import { registerAction } from '@/app/actions/authAction';
 
 const SignupForm = () => {
   const {
@@ -26,22 +27,24 @@ const SignupForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const {
-    register: registerUser,
-    googleSignIn,
-    isLoading,
-    registerError,
-  } = useAuth();
+  const { googleSignIn, isLoading, registerError } = useAuth();
 
   const password = watch('password');
 
   const onSubmit = async (data: SignupFormData) => {
     try {
-      await registerUser({
+      const result = await registerAction({
         email: data.email,
         password: data.password,
         displayName: data.displayName,
       });
+
+      if (result?.errors) {
+        toast.error(result.errors.email?.[0] || 'Registration failed');
+        return;
+      }
+
+      toast.success('Account created successfully!');
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : 'Something went wrong'

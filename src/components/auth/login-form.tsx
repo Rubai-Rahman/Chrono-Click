@@ -60,6 +60,7 @@ const LoginForm = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
+      setLoading(true);
       await loginAction(data);
     } catch (error) {
       toast.error(
@@ -77,8 +78,8 @@ const LoginForm = () => {
       await saveUser(
         result.user.email || 'test@gmail.com',
         result.user.displayName || '',
-        result.user.photoURL || '',
-        idToken
+        idToken,
+        result.user.photoURL || ''
       );
       toast.success('Welcome!');
     } catch (error) {
