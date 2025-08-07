@@ -1,6 +1,6 @@
 'use server';
 import { authService } from '@/lib/firebase/auth';
-import { createSession, deleteSession, getSession } from '@/lib/session';
+import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import axiosInstance from '@/lib/axios';
 
@@ -16,9 +16,7 @@ export async function registerAction(data: {
       data.displayName
     );
     const idToken = await userCred.user.getIdToken();
-
-    const userData = await saveUser(data.email, data.displayName, idToken);
-    console.log('Registration successful for user:', userData);
+    await saveUser(data.email, data.displayName, idToken);
   } catch (error: unknown) {
     console.error('Registration error:', error);
     return {
@@ -74,15 +72,12 @@ export const saveUser = async (
     );
     const userData = response.data;
 
-    console.log('userDatain server', userData);
-
     await createSession(idToken, {
       email: userData.email || email,
       name: userData.name || displayName,
       role: userData.role || 'user',
     });
 
-    // Return the user data for the frontend
     return userData;
   } catch (error) {
     console.error('Error saving user:', error);
@@ -98,7 +93,6 @@ export async function logoutAction() {
     console.error('Logout error:', error);
   }
 
-  // Redirect to home page
   redirect('/');
 }
 
@@ -110,28 +104,3 @@ export async function resetPasswordAction(email: string) {
   }
 }
 // Make user admin (requires admin privileges)
-export async function makeUserAdmin(adminEmail: string) {
-  try {
-    const session = await getSession();
-    if (!session) {
-      throw new Error('No session found');
-    }
-
-    const response = await axiosInstance.put(
-      '/users/admin',
-      {
-        email: adminEmail, // User to make admin
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${session.idToken}`,
-        },
-      }
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Error making user admin:', error);
-    throw error;
-  }
-}

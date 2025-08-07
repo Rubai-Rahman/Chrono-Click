@@ -1,18 +1,16 @@
 import { create } from 'zustand';
 
 export interface AuthUser {
-  uid: string;
   email: string;
-  displayName: string;
+  name: string;
   photoURL?: string;
-  emailVerified: boolean;
   role: 'user' | 'admin';
   token?: string;
 }
 
 interface AuthState {
   user: AuthUser | null;
-  isLoading: boolean;
+  isLoading: boolean; // optional, depending on your usage
   isInitialized: boolean;
   error: string | null;
 }
@@ -27,7 +25,7 @@ interface AuthActions {
 
 export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
   user: null,
-  isLoading: true,
+  isLoading: false,
   isInitialized: false,
   error: null,
 

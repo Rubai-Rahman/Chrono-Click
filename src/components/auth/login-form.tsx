@@ -24,9 +24,8 @@ import {
   DEMO_CREDENTIALS,
 } from '@/lib/validations/auth';
 import { toast } from 'sonner';
-import { authService } from '@/lib/firebase/auth';
-import { useAuthStore } from '@/store/useAuthStore';
-import { loginAction, saveUser } from '@/app/actions/authAction';
+import { loginAction } from '@/app/actions/authAction';
+import { useAuth } from '@/hooks/useAuth';
 
 const LoginForm = () => {
   const {
@@ -39,18 +38,7 @@ const LoginForm = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  // const { googleSignIn, isLoading } = useAuth();
-  const {
-    user,
-    isLoading,
-    isInitialized,
-    error,
-    setUser,
-    setLoading,
-    setInitialized,
-    setError,
-    reset,
-  } = useAuthStore();
+  const { isLoading, googleSignIn, setLoading } = useAuth();
   // Demo credentials handler
   const fillDemoCredentials = (type: 'admin' | 'user') => {
     const credentials = DEMO_CREDENTIALS[type];
@@ -69,28 +57,28 @@ const LoginForm = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const result = await authService.signInWithGoogle();
-      const idToken = await result.user.getIdToken();
-      await saveUser(
-        result.user.email || 'test@gmail.com',
-        result.user.displayName || '',
-        idToken,
-        result.user.photoURL || ''
-      );
-      toast.success('Welcome!');
-    } catch (error) {
-      const errorMessage = error.message || 'Google sign-in failed';
-      setError(errorMessage);
-      toast.error(errorMessage);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     setLoading(true);
+  //     setError(null);
+  //     const result = await authService.signInWithGoogle();
+  //     const idToken = await result.user.getIdToken();
+  //     await saveUser(
+  //       result.user.email || 'test@gmail.com',
+  //       result.user.displayName || '',
+  //       idToken,
+  //       result.user.photoURL || ''
+  //     );
+  //     toast.success('Welcome!');
+  //   } catch (error) {
+  //     const errorMessage = error.message || 'Google sign-in failed';
+  //     setError(errorMessage);
+  //     toast.error(errorMessage);
+  //     throw error;
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex">
@@ -264,7 +252,7 @@ const LoginForm = () => {
                 type="button"
                 variant="outline"
                 className="w-full h-12"
-                onClick={() => handleGoogleSignIn()}
+                onClick={() => googleSignIn()}
                 disabled={isLoading}
               >
                 G Continue with Google

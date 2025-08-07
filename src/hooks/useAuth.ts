@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { authService } from '@/lib/firebase/auth';
+import { saveUser } from '@/app/actions/authAction';
 
 interface RegisterData {
   email: string;
@@ -14,30 +14,10 @@ interface RegisterData {
 
 export const useAuth = () => {
   const router = useRouter();
-  const {
-    user,
-    isLoading,
-    isInitialized,
-    error,
-    setUser,
-    setLoading,
-    setInitialized,
-    setError,
-    reset,
-  } = useAuthStore();
+  const { user, isLoading, isInitialized, error, setLoading, setError } =
+    useAuthStore();
 
   // Initialize auth state listener
-  useEffect(() => {
-    const unsubscribe = authService.onAuthStateChanged((user) => {
-      setUser(user);
-      setLoading(false);
-      if (!isInitialized) {
-        setInitialized(true);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [setUser, setLoading, setInitialized, isInitialized]);
 
   const register = async (data: RegisterData) => {
     try {
@@ -69,14 +49,16 @@ export const useAuth = () => {
     try {
       setLoading(true);
       setError(null);
-
       const result = await authService.signInWithGoogle();
       const idToken = await result.user.getIdToken();
-      console.log('token', idToken, 'result', result);
-
+      await saveUser(
+        result.user.email || 'test@gmail.com',
+        result.user.displayName || '',
+        idToken,
+        result.user.photoURL || ''
+      );
       toast.success('Welcome!');
-      router.push('/dashboard');
-    } catch (error: any) {
+    } catch (error) {
       const errorMessage = error.message || 'Google sign-in failed';
       setError(errorMessage);
       toast.error(errorMessage);
@@ -86,30 +68,10 @@ export const useAuth = () => {
     }
   };
 
-  // const resetPassword = async (email: string) => {
-  //   try {
-  //     setLoading(true);
-  //     setError(null);
-
-  //     await authService.resetPassword(email);
-  //     toast.success('Password reset email sent!');
-  //   } catch (error: any) {
-  //     const errorMessage =
-  //       error.code === 'auth/user-not-found'
-  //         ? 'No account found with this email'
-  //         : error.message || 'Password reset failed';
-
-  //     setError(errorMessage);
-  //     toast.error(errorMessage);
-  //     throw error;
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   return {
     // State
     user,
+    setLoading,
     isLoading,
     isInitialized,
     loginError: error ? { message: error } : null,
