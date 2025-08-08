@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const CardSkeleton = () => {
   return (
-    <div className="space-y-8">
+    <div className="responsive-space-x my-12 container mx-auto">
       <div>
         <Skeleton className="h-6 w-32 mb-4" />
         <div className="grid gap-4">
