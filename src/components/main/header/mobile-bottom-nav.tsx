@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { bottomNavItems } from '@/lib/constant';
 import Cart from '@/components/cart/cart';
+import ProfileMenu from '@/components/profile/profile-menu';
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
@@ -28,9 +29,12 @@ export default function MobileBottomNav() {
             >
               {item.name === 'Cart' ? (
                 <Cart />
+              ) : item.name === 'My Account' ? (
+                <ProfileMenu />
               ) : (
                 <item.icon className="h-5 w-5" />
               )}
+
               <span>{item.name}</span>
             </Link>
           ))}

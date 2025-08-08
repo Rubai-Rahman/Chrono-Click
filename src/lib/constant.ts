@@ -100,5 +100,5 @@ export const bottomNavItems = [
   { name: 'Products', href: '/products', icon: LayoutList },
   { name: 'Cart', icon: ShoppingCart },
   { name: 'Wishlist', href: '/wishlist', icon: Heart },
-  { name: 'My Account', href: '/profile', icon: User },
+  { name: 'My Account', icon: User },
 ];
