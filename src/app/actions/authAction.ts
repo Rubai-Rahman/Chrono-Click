@@ -51,7 +51,7 @@ export async function loginAction(
     };
   }
   const redirectUrl =
-    callbackUrl && isValidUrl(callbackUrl) ? callbackUrl : '/dashboard';
+    callbackUrl && isValidUrl(callbackUrl) ? callbackUrl : '/products';
   redirect(redirectUrl);
 }
 
