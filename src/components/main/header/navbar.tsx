@@ -21,7 +21,7 @@ const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
 const Navbar = () => {
   const { user, isLoading } = useAuth();
   const isAuthenticated = user?.name;
-  console.log('isAuthenticated', user);
+
   return (
     <nav className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       {/* Top bar with subtle gradient */}

@@ -26,6 +26,7 @@ const nextConfig: NextConfig = {
   // Add experimental features for better error handling
   experimental: {
     optimizePackageImports: ['lucide-react'],
+    reactCompiler: true,
   },
 };
 

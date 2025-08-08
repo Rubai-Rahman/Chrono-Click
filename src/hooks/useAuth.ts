@@ -5,8 +5,10 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { authService } from '@/lib/firebase/auth';
 import { saveUser } from '@/app/actions/authAction';
 import { isValidUrl } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 export const useAuth = () => {
+  const router = useRouter();
   const { user, isLoading, isInitialized, error, setLoading, setError } =
     useAuthStore();
 
@@ -24,9 +26,9 @@ export const useAuth = () => {
       );
       // Handle callback redirect
       if (callbackUrl && isValidUrl(callbackUrl)) {
-        window.location.href = callbackUrl;
+        router.push(callbackUrl);
       } else {
-        window.location.href = '/dashboard';
+        router.push('/dashboard');
       }
       toast.success('Welcome!');
     } catch (error) {

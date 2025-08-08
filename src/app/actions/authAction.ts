@@ -18,7 +18,7 @@ export async function registerAction(data: {
     );
     const idToken = await userCred.user.getIdToken();
     await saveUser(data.email, data.displayName, idToken);
-  } catch (error: unknown) {
+  } catch (error) {
     console.error('Registration error:', error);
     return {
       errors: {
@@ -28,7 +28,7 @@ export async function registerAction(data: {
   }
 
   // Redirect to dashboard on success
-  redirect('/dashboard');
+  redirect('/');
 }
 
 export async function loginAction(
