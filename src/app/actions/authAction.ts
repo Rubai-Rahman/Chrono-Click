@@ -42,7 +42,8 @@ export async function loginAction(
     const idToken = await userCred.user.getIdToken();
 
     await saveUser(email, userCred.user.displayName || '', idToken);
-  } catch (error: unknown) {
+  } catch (error) {
+    console.log(error);
     return {
       errors: {
         email: ['Invalid email or password'],
