@@ -4,12 +4,13 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { authService } from '@/lib/firebase/auth';
 import { saveUser } from '@/app/actions/authAction';
+import { isValidUrl } from '@/lib/utils';
 
 export const useAuth = () => {
   const { user, isLoading, isInitialized, error, setLoading, setError } =
     useAuthStore();
 
-  const googleSignIn = async () => {
+  const googleSignIn = async (callbackUrl?: string) => {
     try {
       setLoading(true);
       setError(null);
@@ -21,6 +22,12 @@ export const useAuth = () => {
         idToken,
         result.user.photoURL || ''
       );
+      // Handle callback redirect
+      if (callbackUrl && isValidUrl(callbackUrl)) {
+        window.location.href = callbackUrl;
+      } else {
+        window.location.href = '/dashboard';
+      }
       toast.success('Welcome!');
     } catch (error) {
       const errorMessage =

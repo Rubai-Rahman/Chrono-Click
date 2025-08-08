@@ -237,7 +237,7 @@ const LoginForm = () => {
                 type="button"
                 variant="outline"
                 className="w-full h-12"
-                onClick={() => googleSignIn()}
+                onClick={() => googleSignIn(callbackUrl || undefined)}
                 disabled={isLoading}
               >
                 G Continue with Google

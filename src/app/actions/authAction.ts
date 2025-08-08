@@ -3,6 +3,7 @@ import { authService } from '@/lib/firebase/auth';
 import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import axiosInstance from '@/lib/axios';
+import { isValidUrl } from '@/lib/utils';
 
 export async function registerAction(data: {
   email: string;
@@ -106,9 +107,4 @@ export async function resetPasswordAction(email: string) {
   } catch (error) {
     console.log('error', error);
   }
-}
-// Helper function to validate URLs
-function isValidUrl(url: string): boolean {
-  // Only allow relative URLs or same origin
-  return url.startsWith('/') && !url.startsWith('//');
 }
