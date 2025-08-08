@@ -75,7 +75,7 @@ const News = () => {
                 {news?.map((item) => (
                   <CarouselItem
                     key={item._id}
-                    className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/5"
+                    className="pl-4 md:basis-1/2 lg:basis-1/3  2xl:basis-1/4"
                   >
                     <div className="p-1 h-full">
                       <NewsItem item={item} />

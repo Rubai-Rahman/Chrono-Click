@@ -5,10 +5,9 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useCartStore } from '@/store/useCartStore';
 import { Button } from '@/components/ui/button';
-import { Eye, Heart, ShoppingCart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { StarRating } from '../ui/render-star';
 import { ProductType } from '@/api-lib/api-type';
 
 const formatPrice = (price: number) => {
@@ -20,104 +19,92 @@ interface ProductProps {
 }
 
 const Product: React.FC<ProductProps> = ({ product }) => {
-  const { _id, name, price, img } = product;
+  const { _id, name, price, img, brand } = product;
   const router = useRouter();
+  const { addToCart } = useCartStore();
 
-  const handleDetails = () => {
+  const handleBuyNow = () => {
+    addToCart(product);
+    // Optionally, redirect to cart or checkout after adding
+    // router.push('/cart');
+  };
+
+  const handleProductClick = () => {
     router.push(`/product/${_id}`);
   };
 
-  const { addToCart } = useCartStore();
-
   return (
-    <Card className="group w-full sm:max-w-xs md:max-w-sm lg:max-w-md rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 bg-card/60 backdrop-blur-md border">
-      <CardContent className="p-2">
-        {/* Image */}
-        <div className="w-full relative overflow-hidden bg-gradient-to-br from-muted/20 to-muted/40 flex justify-center">
+    <Card className="group w-full max-w-xs rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card border border-border">
+      <CardContent className="p-4">
+        {/* Image Container */}
+        <div
+          className="relative w-full h-48 bg-muted rounded-xl overflow-hidden flex items-center justify-center mb-4 cursor-pointer"
+          onClick={handleProductClick}
+        >
           <Image
-            src={img || '/placeholder.svg?height=300&width=300&text=Watch'}
+            src={img || '/placeholder.svg?height=200&width=200&text=Product'}
             alt={name}
-            width={250}
-            height={300}
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            width={200}
+            height={200}
+            className="object-contain transition-transform duration-300 group-hover:scale-105"
+            priority // Assuming product images are important for LCP
           />
-
-          {/* Overlay Actions */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-            <div className="flex gap-2">
-              <Button
-                size="icon"
-                variant="secondary"
-                className="rounded-full shadow-md transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
-                onClick={handleDetails}
-              >
-                <Eye className="w-4 h-4" />
-              </Button>
-              <Button
-                size="icon"
-                variant="secondary"
-                className="rounded-full shadow-md transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75"
-              >
-                <Heart className="w-4 h-4" />
-              </Button>
-            </div>
+          {/* Top Left Badge/Logo & Top Right Heart Icon */}
+          <div className="absolute top-3 left-3 flex items-center gap-2">
+            {/* {isBestSeller && (
+              <Badge className="bg-foreground text-background text-xs font-medium px-2 py-1 rounded-full">
+                Best Seller
+              </Badge>
+            )} */}
+            {/* Placeholder for Brand Logo (e.g., Nike swoosh) */}
+            {brand && (
+              <Image
+                src={`/placeholder.svg?height=20&width=20&text=${brand}`} // Replace with actual brand logo path if available
+                alt={`${brand} Logo`}
+                width={20}
+                height={20}
+                className="rounded-full"
+              />
+            )}
           </div>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="absolute top-3 right-3 rounded-full w-8 h-8 text-destructive hover:bg-destructive/10 focus:ring-0"
+            aria-label="Add to wishlist"
+          >
+            <Heart className="w-4 h-4 fill-destructive" />
+          </Button>
 
-          {/* Badges */}
-          {!product.inStock && (
-            <Badge variant="destructive" className="absolute top-3 left-3">
-              Out of Stock
-            </Badge>
-          )}
-          {product.category && (
-            <Badge
-              variant="secondary"
-              className="absolute top-3 right-3 bg-white/90 text-black"
-            >
-              {product.category}
-            </Badge>
-          )}
+          {/* Pagination Dots (Placeholder) */}
+          <div className="absolute bottom-3 flex gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 group-hover:bg-muted-foreground transition-colors" />
+            <span className="w-1.5 h-1.5 rounded-full bg-muted/50 group-hover:bg-muted-foreground/70 transition-colors" />
+            <span className="w-1.5 h-1.5 rounded-full bg-muted/50 group-hover:bg-muted-foreground/70 transition-colors" />
+          </div>
         </div>
 
-        {/* Card Content */}
-        <div className=" space-y-4">
-          {product.brand && (
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
-              {product.brand}
+        {/* Product Details */}
+        <div className="px-1 space-y-1">
+          {brand && (
+            <p className="text-sm text-muted-foreground font-medium uppercase tracking-wide">
+              {brand}
             </p>
           )}
-
-          <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="text-lg font-semibold text-foreground line-clamp-2">
             {name}
           </h3>
-          {/* Rating */}
-          {product.rating && (
-            <div className="flex items-center gap-2">
-              <div className="flex items-center">
-                <StarRating rating={product.rating} />
-              </div>
-              <span className="text-sm font-medium text-foreground">
-                {product.rating}
-              </span>
-              <span className="text-sm text-muted-foreground">
-                ({product.reviews ?? 0} reviews)
-              </span>
-            </div>
-          )}
-
-          {/* Price and Add to Cart */}
+          {/* Price and Buy Now Button */}
           <div className="flex items-center justify-between pt-2">
-            <p className="text-xl font-bold text-primary">
+            <p className="text-xl font-bold text-foreground">
               {formatPrice(price)}
             </p>
-
             <Button
               disabled={!product.inStock}
-              onClick={() => addToCart(product)}
-              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-md hover:shadow-xl transition-all duration-300 group/btn"
+              onClick={handleBuyNow}
+              className="bg-foreground text-background rounded-full px-6 py-2 text-base font-medium shadow-md hover:bg-foreground/90 transition-colors duration-200"
             >
-              <ShoppingCart className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
-              {product.inStock ? 'Add to Cart' : 'Sold Out'}
+              {product.inStock ? 'Buy Now' : 'Sold Out'}
             </Button>
           </div>
         </div>

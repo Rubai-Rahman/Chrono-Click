@@ -121,7 +121,7 @@ const Review = () => {
               {reviews.map((item) => (
                 <CarouselItem
                   key={item._id}
-                  className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/5"
+                  className="pl-4 md:basis-1/2 lg:basis-1/3 2xl:basis-1/4"
                 >
                   <Card className="group h-full bg-card/70 border-0 shadow-lg hover:shadow-xl backdrop-blur">
                     <CardContent className=" h-full flex flex-col">
