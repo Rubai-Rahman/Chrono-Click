@@ -57,7 +57,7 @@ const LoginForm = () => {
 
   return (
     <div className="flex items-center justify-center bg-background responsive-space-x md:py-12">
-      <div className=" flex container mx-auto h-full rounded-3xl overflow-hidden lg:shadow-2xl lg:shadow-foreground/20">
+      <div className=" flex container mx-auto h-full rounded-3xl overflow-hidden shadow-xl lg:shadow-2xl lg:shadow-foreground/20">
         {/* Left Side - Abstract Background & Quote */}
         <div className="hidden lg:flex lg:w-1/2 relative items-end p-12 border border-white/20 rounded-l-3xl">
           <Image

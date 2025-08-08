@@ -27,7 +27,7 @@ const Navbar = () => {
       {/* Top bar with subtle gradient */}
       <div className="h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20"></div>
 
-      <div className="container mx-auto">
+      <div className="container mx-auto px-3">
         <div className="flex h-16 items-center justify-between">
           {/* Logo Section */}
           <Link href="/" className="flex items-center gap-3 group">
