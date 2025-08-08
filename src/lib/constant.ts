@@ -1,3 +1,4 @@
+import { Home, LayoutList, ShoppingCart, Heart, User } from 'lucide-react';
 const auth = true;
 export const navItems = [
   { name: 'Home', href: '/' },
@@ -93,4 +94,11 @@ export const brands = [
     logo: '/images/brands/timex.jpg',
     alt: 'Timeex logo',
   },
+];
+export const bottomNavItems = [
+  { name: 'Home', href: '/', icon: Home },
+  { name: 'Products', href: '/products', icon: LayoutList },
+  { name: 'Cart', icon: ShoppingCart },
+  { name: 'Wishlist', href: '/wishlist', icon: Heart },
+  { name: 'My Account', href: '/profile', icon: User },
 ];

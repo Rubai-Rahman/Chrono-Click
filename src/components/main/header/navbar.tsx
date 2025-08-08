@@ -19,7 +19,7 @@ import { useAuth } from '@/hooks/useAuth';
 const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
 
 const Navbar = () => {
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
   const isAuthenticated = user?.name;
 
   return (
@@ -96,9 +96,6 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center gap-2">
-            {/* Mobile Cart */}
-            <Cart />
-
             {/* Mobile Menu Trigger */}
             <Sheet>
               <SheetTrigger asChild>
@@ -113,11 +110,11 @@ const Navbar = () => {
                   {/* Mobile Header */}
                   <div className="flex items-center gap-3 pb-6 border-b border-border">
                     <Image
-                      src="/placeholder.svg?height=40&width=40"
-                      alt="Logo"
-                      width={40}
-                      height={40}
-                      className="rounded-full"
+                      src={logo}
+                      alt="Chrono Click Logo"
+                      width={32}
+                      height={32}
+                      className="relative z-10 rounded-full"
                     />
                     <div>
                       <span className="text-primary font-bold text-lg">
@@ -140,37 +137,6 @@ const Navbar = () => {
                         {item.name}
                       </Link>
                     ))}
-                  </div>
-
-                  {/* Mobile Auth Section */}
-                  <div className="mt-auto pt-6 border-t border-border">
-                    {isAuthenticated ? (
-                      <div className="px-3">
-                        <Suspense
-                          fallback={
-                            <div className="text-sm">Loading profile...</div>
-                          }
-                        >
-                          <ProfileMenu />
-                        </Suspense>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col gap-2 px-3">
-                        <Button
-                          variant="outline"
-                          asChild
-                          className="w-full bg-transparent"
-                        >
-                          <Link href="/login">Log In</Link>
-                        </Button>
-                        <Button
-                          asChild
-                          className="w-full bg-gradient-to-r from-primary to-primary/80"
-                        >
-                          <Link href="/signup">Sign Up</Link>
-                        </Button>
-                      </div>
-                    )}
                   </div>
                 </div>
               </SheetContent>

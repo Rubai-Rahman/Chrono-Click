@@ -5,6 +5,7 @@ import Navbar from '@/components/main/header/navbar';
 import Footer from '@/components/main/footer/footer';
 import BackToTop from '@/components/ui/back-to-top';
 import ScrollRestoration from '@/components/ui/scroll-restoration';
+import MobileBottomNav from '@/components/main/header/mobile-bottom-nav';
 import Providers from './providers';
 
 const geistSans = Geist({
@@ -154,6 +155,7 @@ export default function RootLayout({
           {children}
           <Footer />
           <BackToTop />
+          <MobileBottomNav />
         </Providers>
       </body>
     </html>
