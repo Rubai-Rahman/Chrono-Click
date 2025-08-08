@@ -30,7 +30,10 @@ export async function registerAction(data: {
   redirect('/dashboard');
 }
 
-export async function loginAction(data: { email: string; password: string }) {
+export async function loginAction(
+  data: { email: string; password: string },
+  callbackUrl?: string
+) {
   const { email, password } = data;
 
   try {
@@ -45,8 +48,9 @@ export async function loginAction(data: { email: string; password: string }) {
       },
     };
   }
-
-  redirect('/dashboard');
+  const redirectUrl =
+    callbackUrl && isValidUrl(callbackUrl) ? callbackUrl : '/dashboard';
+  redirect(redirectUrl);
 }
 
 export const saveUser = async (
@@ -103,4 +107,8 @@ export async function resetPasswordAction(email: string) {
     console.log('error', error);
   }
 }
-// Make user admin (requires admin privileges)
+// Helper function to validate URLs
+function isValidUrl(url: string): boolean {
+  // Only allow relative URLs or same origin
+  return url.startsWith('/') && !url.startsWith('//');
+}

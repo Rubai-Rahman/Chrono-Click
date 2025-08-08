@@ -26,6 +26,7 @@ import {
 import { toast } from 'sonner';
 import { loginAction } from '@/app/actions/authAction';
 import { useAuth } from '@/hooks/useAuth';
+import { useSearchParams } from 'next/navigation';
 
 const LoginForm = () => {
   const {
@@ -39,6 +40,8 @@ const LoginForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const { isLoading, googleSignIn, setLoading } = useAuth();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl');
   // Demo credentials handler
   const fillDemoCredentials = (type: 'admin' | 'user') => {
     const credentials = DEMO_CREDENTIALS[type];
@@ -49,7 +52,7 @@ const LoginForm = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       setLoading(true);
-      await loginAction(data);
+      await loginAction(data, callbackUrl || undefined);
     } catch (error) {
       if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
         return;
