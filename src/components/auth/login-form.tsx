@@ -251,7 +251,7 @@ const LoginForm = () => {
           </div>
 
           {/* Sign Up Link */}
-          <div className="text-center mt-8 lg:mt-0">
+          <div className="text-center mt-8 lg:mt-4">
             <p className="text-muted-foreground text-sm">
               Don&apos;t have an account?{' '}
               <Link
