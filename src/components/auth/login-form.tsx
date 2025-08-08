@@ -56,7 +56,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4 lg:p-8 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 lg:p-8 py-12">
       <div className="relative flex w-full max-w-6xl h-full rounded-3xl overflow-hidden shadow-2xl">
         {/* Left Side - Abstract Background & Quote */}
         <div className="hidden lg:flex lg:w-1/2 relative items-end p-12 border border-white/20 rounded-l-3xl">
