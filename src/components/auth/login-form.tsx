@@ -56,8 +56,8 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4 lg:p-8 py-12">
-      <div className="relative flex w-full max-w-6xl h-full rounded-3xl overflow-hidden shadow-2xl">
+    <div className="flex items-center justify-center bg-background responsive-space-x md:py-12">
+      <div className=" flex container mx-auto h-full rounded-3xl overflow-hidden lg:shadow-2xl lg:shadow-foreground/20">
         {/* Left Side - Abstract Background & Quote */}
         <div className="hidden lg:flex lg:w-1/2 relative items-end p-12 border border-white/20 rounded-l-3xl">
           <Image
@@ -74,7 +74,7 @@ const LoginForm = () => {
               <div className="w-16 h-px bg-white mt-1" />
             </div>
             <div className="space-y-4">
-              <h1 className="text-6xl font-extrabold leading-tight tracking-tighter font-serif">
+              <h1 className="text-4xl font-bold leading-tight tracking-tighter font-serif">
                 A MOMENT TO REMEMBER
               </h1>
               <p className="text-lg font-light opacity-90 max-w-md">
