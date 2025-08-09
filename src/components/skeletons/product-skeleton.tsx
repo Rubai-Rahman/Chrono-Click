@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 const ProductSkeleton = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/5 to-background">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4">
         {/* Header Skeleton */}
         <div className="text-center mb-12">
           <Skeleton className="h-12 w-64 mx-auto mb-4" />
