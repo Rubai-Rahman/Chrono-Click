@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/main/header/navbar';
@@ -96,16 +96,7 @@ export const metadata: Metadata = {
   category: 'e-commerce',
   classification: 'Business',
   referrer: 'origin-when-cross-origin',
-  colorScheme: 'dark light',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#000000' },
-  ],
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
+
   manifest: '/manifest.json', // Add if you have a PWA manifest
   icons: {
     icon: [
@@ -137,6 +128,23 @@ export const metadata: Metadata = {
     'msapplication-TileColor': '#000000',
     'msapplication-config': '/browserconfig.xml',
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  colorScheme: 'dark light',
+  themeColor: [
+    {
+      media: '(prefers-color-scheme: light)',
+      color: 'oklch(0.9965 0.017 106.7)',
+    },
+    {
+      media: '(prefers-color-scheme: dark)',
+      color: 'oklch(0.2621 0.0095 248.19)',
+    },
+  ],
 };
 
 export default function RootLayout({

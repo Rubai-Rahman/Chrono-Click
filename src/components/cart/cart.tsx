@@ -120,8 +120,11 @@ const Cart = () => {
                   key={item._id}
                   className="group hover:shadow-md transition-all duration-300 border-0 bg-gradient-to-r from-background to-muted/20"
                   style={{
+                    animationName: 'slideInRight',
+                    animationDuration: '0.5s',
+                    animationTimingFunction: 'ease-out',
+                    animationFillMode: 'forwards',
                     animationDelay: `${index * 100}ms`,
-                    animation: 'slideInRight 0.5s ease-out forwards',
                   }}
                 >
                   <CardContent className="p-4">
