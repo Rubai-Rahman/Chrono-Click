@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/useCartStore';
 import {
   Sheet,
@@ -29,16 +28,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 const Cart = () => {
-  const [isHydrated, setIsHydrated] = useState(false);
   const router = useRouter();
   const items = useCartStore((state) => state.items);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const totalPrice = useCartStore((state) => state.totalPrice);
-
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -47,7 +41,7 @@ const Cart = () => {
     }).format(price);
   };
 
-  const subtotal = isHydrated ? totalPrice() : 0;
+  const subtotal = totalPrice();
   const shipping = subtotal > 100 ? 0 : 9.99;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
@@ -58,7 +52,7 @@ const Cart = () => {
         <Button variant="ghost" size="icon" className="relative group">
           <div className="relative">
             <ShoppingCart className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-all duration-300 group-hover:scale-110" />
-            {isHydrated && items.length > 0 && (
+            {items.length > 0 && (
               <>
                 {/* Animated pulse ring */}
                 <div className="absolute -inset-1 bg-primary/20 rounded-full animate-ping"></div>
@@ -81,20 +75,14 @@ const Cart = () => {
           <SheetHeader>
             <div className="flex items-center gap-3">
               <div className="p-2 bg-primary/10 rounded-full">
-                <ShoppingBag className="h-5 w-5 text-primary" />
+                <ShoppingBag className="size-4 text-primary" />
               </div>
-              <div>
+              <div className="flex items-center gap-x-2">
                 <SheetTitle className="text-xl font-bold">
-                  Shopping Cart
+                  Your Cart Have
                 </SheetTitle>
                 <SheetDescription className="text-sm">
-                  {!isHydrated
-                    ? 'Loading cart...'
-                    : items.length === 0
-                    ? 'Your cart is waiting for some amazing products'
-                    : `${items.length} ${
-                        items.length === 1 ? 'item' : 'items'
-                      } in your cart`}
+                  {`${items.length} ${items.length <= 1 ? 'item' : 'items'} `}
                 </SheetDescription>
               </div>
             </div>
@@ -103,22 +91,7 @@ const Cart = () => {
 
         {/* Content */}
         <div className="flex-1 overflow-auto">
-          {!isHydrated ? (
-            <div className="p-6 space-y-4">
-              <div className="animate-pulse space-y-4">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex items-center gap-4">
-                    <div className="w-20 h-20 bg-muted rounded-lg"></div>
-                    <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-muted rounded w-3/4"></div>
-                      <div className="h-3 bg-muted rounded w-1/2"></div>
-                      <div className="h-4 bg-muted rounded w-1/4"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : items.length === 0 ? (
+          {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full p-8 text-center">
               <div className="relative mb-6">
                 <div className="w-24 h-24 bg-muted/30 rounded-full flex items-center justify-center">
@@ -130,8 +103,7 @@ const Cart = () => {
               </div>
               <h3 className="text-lg font-semibold mb-2">Your cart is empty</h3>
               <p className="text-muted-foreground mb-6 max-w-sm">
-                Discover our amazing collection of premium timepieces and add
-                your favorites to get started.
+                Discover our amazing collection of premium timepieces .
               </p>
               <Button className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70">
                 Start Shopping
@@ -140,19 +112,12 @@ const Cart = () => {
             </div>
           ) : (
             <div className="p-6 space-y-4">
-              {items.map((item, index) => (
+              {items.map((item) => (
                 <Card
                   key={item._id}
-                  className="group hover:shadow-md transition-all duration-300 border-0 bg-gradient-to-r from-background to-muted/20"
-                  style={{
-                    animationName: 'slideInRight',
-                    animationDuration: '0.5s',
-                    animationTimingFunction: 'ease-out',
-                    animationFillMode: 'forwards',
-                    animationDelay: `${index * 100}ms`,
-                  }}
+                  className="group hover:shadow-md transition-all duration-300 border-0 bg-gradient-to-r from-background bg-red to-muted/20 py-0"
                 >
-                  <CardContent className="p-4">
+                  <CardContent className="px-0">
                     <div className="flex items-center gap-4">
                       {/* Product Image */}
                       <div className="relative overflow-hidden rounded-lg bg-muted/20">
@@ -181,7 +146,7 @@ const Cart = () => {
                           </span>
 
                           {/* Quantity Controls */}
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 px-2">
                             <Button
                               variant="outline"
                               size="icon"
@@ -232,7 +197,7 @@ const Cart = () => {
         </div>
 
         {/* Footer with totals and checkout */}
-        {isHydrated && items.length > 0 && (
+        {items.length > 0 && (
           <div className="border-t bg-gradient-to-t from-muted/20 to-transparent p-6 space-y-4">
             {/* Promo Banner */}
             {subtotal < 100 && (
