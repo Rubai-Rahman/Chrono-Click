@@ -24,9 +24,6 @@ const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      {/* Top bar with subtle gradient */}
-      <div className="h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20"></div>
-
       <div className="container mx-auto px-3">
         <div className="flex h-16 items-center justify-between">
           {/* Logo Section */}
