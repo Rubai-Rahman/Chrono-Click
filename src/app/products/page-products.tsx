@@ -33,7 +33,7 @@ const ProductsPageContent = () => {
   // page change handler: update URL with new page param
   const onPageChange = (newPage: number) => {
     if (newPage < 0 || newPage >= totalPages) return; // boundary check
-    router.push(`/shop?page=${newPage}`);
+    router.push(`/products?page=${newPage}`);
   };
 
   return (
