@@ -229,7 +229,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 >
                   <Heart
                     className={`w-5 h-5 ${
-                      isWishlisted ? 'fill-red-500 text-red-500' : ''
+                      isWishlisted ? 'fill-primary text-primary' : ''
                     }`}
                   />
                 </Button>
