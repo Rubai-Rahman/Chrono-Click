@@ -9,6 +9,7 @@ import { Heart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ProductType } from '@/api-lib/api-type';
+import { toast } from 'sonner';
 
 const formatPrice = (price: number) => {
   return `$${Number(price).toFixed(2)}`;
@@ -25,8 +26,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
 
   const handleBuyNow = () => {
     addToCart(product);
-    // Optionally, redirect to cart or checkout after adding
-    // router.push('/cart');
+    toast.error(`${product.name} is added to cart`);
   };
 
   const handleProductClick = () => {
