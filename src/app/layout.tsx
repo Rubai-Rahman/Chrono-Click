@@ -4,9 +4,9 @@ import './globals.css';
 import Navbar from '@/components/main/header/navbar';
 import Footer from '@/components/main/footer/footer';
 import BackToTop from '@/components/ui/back-to-top';
-import ScrollRestoration from '@/components/ui/scroll-restoration';
 import MobileBottomNav from '@/components/main/header/mobile-bottom-nav';
 import Providers from './providers';
+import NextTopLoader from 'nextjs-toploader';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -158,7 +158,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} w-full antialiased overflow-x-hidden `}
       >
         <Providers>
-          <ScrollRestoration />
+          <NextTopLoader
+            color="oklch(0.6033 0.0948 83.89)"
+            showSpinner={false}
+          />
           <Navbar />
           {children}
           <Footer />

@@ -27,6 +27,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react'],
     reactCompiler: true,
+    scrollRestoration: true,
   },
 };
 

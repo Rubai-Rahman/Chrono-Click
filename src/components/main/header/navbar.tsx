@@ -32,7 +32,7 @@ const Navbar = () => {
               <div className="absolute inset-0 bg-primary/20 rounded-full blur-sm group-hover:blur-md transition-all duration-300"></div>
               <Image
                 src={logo}
-                alt="Chrono Click Logo"
+                alt="Logo"
                 width={32}
                 height={32}
                 className="relative z-10 rounded-full"
