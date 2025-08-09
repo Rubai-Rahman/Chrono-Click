@@ -59,6 +59,8 @@ const Newsletter = () => {
     mutation.mutate(data.email);
   };
 
+  const emailValue = form.watch('email');
+
   return (
     <Container>
       <div className="bg-gradient-to-br from-primary/5 to-accent/5 relative">
@@ -141,7 +143,7 @@ const Newsletter = () => {
 
                       <Button
                         type="submit"
-                        disabled={mutation.isPending || !form.watch('email')}
+                        disabled={mutation.isPending || !emailValue?.trim()}
                         className="w-full h-14 text-lg"
                       >
                         {mutation.isPending ? (
