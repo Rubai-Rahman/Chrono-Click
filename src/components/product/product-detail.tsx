@@ -30,17 +30,31 @@ import {
 import { ProductType } from '@/api-lib/api-type';
 
 export default function ProductDetail({ product }: { product: ProductType }) {
-  console.log('products', product);
-  const { addToCart } = useCartStore();
+  const { items, updateQuantity, addToCart } = useCartStore();
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+
+  // Get current quantity directly from cart state
+  const cartItem = items.find((item) => item._id === product._id);
+  const quantity = cartItem?.quantity || 1;
 
   const handleQuantityChange = (change: number) => {
-    setQuantity((prev) => Math.max(1, prev + change));
+    const newQuantity = Math.max(1, quantity + change);
+
+    if (cartItem) {
+      // Item exists in cart, update its quantity
+      updateQuantity(product._id, newQuantity);
+    } else {
+      // Item not in cart, add it first then update quantity
+      addToCart(product);
+      if (newQuantity > 1) {
+        updateQuantity(product._id, newQuantity);
+      }
+    }
   };
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
+    if (!cartItem) {
+      // Add new item to cart
       addToCart(product);
     }
   };
@@ -205,7 +219,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   onClick={handleAddToCart}
                 >
                   <ShoppingCart className="w-5 h-5 mr-2" />
-                  Add to Cart
+                  {cartItem ? 'Update Cart' : 'Add to Cart'}
                 </Button>
                 <Button
                   variant="outline"
@@ -228,7 +242,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
             {/* Trust Badges */}
             <div className="grid grid-cols-3 gap-4 pt-6">
               <Card>
-                <CardContent className="p-0">
+                <CardContent className="p-0 text-center">
                   <Truck className="w-8 h-8 text-primary mx-auto mb-2" />
                   <h4 className="text-sm font-medium">Free Shipping</h4>
                   <p className="text-xs text-muted-foreground">
