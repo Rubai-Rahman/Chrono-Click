@@ -34,9 +34,9 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   };
 
   return (
-    <Card className="group w-full max-w-xs rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card border border-border hover:border-primary py-0">
+    <Card className="group w-full max-w-xs rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card border border-border hover:border-primary py-0">
       <CardContent className="p-3">
-        <div className="relative w-full h-60 bg-muted rounded-3xl overflow-hidden flex items-center justify-center mb-4 cursor-pointer  onClick={handleProductClick}">
+        <div className="relative w-full h-60 bg-muted rounded-xl overflow-hidden flex items-center justify-center mb-4 cursor-pointer  onClick={handleProductClick}">
           <Image
             src={img || '/placeholder.svg?height=200&width=200&text=Product'}
             alt={name}
