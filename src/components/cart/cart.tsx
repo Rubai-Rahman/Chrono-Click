@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/useCartStore';
 import {
   Sheet,
@@ -25,12 +26,19 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const Cart = () => {
+  const [isHydrated, setIsHydrated] = useState(false);
+  const router = useRouter();
   const items = useCartStore((state) => state.items);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const totalPrice = useCartStore((state) => state.totalPrice);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -39,7 +47,7 @@ const Cart = () => {
     }).format(price);
   };
 
-  const subtotal = totalPrice();
+  const subtotal = isHydrated ? totalPrice() : 0;
   const shipping = subtotal > 100 ? 0 : 9.99;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
@@ -50,7 +58,7 @@ const Cart = () => {
         <Button variant="ghost" size="icon" className="relative group">
           <div className="relative">
             <ShoppingCart className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-all duration-300 group-hover:scale-110" />
-            {items.length > 0 && (
+            {isHydrated && items.length > 0 && (
               <>
                 {/* Animated pulse ring */}
                 <div className="absolute -inset-1 bg-primary/20 rounded-full animate-ping"></div>
@@ -80,7 +88,9 @@ const Cart = () => {
                   Shopping Cart
                 </SheetTitle>
                 <SheetDescription className="text-sm">
-                  {items.length === 0
+                  {!isHydrated
+                    ? 'Loading cart...'
+                    : items.length === 0
                     ? 'Your cart is waiting for some amazing products'
                     : `${items.length} ${
                         items.length === 1 ? 'item' : 'items'
@@ -93,7 +103,22 @@ const Cart = () => {
 
         {/* Content */}
         <div className="flex-1 overflow-auto">
-          {items.length === 0 ? (
+          {!isHydrated ? (
+            <div className="p-6 space-y-4">
+              <div className="animate-pulse space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <div className="w-20 h-20 bg-muted rounded-lg"></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-muted rounded w-3/4"></div>
+                      <div className="h-3 bg-muted rounded w-1/2"></div>
+                      <div className="h-4 bg-muted rounded w-1/4"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full p-8 text-center">
               <div className="relative mb-6">
                 <div className="w-24 h-24 bg-muted/30 rounded-full flex items-center justify-center">
@@ -207,7 +232,7 @@ const Cart = () => {
         </div>
 
         {/* Footer with totals and checkout */}
-        {items.length > 0 && (
+        {isHydrated && items.length > 0 && (
           <div className="border-t bg-gradient-to-t from-muted/20 to-transparent p-6 space-y-4">
             {/* Promo Banner */}
             {subtotal < 100 && (
@@ -252,6 +277,7 @@ const Cart = () => {
             <Button
               className="w-full h-12 bg-gradient-to-r from-primary via-primary to-primary/80 hover:from-primary/90 hover:via-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300 group"
               size="lg"
+              onClick={() => router.push('/checkout')}
             >
               <CreditCard className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               Proceed to Checkout
