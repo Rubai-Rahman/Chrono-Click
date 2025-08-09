@@ -26,7 +26,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
 
   const handleBuyNow = () => {
     addToCart(product);
-    toast.error(`${product.name} is added to cart`);
+    toast.success(`${product.name} is added to cart`);
   };
 
   const handleProductClick = () => {
