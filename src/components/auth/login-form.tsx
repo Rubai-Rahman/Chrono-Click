@@ -34,6 +34,7 @@ const LoginForm = ({
     defaultValues: {
       email: '',
       password: '',
+      rememberMe: false,
     },
   });
 
@@ -126,10 +127,17 @@ const LoginForm = ({
                 </CommonFormField>
                 {/* Remember Me & Forgot Password */}
                 <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox />
-                    <Label htmlFor="remember">Remember me</Label>
-                  </div>
+                  <CommonFormField control={form.control} name="rememberMe">
+                    {({ field }) => (
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                        <Label htmlFor="remember">Keep me signed in</Label>
+                      </div>
+                    )}
+                  </CommonFormField>
                   <Link
                     href="/forgot-password"
                     className="text-primary hover:underline font-medium"

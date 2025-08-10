@@ -12,6 +12,7 @@ export const loginSchema = z.object({
       message: 'Contain at least one special character.',
     })
     .trim(),
+  rememberMe: z.boolean(),
 });
 
 // Signup form validation schema

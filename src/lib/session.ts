@@ -17,9 +17,15 @@ export async function createSession(
     email: string;
     name: string;
     role: 'admin' | 'user';
-  }
+  },
+  rememberMe: boolean
 ) {
-  const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
+  let expiresAt;
+  if (rememberMe) {
+    expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  } else {
+    expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
+  }
   const cookieStore = await cookies();
 
   const sessionData: SessionData = {

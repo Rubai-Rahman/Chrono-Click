@@ -32,16 +32,22 @@ export async function registerAction(data: {
 }
 
 export async function loginAction(
-  data: { email: string; password: string },
+  data: { email: string; password: string; rememberMe: boolean },
   callbackUrl?: string
 ) {
-  const { email, password } = data;
+  const { email, password, rememberMe } = data;
 
   try {
     const userCred = await authService.signInWithEmail(email, password);
     const idToken = await userCred.user.getIdToken();
 
-    await saveUser(email, userCred.user.displayName || '', idToken);
+    await saveUser(
+      email,
+      userCred.user.displayName || '',
+      idToken,
+      undefined,
+      rememberMe
+    );
   } catch (error) {
     console.log(error);
     return {
@@ -59,7 +65,8 @@ export const saveUser = async (
   email: string,
   displayName: string,
   idToken: string,
-  photoURL?: string
+  photoURL?: string,
+  rememberMe: boolean = false
 ) => {
   try {
     const response = await axiosInstance.put(
@@ -78,11 +85,15 @@ export const saveUser = async (
     );
     const userData = response.data;
 
-    await createSession(idToken, {
-      email: userData.email || email,
-      name: userData.name || displayName,
-      role: userData.role || 'user',
-    });
+    await createSession(
+      idToken,
+      {
+        email: userData.email || email,
+        name: userData.name || displayName,
+        role: userData.role || 'user',
+      },
+      rememberMe
+    );
 
     return userData;
   } catch (error) {
