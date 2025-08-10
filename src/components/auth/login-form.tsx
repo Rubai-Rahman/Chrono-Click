@@ -7,7 +7,16 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Eye, EyeOff, TestTube, User, Shield } from 'lucide-react'; // Re-import icons for demo section
+import { Eye, EyeOff, TestTube, User, Shield } from 'lucide-react';
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  CommonFormField,
+} from '@/components/ui/form';
 import {
   loginSchema,
   LoginFormData,
@@ -17,15 +26,16 @@ import { toast } from 'sonner';
 import { loginAction } from '@/app/actions/authAction';
 import { useAuth } from '@/hooks/useAuth';
 import { useSearchParams } from 'next/navigation';
+import { Checkbox } from '../ui/checkbox';
+import { Label } from '../ui/label';
 
 const LoginForm = () => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<LoginFormData>({
+  const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
   const [showPassword, setShowPassword] = useState(false);
   const { isLoading, googleSignIn, setLoading } = useAuth();
@@ -35,8 +45,8 @@ const LoginForm = () => {
   // Demo credentials handler
   const fillDemoCredentials = (type: 'admin' | 'user') => {
     const credentials = DEMO_CREDENTIALS[type];
-    setValue('email', credentials.email);
-    setValue('password', credentials.password);
+    form.setValue('email', credentials.email);
+    form.setValue('password', credentials.password);
   };
 
   const onSubmit = async (data: LoginFormData) => {
@@ -100,120 +110,105 @@ const LoginForm = () => {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              {/* Email Input */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Email
-                </label>
-                <div className="relative">
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    className="pl-4 pr-4 py-2.5 rounded-md  bg-input/50 text-foreground placeholder:text-muted-foreground "
-                    {...register('email')}
-                  />
-                </div>
-                {errors.email && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Password Input */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Password
-                </label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
-                    className="pl-4 pr-10 py-2.5 rounded-md border border-input bg-input/50 text-foreground placeholder:text-muted-foreground"
-                    {...register('password')}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
-                    aria-label={
-                      showPassword ? 'Hide password' : 'Show password'
-                    }
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center text-muted-foreground gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-input bg-background text-primary focus:ring-primary focus:ring-offset-background"
-                  />
-                  Remember me
-                </label>
-                <Link
-                  href="/forgot-password"
-                  className="text-primary hover:underline font-medium"
-                >
-                  Forgot Password
-                </Link>
-              </div>
-
-              {/* Sign In Button */}
-              <Button
-                type="submit"
-                className="w-full h-12 text-primary-foreground font-semibold bg-primary rounded-md shadow-md hover:bg-primary/80 transition-colors duration-200"
-                disabled={isLoading}
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
               >
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-background border-t-transparent rounded-full animate-spin mr-2" />
-                    Signing In...
-                  </>
-                ) : (
-                  'Sign In'
-                )}
-              </Button>
+                {/* Email Input */}
+                <CommonFormField
+                  control={form.control}
+                  name="email"
+                  label="Email"
+                >
+                  {({ field }) => (
+                    <Input
+                      type="email"
+                      placeholder="Enter your email"
+                      className=""
+                      {...field}
+                    />
+                  )}
+                </CommonFormField>
 
-              {/* Google Sign In */}
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full h-12 text-base font-medium border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground transition-colors duration-200 flex items-center justify-center gap-2 rounded-md"
-                onClick={() => googleSignIn(callbackUrl || undefined)}
-                disabled={isLoading}
-              >
-                <Image
-                  className="rounded"
-                  src="/google_logo.jpg"
-                  width={20}
-                  height={20}
-                  alt="Google logo"
+                {/* Password Input */}
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder="Enter your password"
+                            {...field}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
+                            aria-label={
+                              showPassword ? 'Hide password' : 'Show password'
+                            }
+                          >
+                            {showPassword ? (
+                              <EyeOff className="w-5 h-5" />
+                            ) : (
+                              <Eye className="w-5 h-5" />
+                            )}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                Sign In with Google
-              </Button>
-            </form>
+
+                {/* Remember Me & Forgot Password */}
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox />
+                    <Label htmlFor="remember">Remember me</Label>
+                  </div>
+                  <Link
+                    href="/forgot-password"
+                    className="text-primary hover:underline font-medium"
+                  >
+                    Forgot Password
+                  </Link>
+                </div>
+
+                {/* Sign In Button */}
+                <Button
+                  type="submit"
+                  className="w-full h-12"
+                  loading={isLoading}
+                  disabled={isLoading}
+                >
+                  Sign In
+                </Button>
+
+                {/* Google Sign In */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-12"
+                  onClick={() => googleSignIn(callbackUrl || undefined)}
+                  disabled={isLoading}
+                >
+                  <Image
+                    className="rounded"
+                    src="/google_logo.jpg"
+                    width={20}
+                    height={20}
+                    alt="Google logo"
+                  />
+                  Sign In with Google
+                </Button>
+              </form>
+            </Form>
 
             {/* Demo Credentials Section - RESTORED */}
             <div className="space-y-3 mt-6 p-4 bg-muted/10 rounded-lg border border-dashed border-border/50">
@@ -228,7 +223,7 @@ const LoginForm = () => {
                   type="button"
                   variant="secondary"
                   size="sm"
-                  className="flex-1 h-10 text-sm font-medium bg-secondary/50 text-secondary-foreground hover:bg-secondary transition-colors duration-200 rounded-md"
+                  className="flex-1"
                   onClick={() => fillDemoCredentials('admin')}
                   disabled={isLoading}
                 >
@@ -239,7 +234,7 @@ const LoginForm = () => {
                   type="button"
                   variant="secondary"
                   size="sm"
-                  className="flex-1 h-10 text-sm font-medium bg-secondary/50 text-secondary-foreground hover:bg-secondary transition-colors duration-200 rounded-md"
+                  className="flex-1"
                   onClick={() => fillDemoCredentials('user')}
                   disabled={isLoading}
                 >
