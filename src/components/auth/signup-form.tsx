@@ -1,59 +1,49 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Input, PasswordInput } from '@/components/ui/input';
+import { User } from 'lucide-react';
+import { Form, CommonFormField } from '@/components/ui/form';
 import { signupSchema, SignupFormData } from '@/lib/validations/auth';
 import { PasswordStrength } from '@/components/ui/password-strength';
-import { toast } from 'sonner';
-import { registerAction } from '@/app/actions/authAction';
 
-const SignupForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm<SignupFormData>({
+interface SignupFormProps {
+  onSubmit: (data: SignupFormData) => Promise<void>;
+  onGoogleSignIn: () => void;
+  isLoading: boolean;
+}
+
+const SignupForm = ({
+  onSubmit,
+  onGoogleSignIn,
+  isLoading,
+}: SignupFormProps) => {
+  const form = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      displayName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { googleSignIn, isLoading, registerError, setLoading } = useAuth();
+  const password = form.watch('password');
 
-  const password = watch('password');
-
-  const onSubmit = async (data: SignupFormData) => {
-    try {
-      setLoading(true);
-      const result = await registerAction({
-        email: data.email,
-        password: data.password,
-        displayName: data.displayName,
-      });
-
-      if (result?.errors) {
-        toast.error(result.errors.email?.[0] || 'Registration failed');
-        return;
-      }
-
-      toast.success('Account created successfully!');
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Something went wrong'
-      );
-    } finally {
-      setLoading(false);
+  const onFormSubmit = form.handleSubmit(
+    (formData) => {
+      onSubmit?.(formData);
+    },
+    (err) => {
+      console.log('Form validation errors:', err);
     }
-  };
+  );
 
   return (
     <div className="container mx-auto flex responsive-space-x lg:py-12">
@@ -97,153 +87,86 @@ const SignupForm = () => {
               </CardHeader>
 
               <CardContent>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  {registerError && (
-                    <div className="p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg">
-                      <p className="text-red-800 dark:text-red-200 text-sm">
-                        {registerError.message}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="space-y-4">
-                    <div>
-                      <label
-                        htmlFor="displayName"
-                        className="block text-sm font-medium mb-2"
+                <Form {...form}>
+                  <form onSubmit={onFormSubmit} className="space-y-6">
+                    <div className="space-y-4">
+                      {/* Full Name Input */}
+                      <CommonFormField
+                        control={form.control}
+                        name="displayName"
+                        label="Full Name"
                       >
-                        Full Name
-                      </label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                        <Input
-                          id="displayName"
-                          type="text"
-                          placeholder="Enter your full name"
-                          className="pl-10"
-                          {...register('displayName')}
-                        />
-                      </div>
-                      {errors.displayName && (
-                        <p className="text-sm text-red-500 mt-1">
-                          {errors.displayName.message}
-                        </p>
-                      )}
-                    </div>
+                        {({ field }) => (
+                          <div className="relative">
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                            <Input
+                              type="text"
+                              placeholder="Enter your full name"
+                              className="pl-10"
+                              {...field}
+                            />
+                          </div>
+                        )}
+                      </CommonFormField>
 
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium mb-2"
+                      {/* Email Input */}
+                      <CommonFormField
+                        control={form.control}
+                        name="email"
+                        label="Email Address"
                       >
-                        Email Address
-                      </label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="Enter your email"
-                          className="pl-10"
-                          {...register('email')}
-                        />
-                      </div>
-                      {errors.email && (
-                        <p className="text-sm text-red-500 mt-1">
-                          {errors.email.message}
-                        </p>
-                      )}
-                    </div>
+                        {({ field }) => (
+                          <Input
+                            type="email"
+                            placeholder="Enter your email"
+                            {...field}
+                          />
+                        )}
+                      </CommonFormField>
 
-                    <div>
-                      <label
-                        htmlFor="password"
-                        className="block text-sm font-medium mb-2"
-                      >
-                        Password
-                      </label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                        <Input
-                          id="password"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder="Create a password"
-                          className="pl-10 pr-10"
-                          {...register('password')}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      {/* Password Input */}
+                      <div className="space-y-2">
+                        <CommonFormField
+                          control={form.control}
+                          name="password"
+                          label="Password"
                         >
-                          {showPassword ? (
-                            <EyeOff className="w-5 h-5" />
-                          ) : (
-                            <Eye className="w-5 h-5" />
+                          {({ field }) => (
+                            <PasswordInput
+                              placeholder="Create a password"
+                              {...field}
+                            />
                           )}
-                        </button>
-                      </div>
-                      {errors.password && (
-                        <p className="text-sm text-red-500 mt-1">
-                          {errors.password.message}
-                        </p>
-                      )}
-                      <PasswordStrength password={password || ''} />
-                    </div>
+                        </CommonFormField>
 
-                    <div>
-                      <label
-                        htmlFor="confirmPassword"
-                        className="block text-sm font-medium mb-2"
+                        <PasswordStrength password={password || ''} />
+                      </div>
+
+                      {/* Confirm Password Input */}
+                      <CommonFormField
+                        control={form.control}
+                        name="confirmPassword"
+                        label="Confirm Password"
                       >
-                        Confirm Password
-                      </label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                        <Input
-                          id="confirmPassword"
-                          type={showConfirmPassword ? 'text' : 'password'}
-                          placeholder="Confirm your password"
-                          className="pl-10 pr-10"
-                          {...register('confirmPassword')}
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                        >
-                          {showConfirmPassword ? (
-                            <EyeOff className="w-5 h-5" />
-                          ) : (
-                            <Eye className="w-5 h-5" />
-                          )}
-                        </button>
-                      </div>
-                      {errors.confirmPassword && (
-                        <p className="text-sm text-red-500 mt-1">
-                          {errors.confirmPassword.message}
-                        </p>
-                      )}
+                        {({ field }) => (
+                          <PasswordInput
+                            placeholder="Confirm your password"
+                            {...field}
+                          />
+                        )}
+                      </CommonFormField>
                     </div>
-                  </div>
 
-                  <Button
-                    type="submit"
-                    className="w-full h-12 text-lg font-semibold"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                        Creating Account...
-                      </>
-                    ) : (
-                      <>Create Account</>
-                    )}
-                  </Button>
-                </form>
+                    <Button
+                      type="submit"
+                      className="w-full h-12 text-lg font-semibold"
+                      loading={isLoading}
+                      disabled={isLoading}
+                    >
+                      Create Account
+                    </Button>
+                  </form>
+                </Form>
 
                 {/* Divider */}
                 <div className="relative my-6">
@@ -251,9 +174,7 @@ const SignupForm = () => {
                     <span className="w-full border-t border-muted-foreground/20" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground">
-                      Or
-                    </span>
+                    <span className=" text-muted-foreground">Or</span>
                   </div>
                 </div>
 
@@ -261,8 +182,8 @@ const SignupForm = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-12 text-base font-medium border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground transition-colors duration-200 flex items-center justify-center gap-2 rounded-md"
-                  onClick={() => googleSignIn()}
+                  className="w-full h-12 text-base font-medium"
+                  onClick={onGoogleSignIn}
                   disabled={isLoading}
                 >
                   <Image

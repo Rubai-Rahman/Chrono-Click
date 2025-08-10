@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // Login form validation schema
 export const loginSchema = z.object({
-  email: z.email('Please enter a valid email address').trim(),
+  email: z.string().email('Please enter a valid email address').trim(),
   password: z
     .string()
     .min(8, { message: 'Be at least 8 characters long' })
@@ -24,10 +24,7 @@ export const signupSchema = z
       .min(2, 'Name must be at least 2 characters long')
       .max(50, 'Name must be less than 50 characters')
       .regex(/^[a-zA-Z\s]+$/, 'Name can only contain letters and spaces'),
-    email: z
-      .string()
-      .min(1, 'Email is required')
-      .email('Please enter a valid email address'),
+    email: z.string().email('Please enter a valid email address'),
     password: z
       .string()
       .min(1, 'Password is required')
@@ -46,10 +43,7 @@ export const signupSchema = z
 
 // Forgot password form validation schema
 export const forgotPasswordSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address'),
+  email: z.string().email('Please enter a valid email address'),
 });
 
 // Type exports

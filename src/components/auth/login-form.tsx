@@ -5,13 +5,12 @@ import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Input, PasswordInput } from '@/components/ui/input';
 import { TestTube, User, Shield } from 'lucide-react';
 import { Form, CommonFormField } from '@/components/ui/form';
 import { loginSchema, LoginFormData } from '@/lib/validations/auth';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
-import { PasswordInput } from '../ui/password-input';
 
 interface LoginFormProps {
   onSubmit: (data: LoginFormData) => Promise<void>;
@@ -31,6 +30,7 @@ const LoginForm = ({
 }: LoginFormProps) => {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    mode: 'onBlur',
     defaultValues: {
       email: '',
       password: '',
@@ -120,7 +120,6 @@ const LoginForm = ({
                   {({ field }) => (
                     <PasswordInput
                       placeholder="Enter your password"
-                      className=""
                       {...field}
                     />
                   )}

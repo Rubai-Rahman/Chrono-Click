@@ -48,11 +48,37 @@ export async function loginAction(
       undefined,
       rememberMe
     );
-  } catch (error) {
+  } catch (error: unknown) {
     console.log(error);
+
+    // Provide more specific error messages based on Firebase error codes
+    let errorMessage = 'Invalid email or password';
+
+    if (error?.code) {
+      switch (error.code) {
+        case 'auth/user-not-found':
+          errorMessage = 'No account found with this email address';
+          break;
+        case 'auth/wrong-password':
+          errorMessage = 'Incorrect password';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Invalid email address';
+          break;
+        case 'auth/user-disabled':
+          errorMessage = 'This account has been disabled';
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = 'Too many failed attempts. Please try again later';
+          break;
+        default:
+          errorMessage = 'Invalid email or password';
+      }
+    }
+
     return {
       errors: {
-        email: ['Invalid email or password'],
+        email: [errorMessage],
       },
     };
   }
