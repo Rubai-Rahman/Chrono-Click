@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   if (!res.ok) return NextResponse.json({ error: 'Invalid' }, { status: 401 });
 
   const { token, ...rest } = await res.json();
-  const maxAge = 10 * 24 * 60 * 60; // e.g. 10 days
+  const maxAge = 7 * 24 * 60 * 60; // e.g. 10 days
 
   (await cookies()).set('session', token, {
     httpOnly: true,

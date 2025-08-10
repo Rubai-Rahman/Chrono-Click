@@ -1,22 +1,53 @@
 'use client';
 
 import { ArrowLeft } from 'lucide-react';
+import { useRouter, usePathname } from 'next/navigation';
+import { Button } from './button';
 
-const GoBackButton = () => {
+interface GoBackButtonProps {
+  fallbackHref?: string;
+  className?: string;
+  children?: React.ReactNode;
+}
+
+const GoBackButton = ({
+  fallbackHref = '/',
+  className,
+  children,
+}: GoBackButtonProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const handleGoBack = () => {
-    if (typeof window !== 'undefined') {
-      window.history.back();
+    // Check if there's a referrer and it's not the same page
+    if (
+      typeof window !== 'undefined' &&
+      document.referrer &&
+      document.referrer !== window.location.href &&
+      window.history.length > 1
+    ) {
+      router.back();
+    } else {
+      // Fallback: navigate to parent route or provided fallback
+      const segments = pathname.split('/').filter(Boolean);
+      const parentPath =
+        segments.length > 1
+          ? `/${segments.slice(0, -1).join('/')}`
+          : fallbackHref;
+      router.push(parentPath);
     }
   };
 
   return (
-    <button
+    <Button
       onClick={handleGoBack}
-      className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-8 py-4 sm:px-10 sm:py-5 rounded-lg hover:bg-gray-200 transition-colors"
+      className={className || 'w-full '}
+      aria-label="Go back to previous page"
+      type="button"
     >
-      <ArrowLeft className="h-4 w-4" />
-      Go Back
-    </button>
+      <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+      {children || 'Go Back'}
+    </Button>
   );
 };
 
