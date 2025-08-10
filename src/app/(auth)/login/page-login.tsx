@@ -1,16 +1,14 @@
 'use client';
 
-import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
-import LoginForm from '@/components/auth/login-form';
 import { LoginFormData, DEMO_CREDENTIALS } from '@/lib/validations/auth';
 import { loginAction } from '@/app/actions/authAction';
 import { useAuth } from '@/hooks/useAuth';
 import { validateCallbackUrl } from '@/lib/security';
+import LoginForm from '@/components/auth/login-form';
 
 const LoginPageContent = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const { isLoading, googleSignIn, setLoading } = useAuth();
   const searchParams = useSearchParams();
   const rawCallbackUrl = searchParams.get('callbackUrl');
@@ -53,8 +51,6 @@ const LoginPageContent = () => {
       onSubmit={handleLogin}
       onGoogleSignIn={handleGoogleSignIn}
       onGetDemoCredentials={handleDemoCredentials}
-      showPassword={showPassword}
-      onTogglePassword={setShowPassword}
       isLoading={isLoading}
     />
   );

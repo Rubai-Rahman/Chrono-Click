@@ -6,19 +6,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Eye, EyeOff, TestTube, User, Shield } from 'lucide-react';
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-  CommonFormField,
-} from '@/components/ui/form';
+import { TestTube, User, Shield } from 'lucide-react';
+import { Form, CommonFormField } from '@/components/ui/form';
 import { loginSchema, LoginFormData } from '@/lib/validations/auth';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
+import { PasswordInput } from '../ui/password-input';
 
 interface LoginFormProps {
   onSubmit: (data: LoginFormData) => Promise<void>;
@@ -27,8 +20,6 @@ interface LoginFormProps {
     email: string;
     password: string;
   };
-  showPassword: boolean;
-  onTogglePassword: (show: boolean) => void;
   isLoading: boolean;
 }
 
@@ -36,8 +27,6 @@ const LoginForm = ({
   onSubmit,
   onGoogleSignIn,
   onGetDemoCredentials,
-  showPassword,
-  onTogglePassword,
   isLoading,
 }: LoginFormProps) => {
   const form = useForm<LoginFormData>({
@@ -122,40 +111,19 @@ const LoginForm = ({
                 </CommonFormField>
 
                 {/* Password Input */}
-                <FormField
+                <CommonFormField
                   control={form.control}
                   name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            type={showPassword ? 'text' : 'password'}
-                            placeholder="Enter your password"
-                            {...field}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => onTogglePassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
-                            aria-label={
-                              showPassword ? 'Hide password' : 'Show password'
-                            }
-                          >
-                            {showPassword ? (
-                              <EyeOff className="w-5 h-5" />
-                            ) : (
-                              <Eye className="w-5 h-5" />
-                            )}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                  label="Password"
+                >
+                  {({ field }) => (
+                    <PasswordInput
+                      placeholder="Enter your password"
+                      className=""
+                      {...field}
+                    />
                   )}
-                />
-
+                </CommonFormField>
                 {/* Remember Me & Forgot Password */}
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center space-x-2">
