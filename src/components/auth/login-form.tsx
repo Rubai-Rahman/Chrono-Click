@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
@@ -17,19 +16,30 @@ import {
   FormMessage,
   CommonFormField,
 } from '@/components/ui/form';
-import {
-  loginSchema,
-  LoginFormData,
-  DEMO_CREDENTIALS,
-} from '@/lib/validations/auth';
-import { toast } from 'sonner';
-import { loginAction } from '@/app/actions/authAction';
-import { useAuth } from '@/hooks/useAuth';
-import { useSearchParams } from 'next/navigation';
+import { loginSchema, LoginFormData } from '@/lib/validations/auth';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 
-const LoginForm = () => {
+interface LoginFormProps {
+  onSubmit: (data: LoginFormData) => Promise<void>;
+  onGoogleSignIn: () => void;
+  onGetDemoCredentials: (type: 'admin' | 'user') => {
+    email: string;
+    password: string;
+  };
+  showPassword: boolean;
+  onTogglePassword: (show: boolean) => void;
+  isLoading: boolean;
+}
+
+const LoginForm = ({
+  onSubmit,
+  onGoogleSignIn,
+  onGetDemoCredentials,
+  showPassword,
+  onTogglePassword,
+  isLoading,
+}: LoginFormProps) => {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -37,32 +47,15 @@ const LoginForm = () => {
       password: '',
     },
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const { isLoading, googleSignIn, setLoading } = useAuth();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl');
 
-  // Demo credentials handler
   const fillDemoCredentials = (type: 'admin' | 'user') => {
-    const credentials = DEMO_CREDENTIALS[type];
+    const credentials = onGetDemoCredentials(type);
     form.setValue('email', credentials.email);
     form.setValue('password', credentials.password);
   };
 
-  const onSubmit = async (data: LoginFormData) => {
-    try {
-      setLoading(true);
-      await loginAction(data, callbackUrl || undefined);
-    } catch (error) {
-      if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
-        return;
-      }
-      toast.error(
-        error instanceof Error ? error.message : 'Invalid email or password'
-      );
-    } finally {
-      setLoading(false);
-    }
+  const handleSubmit = (data: LoginFormData) => {
+    onSubmit(data);
   };
 
   return (
@@ -109,7 +102,7 @@ const LoginForm = () => {
 
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(onSubmit)}
+                onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-6"
               >
                 {/* Email Input */}
@@ -144,7 +137,7 @@ const LoginForm = () => {
                           />
                           <button
                             type="button"
-                            onClick={() => setShowPassword(!showPassword)}
+                            onClick={() => onTogglePassword(!showPassword)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
                             aria-label={
                               showPassword ? 'Hide password' : 'Show password'
@@ -192,7 +185,7 @@ const LoginForm = () => {
                   type="button"
                   variant="outline"
                   className="w-full h-12"
-                  onClick={() => googleSignIn(callbackUrl || undefined)}
+                  onClick={onGoogleSignIn}
                   disabled={isLoading}
                 >
                   <Image
