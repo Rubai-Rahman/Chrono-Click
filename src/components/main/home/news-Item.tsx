@@ -99,12 +99,7 @@ const NewsItem = ({ item }: NewsItemProps) => {
               </div>
             </div>
 
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="text-primary hover:text-primary/80 hover:bg-primary/10 group/btn"
-            >
+            <Button asChild variant="ghost" size="sm">
               <Link
                 href={`/news/${item._id}`}
                 className="flex items-center gap-1"

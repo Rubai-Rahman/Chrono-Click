@@ -173,15 +173,12 @@ const DashboardPageContent = () => {
                 <p className="text-muted-foreground mb-4">
                   {action.description}
                 </p>
-                <Link href={action.href}>
-                  <Button
-                    variant="outline"
-                    className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
-                  >
+                <Button variant="outline" asChild>
+                  <Link href={action.href}>
                     Get Started
                     <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
           ))}

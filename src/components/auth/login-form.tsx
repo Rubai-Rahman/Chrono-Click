@@ -97,9 +97,6 @@ const LoginForm = () => {
 
         {/* Right Side - Login Form */}
         <div className="w-full lg:w-1/2 bg-background flex flex-col justify-between p-8 sm:p-12 rounded-3xl lg:rounded-l-none lg:rounded-r-3xl">
-          {/* Logo */}
-
-          {/* Form Content */}
           <div className="flex-1 flex flex-col justify-center">
             <div className="text-center mb-8">
               <h2 className="text-4xl font-bold tracking-tight text-foreground font-serif mb-2">
