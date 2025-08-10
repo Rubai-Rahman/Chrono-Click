@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Eye, EyeOff, Mail, Lock, TestTube, User, Shield } from 'lucide-react'; // Re-import icons for demo section
+import { Eye, EyeOff, TestTube, User, Shield } from 'lucide-react'; // Re-import icons for demo section
 import {
   loginSchema,
   LoginFormData,

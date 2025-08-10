@@ -11,6 +11,7 @@ import {
   useFormContext,
 } from 'react-hook-form';
 import { cn } from '@/lib/utils';
+import { LabelProps } from './label';
 
 const Form = FormProvider;
 
@@ -104,6 +105,8 @@ const FormLabel = React.forwardRef<
 });
 FormLabel.displayName = 'FormLabel';
 
+type FormControlProps = React.ComponentPropsWithoutRef<typeof Slot>;
+
 const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
@@ -168,13 +171,97 @@ const FormMessage = React.forwardRef<
 });
 FormMessage.displayName = 'FormMessage';
 
+interface CommonFormFieldProps<
+  TFieldValues extends FieldValues,
+  TName extends FieldPath<TFieldValues>
+> extends Omit<ControllerProps<TFieldValues, TName>, 'render'> {
+  label?: React.ReactNode;
+  labelPosition?: 'before' | 'after';
+  description?: React.ReactNode;
+  className?: string;
+  children: ControllerProps<TFieldValues, TName>['render'] | React.ReactNode;
+  labelProps?: string extends NonNullable<
+    CommonFormFieldProps<TFieldValues, TName>['label']
+  >
+    ? LabelProps
+    : never;
+  descriptionProps?: string extends NonNullable<
+    CommonFormFieldProps<TFieldValues, TName>['description']
+  >
+    ? Omit<React.HTMLAttributes<HTMLParagraphElement>, 'id'>
+    : never;
+  formItemProps?: React.HTMLAttributes<HTMLDivElement>;
+  formControlProps?: FormControlProps;
+}
+
+const CommonFormField = <
+  TFieldValues extends FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+>({
+  label,
+  labelPosition = 'before',
+  description,
+  children,
+  labelProps,
+  descriptionProps,
+  formItemProps,
+  formControlProps,
+  ...props
+}: CommonFormFieldProps<TFieldValues, TName>) => {
+  const renderLabel = label && <FormLabel {...labelProps}>{label}</FormLabel>;
+
+  return (
+    <FormField
+      {...props}
+      render={(fieldProps) => (
+        <FormItem {...formItemProps}>
+          {labelPosition === 'before' && renderLabel}
+          <FormControl {...formControlProps}>
+            {typeof children === 'function' ? children(fieldProps) : children}
+          </FormControl>
+          {labelPosition === 'after' && renderLabel}
+          {description && (
+            <FormDescription {...descriptionProps}>
+              {description}
+            </FormDescription>
+          )}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+interface CustomFormItemProps extends React.PropsWithChildren {
+  label?: string;
+  showErrorMessage?: boolean;
+  className?: string;
+}
+
+function CustomFormItem({
+  label,
+  children,
+  showErrorMessage = true,
+  className,
+}: CustomFormItemProps) {
+  return (
+    <FormItem className={className}>
+      {label && <FormLabel>{label}</FormLabel>}
+      <FormControl>{children}</FormControl>
+      {showErrorMessage && <FormMessage />}
+    </FormItem>
+  );
+}
+
 export {
-  useFormField,
+  CommonFormField,
+  CustomFormItem,
   Form,
-  FormItem,
-  FormLabel,
   FormControl,
   FormDescription,
-  FormMessage,
   FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  useFormField,
 };
