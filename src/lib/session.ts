@@ -19,7 +19,7 @@ export async function createSession(
     role: 'admin' | 'user';
   }
 ) {
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
   const cookieStore = await cookies();
 
   const sessionData: SessionData = {
@@ -48,7 +48,7 @@ export async function updateSession() {
 
   try {
     const sessionData: SessionData = JSON.parse(sessionCookie);
-    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const expires = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
 
     // Update expiration time
     sessionData.expiresAt = expires.toISOString();
