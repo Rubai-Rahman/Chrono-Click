@@ -162,11 +162,7 @@ export default function RootLayout({
             color="oklch(0.6033 0.0948 83.89)"
             showSpinner={false}
           />
-          <Navbar />
           {children}
-          <Footer />
-          <BackToTop />
-          <MobileBottomNav />
         </Providers>
       </body>
     </html>
