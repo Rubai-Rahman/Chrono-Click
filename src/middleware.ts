@@ -12,7 +12,7 @@ const authRoutes = ['/login', '/signup', '/forgot-password'];
 
 // Route mapping for legacy dashboard routes
 const legacyRouteMapping: Record<string, (role: string) => string> = {
-  '/dashboard': (role) => (role === 'admin' ? '/admin' : '/account'),
+  '/dashboard': (role) => (role === 'admin' ? '/admin' : '/account/orders'),
   '/dashboard/myOrders': () => '/account/orders',
   '/dashboard/payment': () => '/account/payment-methods',
   '/dashboard/review': () => '/account/reviews',
@@ -21,6 +21,8 @@ const legacyRouteMapping: Record<string, (role: string) => string> = {
   '/dashboard/addProduct': () => '/admin/products',
   '/dashboard/manageProduct': () => '/admin/products',
   '/dashboard/addNews': () => '/admin/news',
+  // Redirect /account to /account/orders for streamlined UX
+  '/account': () => '/account/orders',
 };
 
 export async function middleware(req: NextRequest) {

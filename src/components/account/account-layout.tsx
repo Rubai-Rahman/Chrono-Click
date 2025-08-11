@@ -25,15 +25,10 @@ interface AccountLayoutProps {
 
 const accountNavigation = [
   {
-    href: '/account',
-    icon: User,
-    label: 'Overview',
-    exact: true,
-  },
-  {
     href: '/account/orders',
     icon: ShoppingBag,
     label: 'Orders',
+    exact: true,
   },
   {
     href: '/account/wishlist',

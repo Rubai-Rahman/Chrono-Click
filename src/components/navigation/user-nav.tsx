@@ -48,7 +48,7 @@ export function UserNav() {
   const handleMenuAction = (action: string) => {
     switch (action) {
       case 'account':
-        router.push('/account');
+        router.push('/account/orders');
         break;
       case 'orders':
         router.push('/account/orders');
@@ -184,7 +184,7 @@ export function UserNav() {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
-                onClick={() => handleMenuAction('account')}
+                onClick={() => handleMenuAction('orders')}
                 className="cursor-pointer"
               >
                 <User className="mr-2 size-4" />
@@ -195,15 +195,6 @@ export function UserNav() {
           ) : (
             // Regular User Menu Items
             <>
-              <DropdownMenuItem
-                onClick={() => handleMenuAction('account')}
-                className="cursor-pointer"
-              >
-                <User className="mr-2 size-4" />
-                <span>My Account</span>
-                <DropdownMenuShortcut>⇧⌘A</DropdownMenuShortcut>
-              </DropdownMenuItem>
-
               <DropdownMenuItem
                 onClick={() => handleMenuAction('orders')}
                 className="cursor-pointer"

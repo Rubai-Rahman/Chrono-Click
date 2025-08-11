@@ -58,10 +58,14 @@ export function MobileNav() {
               );
             }
 
+            // Redirect account to orders for streamlined UX
+            const href =
+              item.href === '/account' ? '/account/orders' : item.href;
+
             return (
               <Link
                 key={item.label}
-                href={item.href}
+                href={href}
                 className={cn(
                   'flex flex-col items-center justify-center gap-1 text-xs font-medium transition-colors',
                   isActive
