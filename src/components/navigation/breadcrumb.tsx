@@ -19,20 +19,20 @@ interface BreadcrumbProps {
 const routeLabels: Record<string, string> = {
   '/': 'Home',
   '/products': 'Shop',
-  '/account': 'My Account',
-  '/account/orders': 'My Orders',
-  '/account/wishlist': 'Wishlist',
-  '/account/addresses': 'Addresses',
-  '/account/payment-methods': 'Payment Methods',
-  '/account/settings': 'Settings',
+  '': 'My Account',
+  '/orders': 'My Orders',
+  '/wishlist': 'Wishlist',
+  '/addresses': 'Addresses',
+  '/payment-methods': 'Payment Methods',
+  '/settings': 'Settings',
   '/admin': 'Admin Dashboard',
   '/admin/products': 'Products',
   '/admin/orders': 'Orders',
   '/admin/customers': 'Customers',
   '/admin/analytics': 'Analytics',
   '/news': 'News',
-  '/about': 'About',
-  '/contact': 'Contact',
+  '/about': 'About Us',
+  '/contact': 'Contact Us',
 };
 
 export function Breadcrumb({ items, className }: BreadcrumbProps) {

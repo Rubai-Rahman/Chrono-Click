@@ -47,23 +47,20 @@ export function UserNav() {
 
   const handleMenuAction = (action: string) => {
     switch (action) {
-      case 'account':
-        router.push('/account/orders');
-        break;
       case 'orders':
-        router.push('/account/orders');
+        router.push('/orders');
         break;
       case 'wishlist':
-        router.push('/account/wishlist');
+        router.push('/wishlist');
         break;
       case 'addresses':
-        router.push('/account/addresses');
+        router.push('/addresses');
         break;
       case 'payment':
-        router.push('/account/payment-methods');
+        router.push('/payment-methods');
         break;
       case 'settings':
-        router.push('/account/settings');
+        router.push('/settings');
         break;
       case 'admin':
         router.push('/admin');

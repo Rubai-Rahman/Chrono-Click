@@ -9,7 +9,8 @@ const mainNavigation = [
   { label: 'Categories', href: '/categories' },
   { label: 'Brands', href: '/brands' },
   { label: 'News', href: '/news' },
-  { label: 'About', href: '/about' },
+  { label: 'About Us', href: '/about' },
+  { label: 'Contact Us', href: '/contact' },
 ];
 
 export function MainNav() {
@@ -17,13 +18,13 @@ export function MainNav() {
 
   return (
     <nav className="hidden md:flex items-center">
-      <div className="flex items-center gap-1 bg-muted/30 rounded-full p-1">
+      <div className="flex items-center gap-1 bg-muted/30 rounded-full p-1 ">
         {mainNavigation.map((item) => (
           <Link
             key={item.href}
             href={item.href}
             className={cn(
-              'relative px-4 py-2 text-sm font-medium transition-all duration-200 rounded-full group',
+              'relative px-4 py-2 text-sm font-medium transition-all duration-200 rounded-full group capitalize',
               pathname === item.href || pathname.startsWith(item.href)
                 ? 'text-foreground bg-background/80 shadow-sm'
                 : 'text-foreground/80 hover:text-foreground hover:bg-background/80 hover:shadow-sm'
