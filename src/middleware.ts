@@ -1,14 +1,27 @@
-// src/middleware.ts - CORRECTED VERSION
 import { NextRequest, NextResponse } from 'next/server';
 
 const protectedRoutes = [
-  { pattern: /^\/orders(\/|$)/, roles: ['user', 'admin'] },
-  { pattern: /^\/dashboard(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/account(\/|$)/, roles: ['user', 'admin'] },
   { pattern: /^\/admin(\/|$)/, roles: ['admin'] },
-  { pattern: /^\/profile(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/orders(\/|$)/, roles: ['user', 'admin'] },
+  // Legacy dashboard routes - will be redirected
+  { pattern: /^\/dashboard(\/|$)/, roles: ['user', 'admin'] },
 ];
 
 const authRoutes = ['/login', '/signup', '/forgot-password'];
+
+// Route mapping for legacy dashboard routes
+const legacyRouteMapping: Record<string, (role: string) => string> = {
+  '/dashboard': (role) => (role === 'admin' ? '/admin' : '/account'),
+  '/dashboard/myOrders': () => '/account/orders',
+  '/dashboard/payment': () => '/account/payment-methods',
+  '/dashboard/review': () => '/account/reviews',
+  '/dashboard/manageOrders': () => '/admin/orders',
+  '/dashboard/makeAdmin': () => '/admin/customers',
+  '/dashboard/addProduct': () => '/admin/products',
+  '/dashboard/manageProduct': () => '/admin/products',
+  '/dashboard/addNews': () => '/admin/news',
+};
 
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get('session')?.value;
@@ -27,9 +40,20 @@ export async function middleware(req: NextRequest) {
 
   const url = req.nextUrl.clone();
 
+  // Handle legacy dashboard route redirects
+  if (url.pathname.startsWith('/dashboard')) {
+    const newRoute = legacyRouteMapping[url.pathname];
+    if (newRoute) {
+      const redirectPath =
+        typeof newRoute === 'function' ? newRoute(role || 'user') : newRoute;
+      return NextResponse.redirect(new URL(redirectPath, req.nextUrl.origin));
+    }
+  }
+
   // Redirect authenticated users away from auth pages
   if (role && authRoutes.includes(url.pathname)) {
-    return NextResponse.redirect(new URL('/dashboard', req.nextUrl.origin));
+    const redirectPath = role === 'admin' ? '/admin' : '/account';
+    return NextResponse.redirect(new URL(redirectPath, req.nextUrl.origin));
   }
 
   // Check protected routes
@@ -57,9 +81,9 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     '/dashboard/:path*',
-    '/orders/:path*',
+    '/account/:path*',
     '/admin/:path*',
-    '/profile/:path*',
+    '/orders/:path*',
     '/login',
     '/signup',
     '/forgot-password',

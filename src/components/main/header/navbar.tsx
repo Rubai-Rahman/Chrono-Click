@@ -10,18 +10,13 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Menu, User } from 'lucide-react';
-import { Suspense, lazy } from 'react';
+import { Menu } from 'lucide-react';
+import { Suspense } from 'react';
 import Cart from '../../cart/cart';
-import { navItems } from '@/lib/constant';
-import { useAuth } from '@/hooks/useAuth';
-
-const ProfileMenu = lazy(() => import('../../profile/profile-menu'));
+import { MainNav } from '@/components/navigation/main-nav';
+import { UserNav } from '@/components/navigation/user-nav';
 
 const Navbar = () => {
-  const { user } = useAuth();
-  const isAuthenticated = user?.name;
-
   return (
     <nav className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-3">
@@ -49,20 +44,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center">
-            <div className="flex items-center gap-1 bg-muted/30 rounded-full p-1">
-              {navItems.map((item, index) => (
-                <Link
-                  key={index}
-                  href={item.href}
-                  className="relative px-4 py-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-all duration-200 rounded-full hover:bg-background/80 hover:shadow-sm group"
-                >
-                  {item.name}
-                  <span className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                </Link>
-              ))}
-            </div>
-          </div>
+          <MainNav />
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
@@ -71,24 +53,10 @@ const Navbar = () => {
               <Cart />
             </div>
 
-            {/* Profile/Auth */}
-            {isAuthenticated ? (
-              <Suspense
-                fallback={
-                  <Button variant="ghost" size="icon">
-                    <User className="h-5 w-5" />
-                  </Button>
-                }
-              >
-                <ProfileMenu />
-              </Suspense>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" asChild>
-                  <Link href="/login">Log In</Link>
-                </Button>
-              </div>
-            )}
+            {/* User Navigation */}
+            <Suspense fallback={<div className="w-10 h-10" />}>
+              <UserNav />
+            </Suspense>
           </div>
 
           {/* Mobile Menu */}
@@ -125,15 +93,36 @@ const Navbar = () => {
 
                   {/* Mobile Navigation */}
                   <div className="flex flex-col gap-2 py-6">
-                    {navItems.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className="flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-lg hover:bg-muted/50 transition-colors"
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
+                    <Link
+                      href="/products"
+                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      Shop
+                    </Link>
+                    <Link
+                      href="/categories"
+                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      Categories
+                    </Link>
+                    <Link
+                      href="/brands"
+                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      Brands
+                    </Link>
+                    <Link
+                      href="/news"
+                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      News
+                    </Link>
+                    <Link
+                      href="/about"
+                      className="flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      About
+                    </Link>
                   </div>
                 </div>
               </SheetContent>

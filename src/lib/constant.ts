@@ -1,10 +1,12 @@
 import { Home, LayoutList, ShoppingCart, Heart, User } from 'lucide-react';
-const auth = true;
+
+// Main navigation items
 export const navItems = [
-  { name: 'Home', href: '/' },
-  { name: 'Products', href: '/products' },
-  { name: 'Orders', href: '/orders' },
-  ...(auth ? [{ name: 'Dashboard', href: '/dashboard' }] : []),
+  { name: 'Shop', href: '/products' },
+  { name: 'Categories', href: '/categories' },
+  { name: 'Brands', href: '/brands' },
+  { name: 'News', href: '/news' },
+  { name: 'About', href: '/about' },
 ];
 
 export const slides = [
@@ -95,10 +97,10 @@ export const brands = [
     alt: 'Timeex logo',
   },
 ];
+// Mobile bottom navigation items (handled by MobileNav component)
 export const bottomNavItems = [
   { name: 'Home', href: '/', icon: Home },
-  { name: 'Products', href: '/products', icon: LayoutList },
+  { name: 'Shop', href: '/products', icon: LayoutList },
   { name: 'Cart', icon: ShoppingCart },
-  { name: 'Wishlist', href: '/wishlist', icon: Heart },
-  { name: 'My Account', icon: User },
+  { name: 'Account', href: '/account', icon: User },
 ];
