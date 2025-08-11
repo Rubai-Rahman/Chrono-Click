@@ -1,15 +1,16 @@
 // Base Product Type
 export interface ProductType {
   _id: string;
+  id: string;
   name: string;
   description?: string;
   price: number;
   img: string;
-  inStock?: boolean;
-  category?: string;
   brand?: string;
+  category?: string;
   rating?: number;
   reviews?: number;
+  inStock?: boolean;
 }
 
 // Cart Item extends Product with quantity

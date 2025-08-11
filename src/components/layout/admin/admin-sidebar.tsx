@@ -47,7 +47,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { logoutAction } from '@/app/actions/authAction';
 import Image from 'next/image';
-import logo from '../../../public/favicon.png';
+import logo from '../../../../public/favicon.png';
 
 const adminNavigation = [
   {
@@ -61,20 +61,20 @@ const adminNavigation = [
     href: '/admin/products',
     icon: Package,
     label: 'Products',
-    badge: '156',
+    badge: null,
   },
   {
     href: '/admin/orders',
     icon: ShoppingCart,
     label: 'Orders',
-    badge: '23',
+    badge: null,
     badgeVariant: 'destructive' as const,
   },
   {
     href: '/admin/customers',
     icon: Users,
     label: 'Customers',
-    badge: '892',
+    badge: null,
   },
   {
     href: '/admin/news',

@@ -4,6 +4,7 @@ import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import axiosInstance from '@/lib/axios';
 import { isValidUrl } from '@/lib/utils';
+import { ProductType } from '@/api-lib/api-type';
 
 export async function registerAction(data: {
   email: string;
@@ -124,6 +125,16 @@ export const saveUser = async (
     return userData;
   } catch (error) {
     console.error('Error saving user:', error);
+    throw error;
+  }
+};
+
+export const getProduct = async (): Promise<ProductType[]> => {
+  try {
+    const response = await axiosInstance.get<ProductType[]>('/products');
+    return response.data.products || [];
+  } catch (error) {
+    console.error('Error fetching products:', error);
     throw error;
   }
 };

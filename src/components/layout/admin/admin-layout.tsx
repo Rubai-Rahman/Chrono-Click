@@ -16,7 +16,7 @@ interface AdminLayoutProps {
 
 export function AdminLayout({ children }: AdminLayoutProps) {
   return (
-    <SidebarProvider className="bg-green-500 container mx-auto">
+    <SidebarProvider className="container mx-auto">
       <div className="sticky top-0 h-screen">
         <AdminSidebar />
       </div>
@@ -31,7 +31,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 pl-4 py-5">{children}</div>
+        <div className="flex flex-1 flex-col gap-4 pl-4 ">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
