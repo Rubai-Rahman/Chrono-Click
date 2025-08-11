@@ -7,10 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Handshake, Gem, Clock, ShoppingBag } from 'lucide-react';
+import Container from '@/components/layout/container';
 
 const AboutPageContent = () => {
   return (
-    <div className="container mx-auto py-12 px-4 md:px-6 lg:px-8">
+    <Container>
       {/* Hero Section - Emphasizing Timepieces & Experience */}
       <section className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 md:p-16 mb-16 overflow-hidden shadow-2xl text-white">
         <div className="absolute inset-0 z-0 opacity-30">
@@ -216,7 +217,7 @@ const AboutPageContent = () => {
           <Link href="/shop">Shop Now</Link>
         </Button>
       </section>
-    </div>
+    </Container>
   );
 };
 
