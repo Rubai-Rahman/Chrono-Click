@@ -36,14 +36,9 @@ const SignupForm = ({
 
   const password = form.watch('password');
 
-  const onFormSubmit = form.handleSubmit(
-    (formData) => {
-      onSubmit?.(formData);
-    },
-    (err) => {
-      console.log('Form validation errors:', err);
-    }
-  );
+  const handleSubmit = (formData: SignupFormData) => {
+    onSubmit(formData);
+  };
 
   return (
     <div className="container mx-auto flex responsive-space-x lg:py-12">
@@ -82,13 +77,14 @@ const SignupForm = ({
             </div>
 
             <Card className="border-0 shadow-xl bg-card/60 backdrop-blur-md">
-              <CardHeader>
-                {/* <CardTitle className="text-center">Get Started</CardTitle> */}
-              </CardHeader>
+              <CardHeader></CardHeader>
 
               <CardContent>
                 <Form {...form}>
-                  <form onSubmit={onFormSubmit} className="space-y-6">
+                  <form
+                    onSubmit={form.handleSubmit(handleSubmit)}
+                    className="space-y-6"
+                  >
                     <div className="space-y-4">
                       {/* Full Name Input */}
                       <CommonFormField
@@ -97,15 +93,11 @@ const SignupForm = ({
                         label="Full Name"
                       >
                         {({ field }) => (
-                          <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                            <Input
-                              type="text"
-                              placeholder="Enter your full name"
-                              className="pl-10"
-                              {...field}
-                            />
-                          </div>
+                          <Input
+                            type="text"
+                            placeholder="Enter your full name"
+                            {...field}
+                          />
                         )}
                       </CommonFormField>
 

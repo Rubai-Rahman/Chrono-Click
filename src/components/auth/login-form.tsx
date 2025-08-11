@@ -44,8 +44,8 @@ const LoginForm = ({
     form.setValue('password', credentials.password);
   };
 
-  const handleSubmit = (data: LoginFormData) => {
-    onSubmit(data);
+  const handleSubmit = (formData: LoginFormData) => {
+    onSubmit(formData);
   };
 
   return (
