@@ -56,7 +56,7 @@ const NotFoundPage = () => {
               </Link>
               <span className="text-gray-300">•</span>
               <Link
-                href="/dashboard"
+                href="/orders"
                 className="text-sm text-primary hover:underline"
               >
                 Dashboard

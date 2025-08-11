@@ -44,16 +44,16 @@ const ProfileMenu = () => {
   const handleMenuAction = (action: string) => {
     switch (action) {
       case 'profile':
-        router.push('/dashboard/profile');
+        router.push('/settings');
         break;
       case 'orders':
         router.push('/orders');
         break;
       case 'wishlist':
-        router.push('/dashboard/wishlist');
+        router.push('/wishlist');
         break;
       case 'settings':
-        router.push('/dashboard/settings');
+        router.push('/settings');
         break;
       case 'logout':
         logoutAction();
