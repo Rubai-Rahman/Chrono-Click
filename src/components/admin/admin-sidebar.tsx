@@ -1,6 +1,4 @@
 'use client';
-
-import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -15,13 +13,10 @@ import {
   LogOut,
   Store,
   Bell,
-  Search,
   User,
   ChevronDown,
   Moon,
   Sun,
-  Minimize2,
-  Maximize2,
 } from 'lucide-react';
 
 import {
@@ -39,8 +34,6 @@ import {
   SidebarSeparator,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -105,7 +98,7 @@ const adminNavigation = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  const { state, toggleSidebar } = useSidebar();
+  const { state } = useSidebar();
   const { theme, setTheme } = useTheme();
   const { user } = useAuth();
 
@@ -128,14 +121,8 @@ export function AdminSidebar() {
     <Sidebar variant="inset" collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-2">
-          <div className="flex  size-8 items-center justify-center rounded-lg ">
-            <Image
-              src={logo}
-              alt="Logo"
-              width={32}
-              height={32}
-              className="relative z-10 rounded-full"
-            />
+          <div className="flex  size-6 items-center justify-center rounded-lg shrink-0 ">
+            <Image src={logo} alt="Logo" width={30} height={30} />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold text-primary">
@@ -144,23 +131,6 @@ export function AdminSidebar() {
             <span className="truncate text-xs text-muted-foreground">
               Admin Dashboard
             </span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6"
-              onClick={toggleSidebar}
-              title={
-                state === 'collapsed' ? 'Expand sidebar' : 'Minimize sidebar'
-              }
-            >
-              {state === 'collapsed' ? (
-                <Maximize2 className="size-3" />
-              ) : (
-                <Minimize2 className="size-3" />
-              )}
-            </Button>
           </div>
         </div>
       </SidebarHeader>
@@ -183,12 +153,7 @@ export function AdminSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Search">
-                  <Search className="size-4" />
-                  <span>Search</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              <SidebarMenuItem></SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton tooltip="Notifications">
                   <Bell className="size-4" />
