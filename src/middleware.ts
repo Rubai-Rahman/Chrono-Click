@@ -1,28 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const protectedRoutes = [
-  { pattern: /^\/account(\/|$)/, roles: ['user', 'admin'] },
   { pattern: /^\/admin(\/|$)/, roles: ['admin'] },
   { pattern: /^\/orders(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/wishlist(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/addresses(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/payment-methods(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/settings(\/|$)/, roles: ['user', 'admin'] },
   // Legacy dashboard routes - will be redirected
   { pattern: /^\/dashboard(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/account(\/|$)/, roles: ['user', 'admin'] },
 ];
 
 const authRoutes = ['/login', '/signup', '/forgot-password'];
 
 // Route mapping for legacy dashboard routes
 const legacyRouteMapping: Record<string, (role: string) => string> = {
-  '/dashboard': (role) => (role === 'admin' ? '/admin' : '/account/orders'),
-  '/dashboard/myOrders': () => '/account/orders',
-  '/dashboard/payment': () => '/account/payment-methods',
-  '/dashboard/review': () => '/account/reviews',
+  '/dashboard': (role) => (role === 'admin' ? '/admin' : '/orders'),
+  '/dashboard/myOrders': () => '/orders',
+  '/dashboard/payment': () => '/payment-methods',
+  '/dashboard/review': () => '/reviews',
   '/dashboard/manageOrders': () => '/admin/orders',
   '/dashboard/makeAdmin': () => '/admin/customers',
   '/dashboard/addProduct': () => '/admin/products',
   '/dashboard/manageProduct': () => '/admin/products',
   '/dashboard/addNews': () => '/admin/news',
-  // Redirect /account to /account/orders for streamlined UX
-  '/account': () => '/account/orders',
+  // Redirect old account routes to new simplified routes
+  '/account': () => '/orders',
+  '/account/orders': () => '/orders',
+  '/account/wishlist': () => '/wishlist',
+  '/account/addresses': () => '/addresses',
+  '/account/payment-methods': () => '/payment-methods',
+  '/account/settings': () => '/settings',
 };
 
 export async function middleware(req: NextRequest) {
@@ -42,8 +51,11 @@ export async function middleware(req: NextRequest) {
 
   const url = req.nextUrl.clone();
 
-  // Handle legacy dashboard route redirects
-  if (url.pathname.startsWith('/dashboard')) {
+  // Handle legacy route redirects
+  if (
+    url.pathname.startsWith('/dashboard') ||
+    url.pathname.startsWith('/account')
+  ) {
     const newRoute = legacyRouteMapping[url.pathname];
     if (newRoute) {
       const redirectPath =
@@ -86,6 +98,10 @@ export const config = {
     '/account/:path*',
     '/admin/:path*',
     '/orders/:path*',
+    '/wishlist/:path*',
+    '/addresses/:path*',
+    '/payment-methods/:path*',
+    '/settings/:path*',
     '/login',
     '/signup',
     '/forgot-password',

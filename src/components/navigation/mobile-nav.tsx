@@ -11,7 +11,7 @@ const mobileNavigation = [
   { label: 'Home', href: '/', icon: Home },
   { label: 'Shop', href: '/products', icon: Search },
   { label: 'Cart', href: '/cart', icon: ShoppingCart, isCart: true },
-  { label: 'Account', href: '/account', icon: User, requiresAuth: true },
+  { label: 'Account', href: '/orders', icon: User, requiresAuth: true },
 ];
 
 export function MobileNav() {
@@ -58,9 +58,8 @@ export function MobileNav() {
               );
             }
 
-            // Redirect account to orders for streamlined UX
-            const href =
-              item.href === '/account' ? '/account/orders' : item.href;
+            // Use the direct route
+            const href = item.href;
 
             return (
               <Link
