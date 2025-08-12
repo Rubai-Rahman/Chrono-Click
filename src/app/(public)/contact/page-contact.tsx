@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import {
   Card,
@@ -9,8 +7,6 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Mail,
   Phone,
@@ -22,30 +18,9 @@ import {
   Linkedin,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useFormStatus, useFormState } from 'react-dom';
 import Container from '@/components/layout/container';
-// import { submitContactForm } from '@/app/actions/contactAction';
-
-// Component to show pending state for form submission
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      type="submit"
-      className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground rounded-md shadow-md hover:bg-primary/90 transition-colors duration-200"
-      disabled={pending}
-    >
-      {pending ? (
-        <>
-          <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
-          Sending Message...
-        </>
-      ) : (
-        'Send Message'
-      )}
-    </Button>
-  );
-}
+import ContactForm from './components/contact-form';
+import InteractiveMap from './components/interactive-map';
 
 export default function ContactPageContent() {
   // const [state, formAction] = useFormState(submitContactForm, {
@@ -89,86 +64,7 @@ export default function ContactPageContent() {
       {/* Contact Content Section */}
       <section id="contact-form" className="grid md:grid-cols-2 gap-12 mb-16">
         {/* Contact Form Card */}
-        <Card className="p-8 rounded-3xl shadow-xl border border-border bg-card">
-          <CardHeader className="p-0 mb-6">
-            <CardTitle className="text-3xl font-bold text-foreground font-serif mb-2">
-              Send Us a Message
-            </CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Fill out the form below and we&apos;ll get back to you as soon as
-              possible.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-0">
-            <form className="space-y-6">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Your Name
-                </label>
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  placeholder="John Doe"
-                  className="pl-4 pr-4 py-2.5 rounded-md border border-input bg-input/50 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-0"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Your Email
-                </label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="john.doe@example.com"
-                  className="pl-4 pr-4 py-2.5 rounded-md border border-input bg-input/50 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-0"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="subject"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Subject
-                </label>
-                <Input
-                  id="subject"
-                  name="subject"
-                  type="text"
-                  placeholder="Inquiry about a product"
-                  className="pl-4 pr-4 py-2.5 rounded-md border border-input bg-input/50 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-0"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Your Message
-                </label>
-                <Textarea
-                  id="message"
-                  name="message"
-                  placeholder="Type your message here..."
-                  rows={5}
-                  className="pl-4 pr-4 py-2.5 rounded-md border border-input bg-input/50 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-0"
-                  required
-                />
-              </div>
-              <SubmitButton />
-            </form>
-          </CardContent>
-        </Card>
+        <ContactForm />
 
         {/* Contact Information Card */}
         <Card className="p-8 rounded-3xl shadow-xl border border-border bg-card flex flex-col justify-between">
@@ -238,15 +134,7 @@ export default function ContactPageContent() {
           </div>
 
           {/* Map Placeholder */}
-          <div className="mt-8 rounded-xl overflow-hidden shadow-lg border border-border group">
-            <Image
-              src="/placeholder.svg?height=300&width=600"
-              alt="Location Map"
-              width={600}
-              height={300}
-              className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
+          <InteractiveMap />
 
           {/* Social Media Links */}
           <div className="mt-8 text-center">

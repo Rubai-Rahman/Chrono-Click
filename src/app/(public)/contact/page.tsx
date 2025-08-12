@@ -4,16 +4,16 @@ import ContactPageContent from './page-contact';
 export const metadata: Metadata = {
   title: 'Contact Us - Chrono Click',
   description:
-    'Learn about Chrono Click, your trusted destination for premium timepieces and luxury watches. Discover our story, mission, and commitment to excellence.',
+    "Get in touch with Chrono Click for inquiries about premium timepieces, customer support, or any questions about luxury watches. We're here to help.",
   keywords: [
-    'about chrono click',
-    'luxury watch store',
-    'premium timepieces',
-    'watch company',
-    'timepiece experts',
-    'watch history',
-    'luxury watches',
-    'watch craftsmanship',
+    'contact chrono click',
+    'luxury watch support',
+    'timepiece customer service',
+    'watch store contact',
+    'premium watch inquiries',
+    'luxury watch help',
+    'watch customer support',
+    'timepiece assistance',
   ],
 };
 

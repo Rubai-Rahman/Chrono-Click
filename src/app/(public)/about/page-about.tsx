@@ -1,13 +1,12 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
+import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Handshake, Gem, Clock, ShoppingBag } from 'lucide-react';
 import Container from '@/components/layout/container';
+import InteractiveCard from './components/interactive-card';
+import InteractiveImage from './components/interactive-image';
 
 const AboutPageContent = () => {
   return (
@@ -46,19 +45,11 @@ const AboutPageContent = () => {
 
       {/* Our Story/Philosophy Section - Focus on Curation & Quality */}
       <section className="grid md:grid-cols-2 gap-12 items-center mb-16 bg-card p-8 rounded-3xl shadow-xl border border-border">
-        <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden shadow-2xl border border-border group">
-          <Image
-            src="/placeholder.svg?height=400&width=600"
-            alt="Watchmaking craftsmanship"
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
-            <span className="text-white text-sm font-medium">
-              Crafted with Precision
-            </span>
-          </div>
-        </div>
+        <InteractiveImage
+          src="/placeholder.svg?height=400&width=600"
+          alt="Watchmaking craftsmanship"
+          overlayText="Crafted with Precision"
+        />
         <div className="space-y-6">
           <h2 className="text-4xl font-bold text-foreground font-serif">
             Our Philosophy: Precision & Passion
@@ -84,60 +75,26 @@ const AboutPageContent = () => {
           Why Choose Chrono Click?
         </h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <Card className="text-center p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 bg-card border border-border transform hover:-translate-y-1">
-            <CardHeader className="flex flex-col items-center p-0 mb-4">
-              <Gem className="w-14 h-14 text-primary mb-4 animate-pulse-subtle" />
-              <CardTitle className="text-xl font-semibold text-foreground">
-                Unrivaled Quality
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <p className="text-muted-foreground text-sm">
-                Hand-picked timepieces from trusted manufacturers and artisans.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="text-center p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 bg-card border border-border transform hover:-translate-y-1">
-            <CardHeader className="flex flex-col items-center p-0 mb-4">
-              <Clock className="w-14 h-14 text-primary mb-4 animate-pulse-subtle" />
-              <CardTitle className="text-xl font-semibold text-foreground">
-                Expert Curation
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <p className="text-muted-foreground text-sm">
-                A carefully selected collection for every style and occasion.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="text-center p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 bg-card border border-border transform hover:-translate-y-1">
-            <CardHeader className="flex flex-col items-center p-0 mb-4">
-              <ShoppingBag className="w-14 h-14 text-primary mb-4 animate-pulse-subtle" />
-              <CardTitle className="text-xl font-semibold text-foreground">
-                Seamless Shopping
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <p className="text-muted-foreground text-sm">
-                Enjoy a smooth, secure, and delightful online shopping
-                experience.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="text-center p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 bg-card border border-border transform hover:-translate-y-1">
-            <CardHeader className="flex flex-col items-center p-0 mb-4">
-              <Handshake className="w-14 h-14 text-primary mb-4 animate-pulse-subtle" />
-              <CardTitle className="text-xl font-semibold text-foreground">
-                Dedicated Support
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <p className="text-muted-foreground text-sm">
-                Our team is here to assist you every step of your horological
-                journey.
-              </p>
-            </CardContent>
-          </Card>
+          <InteractiveCard
+            icon={<Gem className="w-14 h-14 text-primary mb-4" />}
+            title="Unrivaled Quality"
+            description="Hand-picked timepieces from trusted manufacturers and artisans."
+          />
+          <InteractiveCard
+            icon={<Clock className="w-14 h-14 text-primary mb-4" />}
+            title="Expert Curation"
+            description="A carefully selected collection for every style and occasion."
+          />
+          <InteractiveCard
+            icon={<ShoppingBag className="w-14 h-14 text-primary mb-4" />}
+            title="Seamless Shopping"
+            description="Enjoy a smooth, secure, and delightful online shopping experience."
+          />
+          <InteractiveCard
+            icon={<Handshake className="w-14 h-14 text-primary mb-4" />}
+            title="Dedicated Support"
+            description="Our team is here to assist you every step of your horological journey."
+          />
         </div>
       </section>
 
@@ -147,7 +104,7 @@ const AboutPageContent = () => {
           Meet Our Team
         </h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          <Card className="text-center p-6 rounded-xl shadow-lg bg-card border border-border hover:shadow-xl transition-shadow duration-300">
+          <Card className="text-center p-6 rounded-xl shadow-lg bg-card border border-border">
             <Avatar className="w-28 h-28 mx-auto mb-4 border-2 border-primary/50 shadow-md">
               <AvatarImage
                 src="/placeholder.svg?height=100&width=100"
@@ -158,7 +115,7 @@ const AboutPageContent = () => {
             <h3 className="text-lg font-semibold text-foreground">John Doe</h3>
             <p className="text-sm text-muted-foreground">Founder & CEO</p>
           </Card>
-          <Card className="text-center p-6 rounded-xl shadow-lg bg-card border border-border hover:shadow-xl transition-shadow duration-300">
+          <Card className="text-center p-6 rounded-xl shadow-lg bg-card border border-border">
             <Avatar className="w-28 h-28 mx-auto mb-4 border-2 border-primary/50 shadow-md">
               <AvatarImage
                 src="/placeholder.svg?height=100&width=100"
@@ -171,7 +128,7 @@ const AboutPageContent = () => {
             </h3>
             <p className="text-sm text-muted-foreground">Head of Curation</p>
           </Card>
-          <Card className="text-center p-6 rounded-xl shadow-lg bg-card border border-border hover:shadow-xl transition-shadow duration-300">
+          <Card className="text-center p-6 rounded-xl shadow-lg bg-card border border-border">
             <Avatar className="w-28 h-28 mx-auto mb-4 border-2 border-primary/50 shadow-md">
               <AvatarImage
                 src="/placeholder.svg?height=100&width=100"
@@ -184,7 +141,7 @@ const AboutPageContent = () => {
             </h3>
             <p className="text-sm text-muted-foreground">Logistics Manager</p>
           </Card>
-          <Card className="text-center p-6 rounded-xl shadow-lg bg-card border border-border hover:shadow-xl transition-shadow duration-300">
+          <Card className="text-center p-6 rounded-xl shadow-lg bg-card border border-border">
             <Avatar className="w-28 h-28 mx-auto mb-4 border-2 border-primary/50 shadow-md">
               <AvatarImage
                 src="/placeholder.svg?height=100&width=100"
