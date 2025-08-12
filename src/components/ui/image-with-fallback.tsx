@@ -6,65 +6,40 @@ import { useState } from 'react';
 interface ImageWithFallbackProps {
   src: string;
   alt: string;
-  fallbackSrc?: string;
-  className?: string;
-  width?: number;
-  height?: number;
   fill?: boolean;
+  className?: string;
   priority?: boolean;
-  sizes?: string;
+  fallbackSrc?: string;
 }
 
-export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
+const ImageWithFallback = ({
   src,
   alt,
-  fallbackSrc = '/default.webp', // Use your default image
-  className,
-  width,
-  height,
-  fill,
-  priority,
-  sizes,
-}) => {
+  fill = false,
+  className = '',
+  priority = false,
+  fallbackSrc = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzlmYTJhNyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5ldyBJbWFnZTwvdGV4dD48L3N2Zz4=',
+}: ImageWithFallbackProps) => {
   const [imgSrc, setImgSrc] = useState(src);
-  const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
   const handleError = () => {
-    if (imgSrc !== fallbackSrc) {
-      setImgSrc(fallbackSrc);
+    if (!hasError) {
       setHasError(true);
+      setImgSrc(fallbackSrc);
     }
   };
 
-  const handleLoad = () => {
-    setIsLoading(false);
-  };
-
   return (
-    <div className={`relative ${className}`}>
-      {isLoading && !hasError && (
-        <div className="absolute inset-0 bg-muted animate-pulse rounded" />
-      )}
-      <Image
-        src={imgSrc}
-        alt={alt}
-        width={width}
-        height={height}
-        fill={fill}
-        priority={priority}
-        sizes={sizes}
-        className={`${
-          isLoading ? 'opacity-0' : 'opacity-100'
-        } transition-opacity duration-300`}
-        onError={handleError}
-        onLoad={handleLoad}
-      />
-      {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-muted text-muted-foreground text-sm">
-          Image unavailable
-        </div>
-      )}
-    </div>
+    <Image
+      src={imgSrc}
+      alt={alt}
+      fill={fill}
+      className={className}
+      priority={priority}
+      onError={handleError}
+    />
   );
 };
+
+export default ImageWithFallback;

@@ -2,14 +2,36 @@ import axiosInstance from '@/lib/axios';
 
 export interface NewsType {
   _id: string;
+  slug: string;
   name: string;
+  excerpt: string;
   details: string;
   img: string;
-  date?: string;
+  date: string;
+  updatedAt: string;
   author: string;
   category: string;
+  tags: string[];
   readTime: string;
   featured: boolean;
+  status: string;
+  relatedProducts: string[];
+  likes: number;
+  views: number;
+  commentsEnabled: boolean;
+}
+
+export interface CommentType {
+  _id: string;
+  newsId: string;
+  user: string; // Backend uses 'user' field
+  message: string; // Backend uses 'message' field
+  date: string; // Backend uses 'date' field
+}
+
+export interface CommentResponse {
+  comments: CommentType[];
+  count: number;
 }
 
 export interface NewsResponse {
@@ -27,5 +49,38 @@ export const fetchNewsPages = async (
 
 export const fetchNewsDetails = async (newsId: string): Promise<NewsType> => {
   const res = await axiosInstance.get(`/news/${newsId}`);
-  return res.data;
+  return res.data.news; // Backend returns { news, comments, commentsPagination }
+};
+
+export const fetchNewsComments = async (
+  newsId: string
+): Promise<CommentResponse> => {
+  const res = await axiosInstance.get(
+    `/news/${newsId}?commentsPage=1&commentsLimit=50`
+  );
+  return {
+    comments: res.data.comments || [],
+    count: res.data.commentsPagination?.total || 0,
+  };
+};
+
+export const postNewsComment = async (
+  newsId: string,
+  comment: string,
+  userName: string
+): Promise<CommentType> => {
+  const res = await axiosInstance.post('/comments', {
+    newsId,
+    message: comment,
+    user: userName,
+  });
+
+  // Return the created comment in the expected format
+  return {
+    _id: res.data.insertedId,
+    newsId,
+    user: userName,
+    message: comment,
+    date: new Date().toISOString(),
+  };
 };

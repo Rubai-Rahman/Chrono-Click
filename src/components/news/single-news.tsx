@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import ImageWithFallback from '@/components/ui/image-with-fallback';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -43,7 +43,7 @@ const SingleNews = ({ article, featured = false }: SingleNewsProps) => {
     return (
       <Card className="group overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 bg-card border-0 hover:scale-[1.02]">
         <div className="relative h-64 overflow-hidden">
-          <Image
+          <ImageWithFallback
             src={article.img}
             alt={article.name}
             fill
@@ -83,7 +83,7 @@ const SingleNews = ({ article, featured = false }: SingleNewsProps) => {
         </div>
         <CardContent className="p-6">
           <p className="text-muted-foreground line-clamp-3 mb-4 leading-relaxed">
-            {article.details}
+            {article.excerpt || article.details}
           </p>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -106,7 +106,7 @@ const SingleNews = ({ article, featured = false }: SingleNewsProps) => {
   return (
     <Card className="group overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-card border hover:border-primary/20 hover:scale-[1.02]">
       <div className="relative h-48 overflow-hidden">
-        <Image
+        <ImageWithFallback
           src={article.img}
           alt={article.name}
           fill
@@ -131,7 +131,7 @@ const SingleNews = ({ article, featured = false }: SingleNewsProps) => {
           {article.name}
         </h3>
         <p className="text-muted-foreground text-sm line-clamp-2 mb-4 leading-relaxed">
-          {article.details}
+          {article.excerpt || article.details}
         </p>
         <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
           <div className="flex items-center gap-1">

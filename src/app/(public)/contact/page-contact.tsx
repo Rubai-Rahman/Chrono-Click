@@ -21,6 +21,7 @@ import Link from 'next/link';
 import Container from '@/components/layout/container';
 import ContactForm from './components/contact-form';
 import InteractiveMap from './components/interactive-map';
+import { Breadcrumb } from '@/components/navigation/breadcrumb';
 
 export default function ContactPageContent() {
   // const [state, formAction] = useFormState(submitContactForm, {
@@ -30,6 +31,9 @@ export default function ContactPageContent() {
 
   return (
     <Container>
+      <div className="py-6">
+        <Breadcrumb />
+      </div>
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 md:p-16 mb-16 overflow-hidden shadow-2xl text-white">
         <div className="absolute inset-0 z-0 opacity-30">

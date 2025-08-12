@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Image from 'next/image';
+import ImageWithFallback from '@/components/ui/image-with-fallback';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { fetchNewsDetails, NewsType } from '@/api-lib/news';
@@ -19,6 +19,7 @@ import {
   Tag,
 } from 'lucide-react';
 import NewsDetailsSkeleton from '@/components/skeletons/news-details-skeleton';
+import CommentSection from './comment-section';
 
 const NewsDetailsClient = () => {
   const { newsId } = useParams();
@@ -188,7 +189,7 @@ const NewsDetailsClient = () => {
         <div className="lg:col-span-2">
           {/* Featured Image */}
           <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden shadow-2xl mb-8 group">
-            <Image
+            <ImageWithFallback
               src={newsDetails.img}
               alt={newsDetails.name}
               fill
@@ -202,9 +203,14 @@ const NewsDetailsClient = () => {
           <Card className="p-8 rounded-2xl shadow-lg border-0 bg-card/50 backdrop-blur-sm">
             <CardContent className="p-0">
               <div className="prose prose-lg max-w-none text-foreground">
-                <p className="text-xl leading-relaxed text-muted-foreground mb-8 font-light">
+                {newsDetails.excerpt && (
+                  <p className="text-xl leading-relaxed text-muted-foreground mb-6 font-light italic border-l-4 border-primary/30 pl-6">
+                    {newsDetails.excerpt}
+                  </p>
+                )}
+                <div className="text-base leading-relaxed text-foreground">
                   {newsDetails.details}
-                </p>
+                </div>
 
                 {/* You can add more content sections here */}
                 <div className="border-t border-border pt-8 mt-8">
@@ -245,7 +251,41 @@ const NewsDetailsClient = () => {
                           {formatDate(newsDetails.date)}
                         </span>
                       </div>
+                      <div>
+                        <span className="font-semibold text-foreground">
+                          Views:
+                        </span>
+                        <span className="ml-2 text-muted-foreground">
+                          {newsDetails.views?.toLocaleString() || 0}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-foreground">
+                          Likes:
+                        </span>
+                        <span className="ml-2 text-muted-foreground">
+                          {newsDetails.likes?.toLocaleString() || 0}
+                        </span>
+                      </div>
                     </div>
+                    {newsDetails.tags && newsDetails.tags.length > 0 && (
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <span className="font-semibold text-foreground block mb-2">
+                          Tags:
+                        </span>
+                        <div className="flex flex-wrap gap-2">
+                          {newsDetails.tags.map((tag, index) => (
+                            <Badge
+                              key={index}
+                              variant="secondary"
+                              className="text-xs"
+                            >
+                              #{tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -324,6 +364,13 @@ const NewsDetailsClient = () => {
           </div>
         </div>
       </div>
+
+      {/* Comment Section */}
+      <CommentSection
+        newsId={newsDetails._id}
+        commentsEnabled={newsDetails.commentsEnabled}
+      />
+      <h1>TEsting ui dldldldl</h1>
 
       {/* Call to Action */}
       <div className="mt-16 text-center bg-gradient-to-r from-primary/10 via-primary/5 to-background rounded-3xl p-8 md:p-12">
