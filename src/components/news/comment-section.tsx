@@ -11,10 +11,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { MessageCircle, Send, Clock } from 'lucide-react';
+import { MessageCircle, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
+import CommentItem from './comment-item';
 
 interface CommentSectionProps {
   newsId: string;
@@ -39,11 +39,18 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
   });
 
   const commentMutation = useMutation({
-    mutationFn: (comment: string) =>
+    mutationFn: ({
+      comment,
+      parentId,
+    }: {
+      comment: string;
+      parentId?: string;
+    }) =>
       postNewsComment(
         newsId,
         comment,
-        user?.name || user?.displayName || 'Anonymous'
+        user?.name || user?.displayName || 'Anonymous',
+        parentId
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['newsComments', newsId] });
@@ -70,7 +77,17 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       return;
     }
 
-    commentMutation.mutate(newComment.trim());
+    commentMutation.mutate({ comment: newComment.trim() });
+  };
+
+  const handleReply = (parentId: string, message: string) => {
+    if (!isAuthenticated) {
+      toast.error('Please login to reply');
+      router.push('/login');
+      return;
+    }
+
+    commentMutation.mutate({ comment: message, parentId });
   };
 
   const formatDate = (dateString: string) => {
@@ -81,15 +98,6 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       hour: '2-digit',
       minute: '2-digit',
     });
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((word) => word[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
   };
 
   if (!commentsEnabled) {
@@ -179,29 +187,15 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
             <p>No comments yet. Be the first to share your thoughts!</p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {commentsData.comments.map((comment: CommentType) => (
-              <div key={comment._id} className="flex gap-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarFallback className="bg-primary/10 text-primary">
-                    {getInitials(comment.user)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="font-medium text-foreground">
-                      {comment.user}
-                    </span>
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Clock className="w-3 h-3" />
-                      <span>{formatDate(comment.date)}</span>
-                    </div>
-                  </div>
-                  <p className="text-foreground leading-relaxed">
-                    {comment.message}
-                  </p>
-                </div>
-              </div>
+              <CommentItem
+                key={comment._id}
+                comment={comment}
+                onReply={handleReply}
+                isAuthenticated={isAuthenticated}
+                isSubmitting={commentMutation.isPending}
+              />
             ))}
           </div>
         )}

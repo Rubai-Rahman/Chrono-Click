@@ -36,6 +36,7 @@ const NewsDetailsClient = () => {
     enabled: !!newsId,
   });
 
+  console.log(newsDetails);
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'No date available';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -370,7 +371,6 @@ const NewsDetailsClient = () => {
         newsId={newsDetails._id}
         commentsEnabled={newsDetails.commentsEnabled}
       />
-      <h1>TEsting ui dldldldl</h1>
 
       {/* Call to Action */}
       <div className="mt-16 text-center bg-gradient-to-r from-primary/10 via-primary/5 to-background rounded-3xl p-8 md:p-12">

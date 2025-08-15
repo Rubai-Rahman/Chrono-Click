@@ -27,6 +27,11 @@ export interface CommentType {
   user: string; // Backend uses 'user' field
   message: string; // Backend uses 'message' field
   date: string; // Backend uses 'date' field
+  parentId?: string | null; // null for top-level comments, string for replies
+  replyCount?: number; // number of replies to this comment
+  replies?: CommentType[]; // nested replies
+  likes?: number;
+  isDeleted?: boolean;
 }
 
 export interface CommentResponse {
@@ -58,8 +63,12 @@ export const fetchNewsComments = async (
   const res = await axiosInstance.get(
     `/news/${newsId}?commentsPage=1&commentsLimit=50`
   );
+
+  // Backend already returns hierarchical structure, so we just use it directly
+  const comments = res.data.comments || [];
+
   return {
-    comments: res.data.comments || [],
+    comments: comments,
     count: res.data.commentsPagination?.total || 0,
   };
 };
@@ -67,12 +76,14 @@ export const fetchNewsComments = async (
 export const postNewsComment = async (
   newsId: string,
   comment: string,
-  userName: string
+  userName: string,
+  parentId?: string | null
 ): Promise<CommentType> => {
   const res = await axiosInstance.post('/comments', {
     newsId,
     message: comment,
     user: userName,
+    parentId: parentId || null,
   });
 
   // Return the created comment in the expected format
@@ -82,5 +93,6 @@ export const postNewsComment = async (
     user: userName,
     message: comment,
     date: new Date().toISOString(),
+    parentId: parentId || null,
   };
 };
