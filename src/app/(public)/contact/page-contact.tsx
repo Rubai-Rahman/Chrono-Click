@@ -6,7 +6,6 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import {
   Mail,
   Phone,
@@ -20,7 +19,6 @@ import {
 import Link from 'next/link';
 import Container from '@/components/layout/container';
 import ContactForm from './components/contact-form';
-import InteractiveMap from './components/interactive-map';
 import { Breadcrumb } from '@/components/navigation/breadcrumb';
 
 export default function ContactPageContent() {
@@ -38,7 +36,7 @@ export default function ContactPageContent() {
       <section className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 md:p-16 mb-16 overflow-hidden shadow-2xl text-white">
         <div className="absolute inset-0 z-0 opacity-30">
           <Image
-            src="/placeholder.svg?height=800&width=1600"
+            src="/contact_hero_bg.webp"
             alt="Elegant office space background"
             fill
             className="object-cover object-center"
@@ -55,23 +53,21 @@ export default function ContactPageContent() {
             our products, need support, or just want to say hello, our team is
             ready to assist.
           </p>
-          <Button
-            asChild
-            size="lg"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
-          >
-            <Link href="#contact-form">Send a Message</Link>
-          </Button>
         </div>
       </section>
 
       {/* Contact Content Section */}
-      <section id="contact-form" className="grid md:grid-cols-2 gap-12 mb-16">
+      <section
+        id="contact-form"
+        className="grid md:grid-cols-2 gap-12 mb-16 items-start"
+      >
         {/* Contact Form Card */}
-        <ContactForm />
+        <div className="col-span-1">
+          <ContactForm />
+        </div>
 
         {/* Contact Information Card */}
-        <Card className="p-8 rounded-3xl shadow-xl border border-border bg-card flex flex-col justify-between">
+        <Card className="col-span-1 p-8 rounded-3xl shadow-xl border border-border bg-card flex flex-col justify-between">
           <div>
             <CardHeader className="p-0 mb-6">
               <CardTitle className="text-3xl font-bold text-foreground font-serif mb-2">
@@ -137,11 +133,7 @@ export default function ContactPageContent() {
             </CardContent>
           </div>
 
-          {/* Map Placeholder */}
-          <InteractiveMap />
-
-          {/* Social Media Links */}
-          <div className="mt-8 text-center">
+          <div className="my-15 text-center">
             <h3 className="font-semibold text-foreground text-lg mb-4">
               Connect With Us
             </h3>
