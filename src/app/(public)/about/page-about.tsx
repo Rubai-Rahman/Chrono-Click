@@ -15,7 +15,7 @@ const AboutPageContent = () => {
         <Breadcrumb />
       </div>
       {/* Hero Section - Emphasizing Timepieces & Experience */}
-      <section className="relative bg-gradient-to-br from-background to-card/40 rounded-3xl p-8 md:p-16 mb-16 overflow-hidden shadow-2xl text-white">
+      <section className="relative bg-gradient-to-br from-foreground to-background rounded-3xl p-8 md:p-16 mb-16 overflow-hidden shadow-2xl text-white">
         <div className="absolute inset-0 z-0 opacity-30">
           <Image
             src="/about_hero_bg.webp"
@@ -94,7 +94,7 @@ const AboutPageContent = () => {
           {teamMembers.map((member, index) => (
             <Card
               key={index}
-              className="text-center p-6 rounded-xl shadow-lg bg-card border border-border"
+              className="text-center p-6 rounded-xl shadow-lg bg-card border border-border transition-all duration-300 transform hover:-translate-y-1"
             >
               <Avatar className="w-28 h-28 mx-auto mb-4 border-2 border-primary/50 shadow-md">
                 <AvatarImage src={member.image} alt={member.name} />
