@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Container from '@/components/layout/container';
-import ContactForm from './components/contact-form';
+import ContactForm from '../../../components/contact/contact-form';
 import { Breadcrumb } from '@/components/navigation/breadcrumb';
 
 export default function ContactPageContent() {

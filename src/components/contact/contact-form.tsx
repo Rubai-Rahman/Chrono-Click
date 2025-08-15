@@ -65,7 +65,8 @@ const ContactForm = () => {
           Send Us a Message
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          Fill out the form below and we'll get back to you as soon as possible.
+          Fill out the form below and we&apos;ll get back to you as soon as
+          possible.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
