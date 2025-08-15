@@ -31,7 +31,11 @@ export interface CommentType {
   replyCount?: number; // number of replies to this comment
   replies?: CommentType[]; // nested replies
   likes?: number;
+  dislikes?: number;
+  userReaction?: 'like' | 'dislike' | null; // current user's reaction
   isDeleted?: boolean;
+  updatedAt?: string; // for tracking edits
+  isEdited?: boolean; // to show if comment was edited
 }
 
 export interface CommentResponse {
@@ -95,4 +99,35 @@ export const postNewsComment = async (
     date: new Date().toISOString(),
     parentId: parentId || null,
   };
+};
+
+// Edit comment
+export const editNewsComment = async (
+  commentId: string,
+  message: string
+): Promise<CommentType> => {
+  const res = await axiosInstance.put(`/comments/${commentId}`, {
+    message,
+  });
+  return res.data;
+};
+
+// Delete comment
+export const deleteNewsComment = async (commentId: string): Promise<void> => {
+  await axiosInstance.delete(`/comments/${commentId}`);
+};
+
+// React to comment (like, dislike, or remove reaction)
+export const reactToComment = async (
+  commentId: string,
+  reaction: 'like' | 'dislike' | 'remove'
+): Promise<{
+  likes: number;
+  dislikes: number;
+  userReaction: 'like' | 'dislike' | null;
+}> => {
+  const res = await axiosInstance.post(`/comments/${commentId}/react`, {
+    reaction,
+  });
+  return res.data;
 };

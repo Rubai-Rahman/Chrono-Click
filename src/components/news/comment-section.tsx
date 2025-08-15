@@ -6,6 +6,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   fetchNewsComments,
   postNewsComment,
+  editNewsComment,
+  deleteNewsComment,
+  reactToComment,
   CommentType,
 } from '@/api-lib/news';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -63,6 +66,53 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
     },
   });
 
+  const editMutation = useMutation({
+    mutationFn: ({
+      commentId,
+      message,
+    }: {
+      commentId: string;
+      message: string;
+    }) => editNewsComment(commentId, message),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['newsComments', newsId] });
+      toast.success('Comment updated successfully!');
+    },
+    onError: (error) => {
+      toast.error('Failed to update comment. Please try again.');
+      console.error('Edit error:', error);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (commentId: string) => deleteNewsComment(commentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['newsComments', newsId] });
+      toast.success('Comment deleted successfully!');
+    },
+    onError: (error) => {
+      toast.error('Failed to delete comment. Please try again.');
+      console.error('Delete error:', error);
+    },
+  });
+
+  const reactionMutation = useMutation({
+    mutationFn: ({
+      commentId,
+      reaction,
+    }: {
+      commentId: string;
+      reaction: 'like' | 'dislike' | 'remove';
+    }) => reactToComment(commentId, reaction),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['newsComments', newsId] });
+    },
+    onError: (error) => {
+      toast.error('Failed to update reaction. Please try again.');
+      console.error('Reaction error:', error);
+    },
+  });
+
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -88,6 +138,47 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
     }
 
     commentMutation.mutate({ comment: message, parentId });
+  };
+
+  const handleEdit = (commentId: string, message: string) => {
+    if (!isAuthenticated) {
+      toast.error('Please login to edit comments');
+      router.push('/login');
+      return;
+    }
+
+    editMutation.mutate({ commentId, message });
+  };
+
+  const handleDelete = async (commentId: string) => {
+    if (!isAuthenticated) {
+      toast.error('Please login to delete comments');
+      router.push('/login');
+      return;
+    }
+
+    deleteMutation.mutate(commentId);
+  };
+
+  const handleReact = async (
+    commentId: string,
+    reaction: 'like' | 'dislike' | 'remove'
+  ) => {
+    if (!isAuthenticated) {
+      toast.error('Please login to react to comments');
+      router.push('/login');
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
+      reactionMutation.mutate(
+        { commentId, reaction },
+        {
+          onSuccess: () => resolve(undefined),
+          onError: (error) => reject(error),
+        }
+      );
+    });
   };
 
   const formatDate = (dateString: string) => {
@@ -193,8 +284,17 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
                 key={comment._id}
                 comment={comment}
                 onReply={handleReply}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onReact={handleReact}
                 isAuthenticated={isAuthenticated}
-                isSubmitting={commentMutation.isPending}
+                isSubmitting={
+                  commentMutation.isPending ||
+                  editMutation.isPending ||
+                  deleteMutation.isPending ||
+                  reactionMutation.isPending
+                }
+                currentUser={user?.name || user?.displayName}
               />
             ))}
           </div>

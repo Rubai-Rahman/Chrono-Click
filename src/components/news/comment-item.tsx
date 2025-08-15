@@ -3,15 +3,36 @@
 import { useState } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, ChevronDown, ChevronUp, Heart } from 'lucide-react';
+import {
+  MessageCircle,
+  ChevronDown,
+  ChevronUp,
+  ThumbsUp,
+  ThumbsDown,
+  MoreHorizontal,
+  Edit3,
+  Trash2,
+  Loader2,
+} from 'lucide-react';
 import { CommentType } from '@/api-lib/news';
 import CommentReply from './comment-reply';
+import CommentEdit from './comment-edit';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface CommentItemProps {
   comment: CommentType;
   onReply: (parentId: string, message: string) => void;
+  onEdit: (commentId: string, message: string) => void;
+  onDelete: (commentId: string) => void;
+  onReact: (commentId: string, reaction: 'like' | 'dislike' | 'remove') => void;
   isAuthenticated: boolean;
   isSubmitting: boolean;
+  currentUser?: string;
   depth?: number;
   maxDepth?: number;
 }
@@ -19,14 +40,23 @@ interface CommentItemProps {
 const CommentItem = ({
   comment,
   onReply,
+  onEdit,
+  onDelete,
+  onReact,
   isAuthenticated,
   isSubmitting,
+  currentUser,
   depth = 0,
   maxDepth = 3,
 }: CommentItemProps) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [showReplies, setShowReplies] = useState(depth === 0); // Top-level comments show replies by default
-  const [isLiked, setIsLiked] = useState(false);
+  const [userReaction, setUserReaction] = useState<'like' | 'dislike' | null>(
+    comment.userReaction || null
+  );
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isReacting, setIsReacting] = useState<'like' | 'dislike' | null>(null);
 
   const formatDate = (dateString: string) => {
     const now = new Date();
@@ -55,16 +85,62 @@ const CommentItem = ({
       .toUpperCase()
       .slice(0, 2);
   };
-  console.log('comment', comment);
   const handleReplySubmit = (message: string) => {
     onReply(comment._id, message);
     setShowReplyForm(false);
     setShowReplies(true); // Show replies when a new reply is added
   };
 
+  const handleEditSubmit = (message: string) => {
+    onEdit(comment._id, message);
+    setIsEditing(false);
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this comment?')) {
+      setIsDeleting(true);
+      try {
+        await onDelete(comment._id);
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
+
+  const handleReaction = async (reaction: 'like' | 'dislike') => {
+    if (!isAuthenticated || isReacting) return;
+
+    setIsReacting(reaction);
+
+    let newReaction: 'like' | 'dislike' | 'remove';
+    const previousReaction = userReaction;
+
+    if (userReaction === reaction) {
+      // If clicking the same reaction, remove it
+      newReaction = 'remove';
+      setUserReaction(null);
+    } else {
+      // If clicking a different reaction or no reaction, set the new one
+      newReaction = reaction;
+      setUserReaction(reaction);
+    }
+
+    try {
+      await onReact(comment._id, newReaction);
+    } catch (error) {
+      // Revert the optimistic update on error
+      setUserReaction(previousReaction);
+    } finally {
+      setIsReacting(null);
+    }
+  };
+
   const canReply = isAuthenticated && depth < maxDepth;
   const hasReplies = comment.replies && comment.replies.length > 0;
   const replyCount = comment.replies?.length || 0;
+  const isOwner = currentUser === comment.user;
+  const canEdit = isAuthenticated && isOwner;
+  const canDelete = isAuthenticated && isOwner;
 
   return (
     <div className={`${depth > 0 ? 'ml-10 mt-3' : 'mb-6'}`}>
@@ -79,64 +155,172 @@ const CommentItem = ({
 
         <div className="flex-1 min-w-0">
           {/* Comment Header */}
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className={`font-medium text-foreground ${
-                depth > 0 ? 'text-sm' : ''
-              }`}
-            >
-              {comment.user}
-            </span>
-            <span
-              className={`text-muted-foreground ${
-                depth > 0 ? 'text-xs' : 'text-sm'
-              }`}
-            >
-              {formatDate(comment.date)}
-            </span>
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2">
+              <span
+                className={`font-medium text-foreground ${
+                  depth > 0 ? 'text-sm' : ''
+                }`}
+              >
+                {comment.user}
+              </span>
+              <span
+                className={`text-muted-foreground ${
+                  depth > 0 ? 'text-xs' : 'text-sm'
+                }`}
+              >
+                {formatDate(comment.date)}
+              </span>
+              {comment.isEdited && (
+                <span className="text-xs text-muted-foreground italic">
+                  (edited)
+                </span>
+              )}
+            </div>
+
+            {/* Comment Options Menu */}
+            {(canEdit || canDelete) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                  >
+                    <MoreHorizontal className="w-3 h-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-32">
+                  {canEdit && (
+                    <DropdownMenuItem
+                      onClick={() => setIsEditing(true)}
+                      className="text-sm"
+                    >
+                      <Edit3 className="w-3 h-3 mr-2" />
+                      Edit
+                    </DropdownMenuItem>
+                  )}
+                  {canDelete && (
+                    <DropdownMenuItem
+                      onClick={handleDelete}
+                      disabled={isDeleting}
+                      className="text-sm text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="w-3 h-3 mr-2" />
+                      {isDeleting ? 'Deleting...' : 'Delete'}
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
 
           {/* Comment Content */}
-          <div
-            className={`bg-muted/30 rounded-2xl px-3 py-2 mb-2 ${
-              depth > 0 ? 'text-sm' : ''
-            }`}
-          >
-            <p className="text-foreground leading-relaxed break-words">
-              {comment.message}
-            </p>
-          </div>
+          {isEditing ? (
+            <div className="mb-2">
+              <CommentEdit
+                initialMessage={comment.message}
+                onSave={handleEditSubmit}
+                onCancel={() => setIsEditing(false)}
+                isSubmitting={isSubmitting}
+              />
+            </div>
+          ) : (
+            <div
+              className={`bg-muted/30 rounded-2xl px-3 py-2 mb-2 ${
+                depth > 0 ? 'text-sm' : ''
+              }`}
+            >
+              <p className="text-foreground leading-relaxed break-words">
+                {comment.message}
+              </p>
+            </div>
+          )}
 
           {/* Comment Actions */}
-          <div className="flex items-center gap-1 mb-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`h-auto px-2 py-1 text-xs rounded-full transition-colors ${
-                isLiked
-                  ? 'text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-              }`}
-              onClick={() => setIsLiked(!isLiked)}
-            >
-              <Heart
-                className={`w-3 h-3 mr-1 ${isLiked ? 'fill-current' : ''}`}
-              />
-              {comment.likes || 0}
-            </Button>
-
-            {canReply && (
+          {!isEditing && (
+            <div className="flex items-center gap-1 mb-2">
+              {/* Like Button */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full"
-                onClick={() => setShowReplyForm(!showReplyForm)}
+                className={`h-auto px-2 py-1 text-xs rounded-full transition-all duration-200 ${
+                  userReaction === 'like'
+                    ? 'text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                } ${
+                  isReacting === 'like' ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
+                onClick={() => handleReaction('like')}
+                disabled={!isAuthenticated || isReacting !== null}
+                title={
+                  !isAuthenticated
+                    ? 'Login to like'
+                    : isReacting === 'like'
+                    ? 'Processing...'
+                    : 'Like'
+                }
               >
-                <MessageCircle className="w-3 h-3 mr-1" />
-                Reply
+                {isReacting === 'like' ? (
+                  <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                ) : (
+                  <ThumbsUp
+                    className={`w-3 h-3 mr-1 ${
+                      userReaction === 'like' ? 'fill-current' : ''
+                    }`}
+                  />
+                )}
+                {comment.likes || 0}
               </Button>
-            )}
-          </div>
+
+              {/* Dislike Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`h-auto px-2 py-1 text-xs rounded-full transition-all duration-200 ${
+                  userReaction === 'dislike'
+                    ? 'text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                } ${
+                  isReacting === 'dislike'
+                    ? 'opacity-70 cursor-not-allowed'
+                    : ''
+                }`}
+                onClick={() => handleReaction('dislike')}
+                disabled={!isAuthenticated || isReacting !== null}
+                title={
+                  !isAuthenticated
+                    ? 'Login to dislike'
+                    : isReacting === 'dislike'
+                    ? 'Processing...'
+                    : 'Dislike'
+                }
+              >
+                {isReacting === 'dislike' ? (
+                  <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                ) : (
+                  <ThumbsDown
+                    className={`w-3 h-3 mr-1 ${
+                      userReaction === 'dislike' ? 'fill-current' : ''
+                    }`}
+                  />
+                )}
+                {comment.dislikes || 0}
+              </Button>
+
+              {canReply && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full"
+                  onClick={() => setShowReplyForm(!showReplyForm)}
+                >
+                  <MessageCircle className="w-3 h-3 mr-1" />
+                  Reply
+                </Button>
+              )}
+            </div>
+          )}
 
           {/* Reply Form */}
           {showReplyForm && (
@@ -180,8 +364,12 @@ const CommentItem = ({
                   <CommentItem
                     comment={reply}
                     onReply={onReply}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    onReact={onReact}
                     isAuthenticated={isAuthenticated}
                     isSubmitting={isSubmitting}
+                    currentUser={currentUser}
                     depth={depth + 1}
                     maxDepth={maxDepth}
                   />
