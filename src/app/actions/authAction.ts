@@ -55,8 +55,9 @@ export async function loginAction(
     // Provide more specific error messages based on Firebase error codes
     let errorMessage = 'Invalid email or password';
 
-    if (error?.code) {
-      switch (error.code) {
+    if (error && typeof error === 'object' && 'code' in error) {
+      const firebaseError = error as { code: string };
+      switch (firebaseError.code) {
         case 'auth/user-not-found':
           errorMessage = 'No account found with this email address';
           break;
