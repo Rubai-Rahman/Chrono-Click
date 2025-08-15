@@ -1,4 +1,13 @@
-import { Home, LayoutList, ShoppingCart, Heart, User } from 'lucide-react';
+import {
+  Home,
+  LayoutList,
+  ShoppingCart,
+  User,
+  Gem,
+  Clock,
+  ShoppingBag,
+  Handshake,
+} from 'lucide-react';
 
 // Main navigation items
 export const navItems = [
@@ -97,6 +106,62 @@ export const brands = [
     alt: 'Timeex logo',
   },
 ];
+// Interactive cards data for about page
+export const aboutCards = [
+  {
+    icon: Gem,
+    title: 'Unrivaled Quality',
+    description:
+      'Hand-picked timepieces from trusted manufacturers and artisans.',
+  },
+  {
+    icon: Clock,
+    title: 'Expert Curation',
+    description:
+      'A carefully selected collection for every style and occasion.',
+  },
+  {
+    icon: ShoppingBag,
+    title: 'Seamless Shopping',
+    description:
+      'Enjoy a smooth, secure, and delightful online shopping experience.',
+  },
+  {
+    icon: Handshake,
+    title: 'Dedicated Support',
+    description:
+      'Our team is here to assist you every step of your horological journey.',
+  },
+];
+
+// Team members data for about page
+export const teamMembers = [
+  {
+    name: 'John Doe',
+    position: 'Founder & CEO',
+    image: '/images/team-member/johndoe.webp',
+    initials: 'JD',
+  },
+  {
+    name: 'Jane Appleseed',
+    position: 'Head of Curation',
+    image: '/images/team-member/Jane-appleseed.webp',
+    initials: 'JA',
+  },
+  {
+    name: 'Michael Smith',
+    position: 'Logistics Manager',
+    image: '/images/team-member/micheaelSmith.webp',
+    initials: 'MS',
+  },
+  {
+    name: 'Emily Lee',
+    position: 'Customer Experience Lead',
+    image: '/images/team-member/emilylee.webp',
+    initials: 'EL',
+  },
+];
+
 // Mobile bottom navigation items (handled by MobileNav component)
 export const bottomNavItems = [
   { name: 'Home', href: '/', icon: Home },
