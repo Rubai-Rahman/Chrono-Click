@@ -1,23 +1,20 @@
+import { Suspense } from 'react';
 import { PageHeader } from '@/components/account/page-header';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { DataTable } from './data-table';
 import { columns } from './columns';
-import { fetchData } from '@/api-lib/products';
-import { useQuery } from '@tanstack/react-query';
-import { ProductType } from '@/api-lib/api-type';
 import { getProduct } from '@/app/actions/authAction';
+import { TableFallback } from '@/components/layout/suspense-wrapper';
 
-const AdminProductsPageContent = async () => {
-  // const { data, isLoading } = useQuery<ProductType[], Error>({
-  //   queryKey: ['products'],
-  //   queryFn: () => fetchData<ProductType[]>('products'),
-  // });
-
+// Separate component for the data table to enable Suspense
+async function ProductsDataTable() {
   const data = await getProduct();
+  return <DataTable columns={columns} data={data} />;
+}
 
-  console.log();
+const AdminProductsPageContent = () => {
   return (
     <div>
       <PageHeader
@@ -32,9 +29,10 @@ const AdminProductsPageContent = async () => {
         </Button>
       </PageHeader>
 
-      {/* Products content will be implemented here */}
-      <div className="container mx-auto py-10 ">
-        <DataTable columns={columns} data={data} />
+      <div className="container mx-auto py-10">
+        <Suspense fallback={<TableFallback />}>
+          <ProductsDataTable />
+        </Suspense>
       </div>
     </div>
   );

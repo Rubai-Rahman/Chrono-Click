@@ -169,3 +169,46 @@ export const bottomNavItems = [
   { name: 'Cart', icon: ShoppingCart },
   { name: 'Account', href: '/account', icon: User },
 ];
+// API Configuration
+export const API_ENDPOINTS = {
+  PRODUCTS: '/products',
+  USERS: '/users',
+  ORDERS: '/orders',
+  CONTACT: '/api/contact',
+} as const;
+
+// App Configuration
+export const APP_CONFIG = {
+  NAME: 'Chrono Click',
+  DESCRIPTION: 'Premium Timepieces & Luxury Watches',
+  VERSION: '1.0.0',
+  SUPPORT_EMAIL: 'support@chronoclick.com',
+} as const;
+
+// Pagination
+export const PAGINATION = {
+  DEFAULT_PAGE_SIZE: 12,
+  MAX_PAGE_SIZE: 100,
+} as const;
+
+// Session Configuration
+export const SESSION_CONFIG = {
+  DEFAULT_EXPIRY: 2 * 60 * 60 * 1000, // 2 hours
+  REMEMBER_ME_EXPIRY: 7 * 24 * 60 * 60 * 1000, // 7 days
+} as const;
+
+// Validation Rules
+export const VALIDATION_RULES = {
+  PASSWORD_MIN_LENGTH: 8,
+  NAME_MIN_LENGTH: 2,
+  NAME_MAX_LENGTH: 50,
+  EMAIL_MAX_LENGTH: 255,
+  MESSAGE_MIN_LENGTH: 10,
+  MESSAGE_MAX_LENGTH: 1000,
+} as const;
+
+// File Upload
+export const FILE_UPLOAD = {
+  MAX_SIZE: 5 * 1024 * 1024, // 5MB
+  ALLOWED_TYPES: ['image/jpeg', 'image/png', 'image/webp'],
+} as const;

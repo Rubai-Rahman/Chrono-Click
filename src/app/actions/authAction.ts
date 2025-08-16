@@ -1,4 +1,5 @@
 'use server';
+
 import { authService } from '@/lib/firebase/auth';
 import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
@@ -132,11 +133,14 @@ export const saveUser = async (
 
 export const getProduct = async (): Promise<ProductType[]> => {
   try {
-    const response = await axiosInstance.get<ProductType[]>('/products');
+    const response = await axiosInstance.get<{ products: ProductType[] }>(
+      '/products'
+    );
     return response.data.products || [];
   } catch (error) {
     console.error('Error fetching products:', error);
-    throw error;
+    // Return empty array instead of throwing to prevent page crashes
+    return [];
   }
 };
 
