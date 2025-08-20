@@ -5,13 +5,13 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { DataTable } from './data-table';
 import { columns } from './columns';
-import { getProducts } from '@/lib/services/products';
+import { getProduct } from '@/app/actions/authAction';
 import { TableFallback } from '@/components/layout/suspense-wrapper';
 
 // Separate component for the data table to enable Suspense
 async function ProductsDataTable() {
-  const response = await getProducts();
-  return <DataTable columns={columns} data={response.products} />;
+  const data = await getProduct();
+  return <DataTable columns={columns} data={data} />;
 }
 
 const AdminProductsPageContent = () => {
