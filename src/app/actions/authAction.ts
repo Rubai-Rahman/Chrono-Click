@@ -3,9 +3,8 @@
 import { authService } from '@/lib/firebase/auth';
 import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
-import axiosInstance from '@/lib/axios';
 import { isValidUrl } from '@/lib/utils';
-import { ProductType } from '@/api-lib/api-type';
+import { UsersDAL, ProductsDAL, type Product } from '@/lib/dal';
 
 export async function registerAction(data: {
   email: string;
@@ -98,28 +97,32 @@ export const saveUser = async (
   rememberMe: boolean = false
 ) => {
   try {
-    const response = await axiosInstance.put(
-      '/users',
-      {
-        email,
-        name: displayName,
-        photoURL: photoURL,
-        role: 'user',
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      }
-    );
-    const userData = response.data;
-
+    // Create session first to enable authenticated API calls
     await createSession(
       idToken,
       {
-        email: userData.email || email,
-        name: userData.name || displayName,
-        role: userData.role || 'user',
+        email,
+        name: displayName,
+        role: 'user',
+      },
+      rememberMe
+    );
+
+    // Now use DAL to save user data
+    const userData = await UsersDAL.upsertUser({
+      email,
+      name: displayName,
+      photoURL,
+      role: 'user',
+    });
+
+    // Update session with actual user data from server
+    await createSession(
+      idToken,
+      {
+        email: userData.email,
+        name: userData.name,
+        role: userData.role,
       },
       rememberMe
     );
@@ -131,12 +134,10 @@ export const saveUser = async (
   }
 };
 
-export const getProduct = async (): Promise<ProductType[]> => {
+export const getProduct = async (): Promise<Product[]> => {
   try {
-    const response = await axiosInstance.get<{ products: ProductType[] }>(
-      '/products'
-    );
-    return response.data.products || [];
+    const response = await ProductsDAL.getProducts();
+    return response.products || [];
   } catch (error) {
     console.error('Error fetching products:', error);
     // Return empty array instead of throwing to prevent page crashes
