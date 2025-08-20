@@ -54,16 +54,16 @@ export async function updateSession() {
 
   try {
     const sessionData: SessionData = JSON.parse(sessionCookie);
-    const expires = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+    const newExpiry = new Date(Date.now() + 30 * 60 * 1000);
 
     // Update expiration time
-    sessionData.expiresAt = expires.toISOString();
+    sessionData.expiresAt = newExpiry.toISOString();
 
     const cookieStore = await cookies();
     cookieStore.set('session', JSON.stringify(sessionData), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      expires: expires,
+      expires: newExpiry,
       sameSite: 'lax',
       path: '/',
     });

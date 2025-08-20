@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import axiosInstance from '@/lib/axios';
 import { isValidUrl } from '@/lib/utils';
 import { ProductType } from '@/api-lib/api-type';
+import { serverFetch } from '@/lib/fetch';
 
 export async function registerAction(data: {
   email: string;
@@ -42,7 +43,6 @@ export async function loginAction(
   try {
     const userCred = await authService.signInWithEmail(email, password);
     const idToken = await userCred.user.getIdToken();
-
     await saveUser(
       email,
       userCred.user.displayName || '',
@@ -90,47 +90,6 @@ export async function loginAction(
   redirect(redirectUrl);
 }
 
-export const saveUser = async (
-  email: string,
-  displayName: string,
-  idToken: string,
-  photoURL?: string,
-  rememberMe: boolean = false
-) => {
-  try {
-    const response = await axiosInstance.put(
-      '/users',
-      {
-        email,
-        name: displayName,
-        photoURL: photoURL,
-        role: 'user',
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      }
-    );
-    const userData = response.data;
-
-    await createSession(
-      idToken,
-      {
-        email: userData.email || email,
-        name: userData.name || displayName,
-        role: userData.role || 'user',
-      },
-      rememberMe
-    );
-
-    return userData;
-  } catch (error) {
-    console.error('Error saving user:', error);
-    throw error;
-  }
-};
-
 export const getProduct = async (): Promise<ProductType[]> => {
   try {
     const response = await axiosInstance.get<{ products: ProductType[] }>(
@@ -162,3 +121,37 @@ export async function resetPasswordAction(email: string) {
     console.log('error', error);
   }
 }
+
+export const saveUser = async (
+  email: string,
+  displayName: string,
+  idToken: string,
+  photoURL?: string,
+  rememberMe: boolean = false
+) => {
+  try {
+    const response = await serverFetch<{
+      email: string;
+      name: string;
+      role: 'user' | 'admin';
+    }>('/users', {
+      method: 'PUT',
+      body: { email, displayName, idToken, photoURL, rememberMe },
+    });
+    const userData = response;
+    await createSession(
+      idToken,
+      {
+        email: userData.email || email,
+        name: userData.name || displayName,
+        role: userData.role || 'user',
+      },
+      rememberMe
+    );
+
+    return userData;
+  } catch (error) {
+    console.error('Error saving user:', error);
+    throw error;
+  }
+};
