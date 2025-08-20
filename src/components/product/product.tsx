@@ -30,7 +30,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   };
 
   const handleProductClick = () => {
-    router.push(`/product/${_id}`);
+    router.push(`/products/${_id}`);
   };
 
   return (
