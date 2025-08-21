@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import axiosInstance from '@/lib/axios';
 import { isValidUrl } from '@/lib/utils';
 import { ProductType } from '@/api-lib/api-type';
-import { serverFetch } from '@/lib/fetch';
+import { serverFetch } from '@/lib/fetch/serverFetch';
 
 export async function registerAction(data: {
   email: string;
