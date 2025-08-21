@@ -1,32 +1,27 @@
-'use client';
-import React from 'react';
-import Product from '../../product/product';
-import { useQuery } from '@tanstack/react-query';
-import { fetchData, ProductsResponse } from '@/api-lib/products';
-import {
-  ErrorResultMessage,
-  NotFoundMessage,
-} from '@/components/ui/data-result-message';
-import FeaturedProductSkeleton from '@/components/skeletons/featured-product-skeleton';
-import Link from 'next/link';
+// app/components/FeaturedProductsServer.tsx
+'use server';
+// This is a Server Component
+import React, { Suspense } from 'react';
 import Container from '@/components/layout/container';
+import FeaturedProductSkeleton from '@/components/skeletons/featured-product-skeleton';
+import { type ProductsResponse } from '@/api-lib/products';
+import Link from 'next/link';
+import ProductsGrid from '@/components/product/products-grid';
+import { serverFetch } from '@/lib/fetch/serverFetch';
 
-const FeaturedProducts = () => {
-  const {
-    data: products,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => fetchData<ProductsResponse>('products'),
+export async function fetchDat2<T>(
+  path: string,
+  opts?: { next?: { revalidate?: number } }
+): Promise<T> {
+  return serverFetch<T>(`/products`, {
+    method: 'GET',
+    next: { revalidate: opts?.next?.revalidate ?? 60 },
   });
-
-  if (isLoading) return <FeaturedProductSkeleton />;
-  if (isError) return <ErrorResultMessage />;
-
-  if (!products) return <NotFoundMessage />;
-
-  const random = products.products.sort(() => 0.5 - Math.random()).slice(0, 8);
+}
+export default async function FeaturedProductsServer() {
+  // DO NOT await — produce a promise and stream it to the child
+  const productsPromise: Promise<ProductsResponse> =
+    fetchDat2<ProductsResponse>('products');
 
   return (
     <Container>
@@ -39,14 +34,14 @@ const FeaturedProducts = () => {
         </h2>
       </div>
 
-      <div className="responsive-grid mb-12 sm:mb-16 ">
-        {random.map((product) => (
-          <Product key={product._id} product={product} />
-        ))}
-      </div>
+      {/* Suspense boundary: header streams first, ProductsGrid streams next */}
+      <Suspense fallback={<FeaturedProductSkeleton />}>
+        <ProductsGrid productsPromise={Promise.resolve(productsPromise)} />
+      </Suspense>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center mt-8">
         <Link
+          prefetch={false}
           href="/products"
           className="px-8 py-4 sm:px-10 sm:py-5 border border-primary hover:bg-primary text-foreground transition-colors duration-300 rounded-lg"
         >
@@ -55,6 +50,4 @@ const FeaturedProducts = () => {
       </div>
     </Container>
   );
-};
-
-export default FeaturedProducts;
+}
