@@ -1,6 +1,7 @@
 'use server';
 
-import { contactSchema, ContactFormData } from '@/lib/validations/contact';
+import { contactSchema } from "@/lib/validations/contact";
+
 
 export async function submitContactForm(data: ContactFormData) {
   // Validate the data using Zod schema

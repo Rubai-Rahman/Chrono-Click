@@ -5,8 +5,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const mainNavigation = [
-  { label: 'Shop', href: '/products' },
-  { label: 'Categories', href: '/categories' },
+  { label: 'Products', href: '/products' },
   { label: 'Brands', href: '/brands' },
   { label: 'News', href: '/news' },
   { label: 'About Us', href: '/about' },
