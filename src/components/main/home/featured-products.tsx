@@ -1,23 +1,11 @@
-// app/components/FeaturedProductsServer.tsx
-'use server';
-// This is a Server Component
 import React, { Suspense } from 'react';
 import Container from '@/components/layout/container';
 import FeaturedProductSkeleton from '@/components/skeletons/featured-product-skeleton';
 import { type ProductsResponse } from '@/api-lib/products';
 import Link from 'next/link';
 import ProductsGrid from '@/components/product/products-grid';
-import { serverFetch } from '@/lib/fetch/serverFetch';
+import { fetchDat2 } from '@/data/product/product';
 
-export async function fetchDat2<T>(
-  path: string,
-  opts?: { next?: { revalidate?: number } }
-): Promise<T> {
-  return serverFetch<T>(`/products`, {
-    method: 'GET',
-    next: { revalidate: opts?.next?.revalidate ?? 60 },
-  });
-}
 export default async function FeaturedProductsServer() {
   // DO NOT await — produce a promise and stream it to the child
   const productsPromise: Promise<ProductsResponse> =
