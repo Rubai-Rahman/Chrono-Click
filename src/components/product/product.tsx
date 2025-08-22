@@ -36,7 +36,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
 
   return (
     <Card className="group w-full max-w-xs rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card border border-border hover:border-primary py-0">
-      <CardContent className="p-3" onClick={handleProductClick}>
+      <CardContent className="p-3">
         <div className="relative w-full h-60 bg-muted rounded-xl overflow-hidden flex items-center justify-center mb-4 cursor-pointer  onClick={handleProductClick}">
           <Image
             src={img || '/placeholder.svg?height=200&width=200&text=Product'}
@@ -45,6 +45,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
             height={310}
             className="object-contain transition-transform duration-300 group-hover:scale-105"
             priority
+            onClick={handleProductClick}
           />
 
           <Button
@@ -64,7 +65,10 @@ const Product: React.FC<ProductProps> = ({ product }) => {
               {brand}
             </Badge>
           )}
-          <h3 className="text-lg font-semibold text-foreground line-clamp-1 hover:cursor-pointer">
+          <h3
+            className="text-lg font-semibold text-foreground line-clamp-1 hover:cursor-pointer"
+            onClick={handleProductClick}
+          >
             {name}
           </h3>
           {/* Price and Buy Now Button */}
