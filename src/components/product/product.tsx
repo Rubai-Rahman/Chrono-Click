@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useCartStore } from '@/store/useCartStore';
 import { Button } from '@/components/ui/button';
@@ -23,19 +23,20 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   const { _id, name, price, img, brand } = product;
   const router = useRouter();
   const { addToCart } = useCartStore();
-
+  const { category } = useParams();
+  console.log('category', category);
   const handleBuyNow = () => {
     addToCart(product);
     toast.success(`${product.name} is added to cart`);
   };
 
   const handleProductClick = () => {
-    router.push(`/products/${_id}`);
+    router.push(`/products/${category}/${_id}`);
   };
 
   return (
     <Card className="group w-full max-w-xs rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card border border-border hover:border-primary py-0">
-      <CardContent className="p-3">
+      <CardContent className="p-3" onClick={handleProductClick}>
         <div className="relative w-full h-60 bg-muted rounded-xl overflow-hidden flex items-center justify-center mb-4 cursor-pointer  onClick={handleProductClick}">
           <Image
             src={img || '/placeholder.svg?height=200&width=200&text=Product'}
@@ -63,10 +64,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
               {brand}
             </Badge>
           )}
-          <h3
-            className="text-lg font-semibold text-foreground line-clamp-1 hover:cursor-pointer"
-            onClick={handleProductClick}
-          >
+          <h3 className="text-lg font-semibold text-foreground line-clamp-1 hover:cursor-pointer">
             {name}
           </h3>
           {/* Price and Buy Now Button */}

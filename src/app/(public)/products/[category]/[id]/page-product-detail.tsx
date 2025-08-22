@@ -17,6 +17,7 @@ const ProductDetailPageContent = ({ productId }: { productId: string }) => {
     queryFn: () => fetchData<ProductType>(`products/${productId}`),
     enabled: !!productId,
   });
+ 
   console.log('productId', productId);
   if (isLoading) return <ProductDetailsSkeleton />;
 

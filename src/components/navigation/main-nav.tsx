@@ -73,7 +73,7 @@ export function MainNav() {
             return (
               <NavigationMenu key="products">
                 <NavigationMenuItem className="list-none">
-                  <NavigationMenuTrigger className="hover:rounded-full data-[state=open]:bg-background/80">
+                  <NavigationMenuTrigger className="rounded-full">
                     Products
                     <span className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   </NavigationMenuTrigger>

@@ -6,8 +6,13 @@ export const metadata: Metadata = {
   description: 'Browse our collection of stylish watches.',
 };
 
-const ShopPage = () => {
-  return <ProductsPageContent />;
+const ProductPage = async ({
+  params,
+}: {
+  params: Promise<{ category: string }>;
+}) => {
+  const { category } = await params;
+  return <ProductsPageContent category={category} />;
 };
 
-export default ShopPage;
+export default ProductPage;

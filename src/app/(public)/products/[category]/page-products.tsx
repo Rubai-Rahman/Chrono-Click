@@ -7,10 +7,10 @@ import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import ProductSkeleton from '@/components/skeletons/product-skeleton';
 import Products from '@/components/products/products';
 
-const ProductsPageContent = () => {
+const ProductsPageContent = ({ category }: { category: string }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-
+  console.log('category', category);
   const page = Number(searchParams.get('page') || '0');
   const size = 16;
 
@@ -23,7 +23,7 @@ const ProductsPageContent = () => {
     queryFn: () => fetchPages(page, size, 'products'),
     placeholderData: (previousData) => previousData,
   });
-
+  console.log('searchparams', searchParams);
   if (isLoading) return <ProductSkeleton />;
   if (isError) return <ErrorResultMessage />;
   if (!products) return notFound();
@@ -33,7 +33,7 @@ const ProductsPageContent = () => {
   // page change handler: update URL with new page param
   const onPageChange = (newPage: number) => {
     if (newPage < 0 || newPage >= totalPages) return; // boundary check
-    router.push(`/products?page=${newPage}`);
+    router.push(`/products/${category}/?page=${newPage}`);
   };
 
   return (
