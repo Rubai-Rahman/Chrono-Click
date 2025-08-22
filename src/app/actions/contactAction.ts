@@ -1,11 +1,12 @@
 'use server';
 
-import { contactSchema } from "@/lib/validations/contact";
+import { ContactFormData } from '@/lib/validations/contact';
 
+import { ContactSchema } from '@/lib/validations/contact';
 
 export async function submitContactForm(data: ContactFormData) {
   // Validate the data using Zod schema
-  const validationResult = contactSchema.safeParse(data);
+  const validationResult = ContactSchema.safeParse(data);
 
   if (!validationResult.success) {
     return {

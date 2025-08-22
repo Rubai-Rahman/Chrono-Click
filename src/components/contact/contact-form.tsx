@@ -16,6 +16,8 @@ import { Form, CommonFormField } from '@/components/ui/form';
 
 import { submitContactForm } from '@/app/actions/contactAction';
 import { useState } from 'react';
+import { ContactSchema } from '@/lib/validations/contact';
+import z from 'zod';
 
 const ContactForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,8 +27,8 @@ const ContactForm = () => {
     error?: string;
   } | null>(null);
 
-  const form = useForm<ContactFormData>({
-    resolver: zodResolver(contactSchema),
+  const form = useForm({
+    resolver: zodResolver(ContactSchema),
     mode: 'onBlur',
     defaultValues: {
       name: '',
@@ -36,7 +38,7 @@ const ContactForm = () => {
     },
   });
 
-  const handleSubmit = async (data: ContactFormData) => {
+  const handleSubmit = async (data: z.infer<typeof ContactSchema>) => {
     setIsLoading(true);
     setSubmitResult(null);
 

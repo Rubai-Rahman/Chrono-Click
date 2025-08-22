@@ -61,7 +61,7 @@ export default function ContactPageContent() {
         id="contact-form"
         className="grid md:grid-cols-2 gap-12 mb-16 items-start"
       >
-        {/* Contact Form Card */}
+     
         <div className="col-span-1">
           <ContactForm />
         </div>
