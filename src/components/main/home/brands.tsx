@@ -1,5 +1,3 @@
-'use client';
-
 import Container from '@/components/layout/container';
 import { brands } from '@/lib/constant';
 import Image from 'next/image';
