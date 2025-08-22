@@ -57,8 +57,7 @@ export function MainNav() {
                 href={item.href!}
                 className={cn(
                   'relative px-4 py-2 text-sm font-medium transition-all duration-200 rounded-full group capitalize',
-                  pathname === item.href ||
-                    (item.href && pathname.startsWith(item.href))
+                  pathname === item.href
                     ? 'text-foreground bg-background/80 shadow-sm'
                     : 'text-foreground/80 hover:text-foreground hover:bg-background/80 hover:shadow-sm'
                 )}
