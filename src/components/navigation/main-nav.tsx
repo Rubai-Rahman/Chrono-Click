@@ -9,16 +9,8 @@ import {
   NavigationMenuItem,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
-import Brands from '../main/home/brands';
-
-const mainNavigation = [
-  { label: 'Home', type: 'link', href: '/' },
-  { label: 'Products', type: 'menu' },
-  { label: 'Brands', type: 'menu' },
-  { label: 'News', type: 'link', href: '/news' },
-  { label: 'About Us', type: 'link', href: '/about' },
-  { label: 'Contact Us', type: 'link', href: '/contact' },
-];
+import { mainNavigation } from '@/lib/constant';
+import BrandItem from '../brands/branditem';
 
 const productCategories = [
   {
@@ -70,34 +62,54 @@ export function MainNav() {
 
           if (item.label === 'Products') {
             return (
-              <NavigationMenu key="products">
+              <NavigationMenu key="products" fullWidth={true}>
                 <NavigationMenuItem className="list-none">
-                  <NavigationMenuTrigger className="rounded-full">
+                  <NavigationMenuTrigger className="rounded-full bg-transparent hover:bg-background/80 data-[state=open]:bg-background/80 focus:bg-background/80">
                     Products
-                    <span className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="z-0">
-                    <div className="w-2xl p-6">
-                      <div className="grid grid-cols-3 gap-8">
-                        {productCategories.map((category) => (
-                          <div key={category.title}>
-                            <h3 className="font-bold text-lg mb-4 text-primary border-b-2 border-primary pb-1">
-                              {category.title}
-                            </h3>
-                            <ul className="space-y-3">
-                              {category.collections.map((collection) => (
-                                <li key={collection.name}>
-                                  <Link
-                                    href={collection.href}
-                                    className="text-sm font-medium text-foreground hover:text-primary transition-colors block"
-                                  >
-                                    {collection.name}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
+                  <NavigationMenuContent>
+                    <div className="w-full max-w-screen-xl mx-auto">
+                      <div className="py-12 bg-card">
+                        <div className="grid grid-cols-3 gap-12 max-w-4xl mx-auto">
+                          {productCategories.map((category) => (
+                            <div key={category.title} className="space-y-6">
+                              <div>
+                                <h3 className="text-lg font-bold text-primary mb-1">
+                                  {category.title}
+                                </h3>
+                                <div className="w-12 h-0.5 bg-gradient-to-r from-primary to-primary/30"></div>
+                              </div>
+                              <ul className="space-y-4">
+                                {category.collections.map((collection) => (
+                                  <li key={collection.name}>
+                                    <Link
+                                      href={collection.href}
+                                      className="group flex items-center text-sm font-medium text-foreground/70 hover:text-primary transition-all duration-300 py-2"
+                                    >
+                                      <div className="w-2 h-2 bg-primary/30 rounded-full mr-4 group-hover:bg-primary group-hover:scale-125 transition-all duration-300"></div>
+                                      <span className="group-hover:translate-x-1 transition-transform duration-300">
+                                        {collection.name}
+                                      </span>
+                                      <svg
+                                        className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth={2}
+                                          d="M9 5l7 7-7 7"
+                                        />
+                                      </svg>
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </NavigationMenuContent>
@@ -108,15 +120,16 @@ export function MainNav() {
 
           if (item.label === 'Brands') {
             return (
-              <NavigationMenu key="brands">
+              <NavigationMenu key="brands" fullWidth={true}>
                 <NavigationMenuItem className="list-none">
-                  <NavigationMenuTrigger className=" hover:rounded-full">
+                  <NavigationMenuTrigger className="rounded-full bg-transparent hover:bg-background/80 data-[state=open]:bg-background/80 focus:bg-background/80">
                     Brands
-                    <span className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="w-2xl p-4">
-                      <Brands />
+                    <div className="p-6">
+                      <div className="container mx-auto max-w-6xl">
+                        <BrandItem />
+                      </div>
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>

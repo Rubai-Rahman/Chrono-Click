@@ -9,13 +9,13 @@ import {
   Handshake,
 } from 'lucide-react';
 
-// Main navigation items
-export const navItems = [
-  { name: 'Shop', href: '/products' },
-  { name: 'Categories', href: '/categories' },
-  { name: 'Brands', href: '/brands' },
-  { name: 'News', href: '/news' },
-  { name: 'About', href: '/about' },
+export const mainNavigation = [
+  { label: 'Home', type: 'link', href: '/' },
+  { label: 'Products', type: 'menu' },
+  { label: 'Brands', type: 'menu' },
+  { label: 'News', type: 'link', href: '/news' },
+  { label: 'About Us', type: 'link', href: '/about' },
+  { label: 'Contact Us', type: 'link', href: '/contact' },
 ];
 
 export const slides = [
