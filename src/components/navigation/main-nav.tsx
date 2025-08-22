@@ -71,53 +71,34 @@ export function MainNav() {
 
           if (item.label === 'Products') {
             return (
-              <NavigationMenu key="products" className="container mx-auto ">
+              <NavigationMenu key="products">
                 <NavigationMenuItem className="list-none">
-                  <NavigationMenuTrigger>Products</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="w-full p-6">
-                      <div className="flex items-start gap-8">
-                        {/* Product Image */}
-                        <div className="flex-shrink-0">
-                          <div className="w-48 h-32 bg-muted rounded-lg overflow-hidden">
-                            <img
-                              src="/placeholder.svg?height=128&width=192"
-                              alt="TIME ZONE SHOP PAGE"
-                              className="w-full h-full object-cover"
-                            />
+                  <NavigationMenuTrigger className="hover:rounded-full data-[state=open]:bg-background/80">
+                    Products
+                    <span className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent className="z-0">
+                    <div className="w-2xl p-6">
+                      <div className="grid grid-cols-3 gap-8">
+                        {productCategories.map((category) => (
+                          <div key={category.title}>
+                            <h3 className="font-bold text-lg mb-4 text-primary border-b-2 border-primary pb-1">
+                              {category.title}
+                            </h3>
+                            <ul className="space-y-3">
+                              {category.collections.map((collection) => (
+                                <li key={collection.name}>
+                                  <Link
+                                    href={collection.href}
+                                    className="text-sm font-medium text-foreground hover:text-primary transition-colors block"
+                                  >
+                                    {collection.name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-                          <div className="mt-2 text-center">
-                            <div className="font-bold text-lg">
-                              CHRONO CLICK
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              SHOP PAGE
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Product Categories */}
-                        <div className="flex-1 grid grid-cols-3 gap-8">
-                          {productCategories.map((category) => (
-                            <div key={category.title}>
-                              <h3 className="font-bold text-lg mb-4 text-primary border-b-2 border-primary pb-1">
-                                {category.title}
-                              </h3>
-                              <ul className="space-y-3">
-                                {category.collections.map((collection) => (
-                                  <li key={collection.name}>
-                                    <Link
-                                      href={collection.href}
-                                      className="text-sm font-medium text-foreground hover:text-primary transition-colors block"
-                                    >
-                                      {collection.name}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
+                        ))}
                       </div>
                     </div>
                   </NavigationMenuContent>
@@ -130,9 +111,12 @@ export function MainNav() {
             return (
               <NavigationMenu key="brands">
                 <NavigationMenuItem className="list-none">
-                  <NavigationMenuTrigger>Brands</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className=" hover:rounded-full">
+                    Brands
+                    <span className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="w-[50rem] p-4">
+                    <div className="w-2xl p-4">
                       <Brands />
                     </div>
                   </NavigationMenuContent>

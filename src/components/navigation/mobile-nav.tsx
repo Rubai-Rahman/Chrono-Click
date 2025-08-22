@@ -1,84 +1,123 @@
 'use client';
 
+import logo from '../../../public/favicon.png';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { Menu } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, Search, ShoppingCart, User } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import Cart from '@/components/cart/cart';
-import { useAuth } from '@/hooks/useAuth';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
-const mobileNavigation = [
-  { label: 'Home', href: '/', icon: Home },
-  { label: 'Shop', href: '/products', icon: Search },
-  { label: 'Cart', href: '/cart', icon: ShoppingCart, isCart: true },
-  { label: 'Account', href: '/orders', icon: User, requiresAuth: true },
+// Navigation config
+const mainNavigation = [
+  { label: 'Home', type: 'link', href: '/' },
+  {
+    label: 'Products',
+    type: 'menu',
+    children: [
+      { label: 'Gents Collection', href: '/products/gents' },
+      { label: 'Ladies Collection', href: '/products/ladies' },
+      { label: 'Chain Collection', href: '/products/chain' },
+      { label: 'Leather Collection', href: '/products/leather' },
+      { label: 'Wall Clocks', href: '/products/wall-clocks' },
+    ],
+  },
+  {
+    label: 'Brands',
+    type: 'menu',
+    children: [
+      { label: 'Seiko', href: '/brands/seiko' },
+      { label: 'Casio', href: '/brands/casio' },
+      { label: 'Rolex', href: '/brands/rolex' },
+    ],
+  },
+  { label: 'News', type: 'link', href: '/news' },
+  { label: 'About Us', type: 'link', href: '/about' },
+  { label: 'Contact Us', type: 'link', href: '/contact' },
 ];
 
-export function MobileNav() {
-  const pathname = usePathname();
-  const { user } = useAuth();
-
+const MobileNav = () => {
   return (
-    <>
-      {/* Gradient overlay for content above the bottom nav */}
-      <div className="fixed bottom-16 left-0 right-0 z-40 h-16 bg-gradient-to-t from-background to-transparent pointer-events-none md:hidden" />
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="relative">
+          <Menu className="h-6 w-6" />
+          <span className="sr-only">Open menu</span>
+        </Button>
+      </SheetTrigger>
 
-      {/* Mobile Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 h-16 bg-background border-t border-border shadow-lg md:hidden">
-        <div className="flex h-full items-center justify-around">
-          {mobileNavigation.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href !== '/' && pathname.startsWith(item.href));
+      <SheetContent side="right" className="w-[280px] sm:w-[350px]">
+        <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
-            // Handle cart specially
-            if (item.isCart) {
-              return (
-                <div
-                  key={item.label}
-                  className="flex flex-col items-center justify-center gap-1 text-xs font-medium"
-                >
-                  <Cart />
-                  <span className="text-muted-foreground">{item.label}</span>
-                </div>
-              );
-            }
+        <div className="flex flex-col h-full">
+          {/* Mobile Header */}
+          <div className="flex items-center gap-3 pb-6 border-b border-border">
+            <Image
+              src={logo}
+              alt="Chrono Click Logo"
+              width={32}
+              height={32}
+              className="relative z-10 rounded-full"
+            />
+            <div>
+              <span className="text-primary font-bold text-lg">
+                CHRONO CLICK
+              </span>
+              <p className="text-xs text-muted-foreground">
+                Premium Timepieces
+              </p>
+            </div>
+          </div>
 
-            // Handle auth-required items
-            if (item.requiresAuth && !user) {
-              return (
+          {/* Mobile Navigation */}
+          <nav className="flex flex-col gap-2 py-6">
+            {mainNavigation.map((item) =>
+              item.type === 'link' ? (
                 <Link
-                  key={item.label}
-                  href="/login"
-                  className="flex flex-col items-center justify-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  key={item.href}
+                  href={item.href!}
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium rounded-lg hover:bg-muted/50 transition-colors"
                 >
-                  <item.icon className="h-5 w-5" />
-                  <span>Login</span>
+                  {item.label}
                 </Link>
-              );
-            }
-
-            // Use the direct route
-            const href = item.href;
-
-            return (
-              <Link
-                key={item.label}
-                href={href}
-                className={cn(
-                  'flex flex-col items-center justify-center gap-1 text-xs font-medium transition-colors',
-                  isActive
-                    ? 'text-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
+              ) : (
+                <Accordion key={item.label} type="single" collapsible>
+                  <AccordionItem value={item.label}>
+                    <AccordionTrigger className="px-3 py-3 text-sm font-medium rounded-lg hover:bg-muted/50 transition-colors">
+                      {item.label}
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex flex-col gap-2 pl-4">
+                        {item.children?.map((child) => (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            className="text-sm hover:text-primary transition-colors"
+                          >
+                            {child.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              )
+            )}
+          </nav>
         </div>
-      </nav>
-    </>
+      </SheetContent>
+    </Sheet>
   );
-}
+};
+
+export default MobileNav;
