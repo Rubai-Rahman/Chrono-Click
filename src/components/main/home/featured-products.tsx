@@ -1,15 +1,18 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, use } from 'react';
 import Container from '@/components/layout/container';
 import FeaturedProductSkeleton from '@/components/skeletons/featured-product-skeleton';
-import { type ProductsResponse } from '@/api-lib/products';
-import Link from 'next/link';
-import ProductsGrid from '@/components/product/products-grid';
-import { fetchDat2 } from '@/data/product/product';
+import { fetchFeaturedData } from '@/data/product/product';
+import Product from '@/components/product/product';
+import { ProductsResponse } from '@/lib/types/api/product-types';
 
-export default async function FeaturedProductsServer() {
-  // DO NOT await — produce a promise and stream it to the child
-  const productsPromise: Promise<ProductsResponse> =
-    fetchDat2<ProductsResponse>('products');
+export default function FeaturedProductsServer() {
+  const featuredPromise = fetchFeaturedData<ProductsResponse>(
+    'products?isFeatured=true&limit=4'
+  );
+  console.log('featureProducts', featuredPromise);
+  const latestPromise = fetchFeaturedData<ProductsResponse>(
+    'products?sort=createdAt_desc&limit=4'
+  );
 
   return (
     <Container>
@@ -22,20 +25,41 @@ export default async function FeaturedProductsServer() {
         </h2>
       </div>
 
-      {/* Suspense boundary: header streams first, ProductsGrid streams next */}
+      {/* Single Suspense boundary for group-level streaming */}
       <Suspense fallback={<FeaturedProductSkeleton />}>
-        <ProductsGrid productsPromise={Promise.resolve(productsPromise)} />
+        <ProductsGrid
+          featuredPromise={featuredPromise}
+          latestPromise={latestPromise}
+        />
       </Suspense>
-
-      <div className="flex justify-center mt-8">
-        <Link
-          prefetch={false}
-          href="/products"
-          className="px-8 py-4 sm:px-10 sm:py-5 border border-primary hover:bg-primary text-foreground transition-colors duration-300 rounded-lg"
-        >
-          Explore
-        </Link>
-      </div>
     </Container>
+  );
+}
+
+function ProductsGrid({
+  featuredPromise,
+  latestPromise,
+}: {
+  featuredPromise: Promise<ProductsResponse>;
+  latestPromise: Promise<ProductsResponse>;
+}) {
+  const featuredRes = use(featuredPromise);
+  const latestRes = use(latestPromise);
+
+  // Combine featured + latest to always show 4 products
+  const combined = [...featuredRes.products];
+  for (const p of latestRes.products) {
+    if (combined.length >= 4) break;
+    if (!combined.find((fp) => fp.id === p.id)) {
+      combined.push(p);
+    }
+  }
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      {combined.map((product) => (
+        <Product key={product.id} product={product} />
+      ))}
+    </div>
   );
 }

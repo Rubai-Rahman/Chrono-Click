@@ -1,6 +1,5 @@
 import axiosInstance from '@/lib/axios';
-import { ProductType } from './api-type';
-
+import { ProductsResponse } from '@/lib/types/api/product-types';
 
 export interface ProductDetailsItem {
   _id: string;
@@ -12,10 +11,7 @@ export interface ProductDetailsItem {
   // Add other properties of your product here
 }
 
-export interface ProductsResponse {
-  products: ProductType[];
-  count: number;
-}
+
 
 export interface ProductData {
   name: string;
