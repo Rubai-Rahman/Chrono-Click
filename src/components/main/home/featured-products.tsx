@@ -9,7 +9,8 @@ export default function FeaturedProductsServer() {
   const featuredPromise = fetchFeaturedData<ProductsResponse>(
     'products?isFeatured=true&limit=4'
   );
-  console.log('featureProducts', featuredPromise);
+
+  console.log('featureProise', featuredPromise);
   const latestPromise = fetchFeaturedData<ProductsResponse>(
     'products?sort=createdAt_desc&limit=4'
   );

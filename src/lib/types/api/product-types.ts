@@ -16,6 +16,7 @@ export interface ProductType {
 
 export interface ProductsResponse {
   products: ProductType[];
+  count: number;
 }
 
 // Cart Item extends Product with quantity
