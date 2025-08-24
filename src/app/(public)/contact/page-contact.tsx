@@ -59,7 +59,7 @@ export default function ContactPageContent() {
         {/* Contact Information Card */}
         <Card className="col-span-1 p-8 rounded-3xl shadow-xl border border-border bg-card flex flex-col justify-between">
           <div>
-            <CardHeader className="p-0 mb-6">
+            <CardHeader className="p-0 ">
               <CardTitle className="text-3xl font-bold text-foreground font-serif mb-2">
                 Contact Information
               </CardTitle>

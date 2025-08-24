@@ -17,7 +17,7 @@ const CtaSection = () => {
         size="lg"
         className="bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
       >
-        <Link href="/shop">Shop Now</Link>
+        <Link href="/products/gents">View Products</Link>
       </Button>
     </section>
   );
