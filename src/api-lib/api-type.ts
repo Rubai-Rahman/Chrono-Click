@@ -1,46 +1,9 @@
 // Base Product Type
-export interface ProductType {
-  _id: string;
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  img: string;
-  brand?: string;
-  category?: string;
-  rating?: number;
-  reviews?: number;
-  inStock?: boolean;
-}
 
-// Cart Item extends Product with quantity
-export interface CartItem extends ProductType {
-  quantity?: number;
-}
 
-// News/Article Type
-export interface NewsType {
-  _id: string;
-  name: string;
-  details: string;
-  featured?: string;
-  category?: string;
-  author?: string;
-  readTime?: string;
-  date: string;
-  img: string;
-}
 
-// Review Type
-export interface ReviewType {
-  _id: string;
-  name: string;
-  comment: string;
-  img: string;
-  location?: string;
-  verified?: boolean;
-  rating?: number;
-}
+
+
 
 // Order related types
 export interface OrderItem {

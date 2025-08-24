@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -8,18 +8,14 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
-import { useQuery } from '@tanstack/react-query';
 import NewsItem from './news-Item';
-import { NewsType } from '@/api-lib/api-type';
-import { fetchData } from '@/api-lib/products';
-import CardSkeleton from '@/components/skeletons/review-skeleton';
-import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import Container from '@/components/layout/container';
+import { NewsType } from '@/lib/types/api/new-types';
 
-const News = () => {
+const News = ({ news }: { news: NewsType[] }) => {
   const plugin = useRef(
     Autoplay({
       delay: 3000,
@@ -28,18 +24,6 @@ const News = () => {
       playOnInit: true,
     })
   );
-
-  const {
-    data: news,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['news'],
-    queryFn: () => fetchData<NewsType[]>('news'),
-  });
-
-  if (isLoading) return <CardSkeleton />;
-  if (isError && !news) return <ErrorResultMessage />;
 
   return (
     <Container>

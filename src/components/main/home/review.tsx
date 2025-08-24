@@ -1,5 +1,4 @@
 'use client';
-
 import Image from 'next/image';
 import {
   Carousel,
@@ -8,18 +7,14 @@ import {
 } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useQuery } from '@tanstack/react-query';
-import { fetchData } from '@/api-lib/products';
-import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import { Quote, Users, Award, Sparkles } from 'lucide-react';
 import { useRef } from 'react';
 import { StarRating } from '@/components/ui/render-star';
-import CardSkeleton from '@/components/skeletons/review-skeleton';
 import Autoplay from 'embla-carousel-autoplay';
-import { ReviewType } from '@/api-lib/api-type';
 import Container from '@/components/layout/container';
+import { ReviewType } from '@/lib/types/api/review-types';
 
-const Review = () => {
+const Review = ({ reviews }: { reviews: ReviewType[] }) => {
   const plugin = useRef(
     Autoplay({
       delay: 2000,
@@ -28,18 +23,6 @@ const Review = () => {
       playOnInit: true,
     })
   );
-
-  const {
-    data: reviews,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['review'],
-    queryFn: () => fetchData<ReviewType[]>('review'),
-  });
-
-  if (isLoading) return <CardSkeleton />;
-  if (isError || !reviews) return <ErrorResultMessage />;
 
   if (!reviews.length) {
     return (
