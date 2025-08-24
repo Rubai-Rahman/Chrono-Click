@@ -1,21 +1,11 @@
-import { Card, CardContent } from '../ui/card';
-import { Skeleton } from '../ui/skeleton';
+import ProductSkeleton from './product-skeleton';
 
 const FeaturedProductSkeleton = () => {
   return (
     <section className=" bg-gradient-to-br from-background via-background to-muted/20 responsive-space-x my-12 container mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-8">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <Card key={index} className="overflow-hidden">
-            <CardContent className="p-0">
-              <Skeleton className="h-64 w-full" />
-              <div className="p-6 space-y-3">
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-8 w-1/3" />
-              </div>
-            </CardContent>
-          </Card>
+        {Array.from({ length: 4 }).map((_, index) => (
+          <ProductSkeleton key={index} />
         ))}
       </div>
     </section>

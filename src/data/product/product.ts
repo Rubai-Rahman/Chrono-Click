@@ -12,6 +12,7 @@ export async function fetchProductById<T>(
     },
   });
 }
+
 export async function fetchFeaturedProducts<T>(
   path: string,
   opts?: { next?: { revalidate?: number | false; tags?: string[] } }
