@@ -9,6 +9,13 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import Container from '../layout/container';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface ShopProps {
   products: ProductType[];
@@ -31,7 +38,34 @@ const Products = ({
         </h4>
         <h2 className="text-4xl font-bold text-primary">Find Your Watch</h2>
       </div>
-
+      <section className="mb-10 w-full flex justify-between">
+        <div>
+          <Select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Show" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="12">12</SelectItem>
+              <SelectItem value="16">16</SelectItem>
+              <SelectItem value="28">28</SelectItem>
+              <SelectItem value="36">36</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Sort By" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="light">Popularity</SelectItem>
+              <SelectItem value="dark">New</SelectItem>
+              <SelectItem value="system">Price: High &gt; Low </SelectItem>
+              <SelectItem value="system">Price: Low &gt; High </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </section>
       <div className="responsive-grid">
         {products.map((product) => (
           <Product key={product._id} product={product} />

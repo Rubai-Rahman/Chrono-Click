@@ -14,6 +14,7 @@ const ProductsPageContent = ({ category }: { category: string }) => {
   const page = Number(searchParams.get('page') || '0');
   const size = 16;
 
+  console.log('page', page);
   const {
     data: products,
     isLoading,
