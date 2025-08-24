@@ -4,16 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Container from '@/components/layout/container';
 import InteractiveCard from '../../../components/about/interactive-card';
 import InteractiveImage from '../../../components/about/interactive-image';
-import { Breadcrumb } from '@/components/navigation/breadcrumb';
 import { aboutCards, teamMembers } from '@/lib/constant';
 import CtaSection from '@/components/about/about-cta-section';
 
 const AboutPageContent = () => {
   return (
     <Container>
-      <div className="py-6">
-        <Breadcrumb />
-      </div>
       {/* Hero Section - Emphasizing Timepieces & Experience */}
       <section className="relative bg-gradient-to-br from-foreground to-background rounded-3xl p-8 md:p-16 mb-16 overflow-hidden shadow-2xl text-white">
         <div className="absolute inset-0 z-0 opacity-30">
