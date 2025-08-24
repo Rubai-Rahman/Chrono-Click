@@ -15,6 +15,15 @@ export async function fetchFeaturedData<T>(
 ): Promise<T> {
   return serverFetch<T>(`${path}`, {
     method: 'GET',
-    next: { revalidate: opts?.next?.revalidate ?? 60 },
+    next: { revalidate: opts?.next?.revalidate },
+  });
+}
+export async function fetchProductsData<T>(
+  path: string,
+  opts?: { next?: { revalidate?: number } }
+): Promise<T> {
+  return serverFetch<T>(`${path}`, {
+    method: 'GET',
+    next: { revalidate: opts?.next?.revalidate },
   });
 }

@@ -1,18 +1,27 @@
-import type { Metadata } from 'next';
 import ProductsPageContent from './page-products';
 
-export const metadata: Metadata = {
-  title: 'Chrono Click - Shop',
-  description: 'Browse our collection of stylish watches.',
-};
+interface PageProps {
+  params: { category: string };
+  searchParams?: { page?: string; sort?: string; size?: string };
+}
 
-const ProductPage = async ({
-  params,
-}: {
-  params: Promise<{ category: string }>;
-}) => {
-  const { category } = await params;
-  return <ProductsPageContent category={category} />;
+const ProductPage = async ({ params, searchParams }: PageProps) => {
+  // Await the params and searchParams if they are Promises
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+
+  const category = resolvedParams.category;
+  const page = resolvedSearchParams?.page || '1';
+  const sort = resolvedSearchParams?.sort;
+  const size = resolvedSearchParams?.size;
+
+  return (
+    <ProductsPageContent
+      category={category}
+      page={page}
+      searchParams={{ sort, size }}
+    />
+  );
 };
 
 export default ProductPage;

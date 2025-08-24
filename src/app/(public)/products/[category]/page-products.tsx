@@ -1,49 +1,46 @@
-'use client';
+import { fetchProductsData } from '@/data/product/product';
+import { ProductType } from '@/lib/types/api/product-types';
+import { Suspense } from 'react';
+import { ProductsClientWrapper } from './products-client-wrapper';
+import Loading from './loading';
 
-import { useQuery } from '@tanstack/react-query';
-import { fetchPages } from '@/api-lib/products';
-import { notFound, useSearchParams, useRouter } from 'next/navigation';
-import { ErrorResultMessage } from '@/components/ui/data-result-message';
-import ProductSkeleton from '@/components/skeletons/product-skeleton';
-import Products from '@/components/products/products';
+const ProductsPageContent = async ({
+  category,
+  page,
+  searchParams,
+}: {
+  category: string;
+  page?: string;
+  searchParams?: { sort?: string; size?: string };
+}) => {
+  const sort = searchParams?.sort || 'createdAt_desc';
+  const size = parseInt(searchParams?.size || '12', 10);
+  const currentPage = parseInt(page || '1', 10);
 
-const ProductsPageContent = ({ category }: { category: string }) => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  console.log('category', category);
-  const page = Number(searchParams.get('page') || '0');
-  const size = 16;
+  const productsData = await fetchProductsData<{
+    products: ProductType[];
+    count: number;
+  }>(
+    `/products?page=${currentPage}&size=${size}&category=${category}&sort=${sort}`,
+    {
+      next: { revalidate: 60 },
+    }
+  );
 
-  console.log('page', page);
-  const {
-    data: products,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['products', page, size],
-    queryFn: () => fetchPages(page, size, 'products'),
-    placeholderData: (previousData) => previousData,
-  });
-  console.log('searchparams', searchParams);
-  if (isLoading) return <ProductSkeleton />;
-  if (isError) return <ErrorResultMessage />;
-  if (!products) return notFound();
-
-  const totalPages = Math.ceil(products.count / size);
-
-  // page change handler: update URL with new page param
-  const onPageChange = (newPage: number) => {
-    if (newPage < 0 || newPage >= totalPages) return; // boundary check
-    router.push(`/products/${category}/?page=${newPage}`);
-  };
+  const { products, count } = productsData;
+  const totalPages = Math.ceil(count / size);
 
   return (
-    <Products
-      products={products.products}
-      totalPages={totalPages}
-      currentPage={page}
-      onPageChange={onPageChange}
-    />
+    <Suspense fallback={<Loading />}>
+      <ProductsClientWrapper
+        products={products}
+        totalPages={totalPages}
+        currentPage={currentPage}
+        category={category}
+        size={size}
+        sort={sort}
+      />
+    </Suspense>
   );
 };
 
