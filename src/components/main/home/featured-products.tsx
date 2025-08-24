@@ -10,7 +10,6 @@ export default function FeaturedProductsServer() {
     'products?isFeatured=true&limit=4'
   );
 
-  console.log('featureProise', featuredPromise);
   const latestPromise = fetchFeaturedData<ProductsResponse>(
     'products?sort=createdAt_desc&limit=4'
   );
@@ -57,7 +56,7 @@ function ProductsGrid({
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div className="responsive-grid">
       {combined.map((product) => (
         <Product key={product.id} product={product} />
       ))}
