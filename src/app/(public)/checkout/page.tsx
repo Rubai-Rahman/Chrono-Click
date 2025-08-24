@@ -1,23 +1,14 @@
-'use client';
+import type { Metadata } from 'next';
+import CheckoutPageContent from './page-checkout';
 
-import OrderSummary from '@/components/checkout/order-summary';
-import CheckoutForm from '@/components/checkout/checkout-form';
+export const metadata: Metadata = {
+  title: 'Check Out - Chrono Click',
+  description:
+    "Get in touch with Chrono Click for inquiries about premium timepieces, customer support, or any questions about luxury watches. We're here to help.",
+};
 
-export default function CheckoutPage() {
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Checkout</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Checkout form */}
-        <div>
-          <CheckoutForm />
-        </div>
+const CheckoutPage = async () => {
+  return <CheckoutPageContent />;
+};
 
-        {/* Order summary */}
-        <div>
-          <OrderSummary />
-        </div>
-      </div>
-    </div>
-  );
-}
+export default CheckoutPage;

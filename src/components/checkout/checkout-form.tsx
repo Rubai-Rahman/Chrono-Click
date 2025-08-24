@@ -211,6 +211,23 @@ const CheckoutForm = () => {
             </label>
           </div>
         </CardContent>
+        <CardContent>
+          <div className="flex items-center space-x-2 p-4 border rounded-lg bg-muted/20">
+            <input
+              type="radio"
+              id="cod"
+              value="cashOndelivary"
+              {...register('paymentMethod')}
+              className="text-primary"
+            />
+            <label htmlFor="cashOndelivary" className="flex-1">
+              <div className="font-medium">CashOndelivary</div>
+              <div className="text-sm text-muted-foreground">
+                Pay After Revciviewign the product
+              </div>
+            </label>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );

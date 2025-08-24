@@ -2,7 +2,6 @@
 
 import { PageHeader } from '@/components/account/page-header';
 import { Button } from '@/components/ui/button';
-import { Breadcrumb } from '@/components/navigation/breadcrumb';
 import { Plus } from 'lucide-react';
 
 const PaymentMethodsPageContent = () => {
@@ -10,9 +9,6 @@ const PaymentMethodsPageContent = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/5 to-background">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          {/* Breadcrumb */}
-          <Breadcrumb />
-
           <div className="space-y-8">
             <PageHeader
               title="Payment Methods"
