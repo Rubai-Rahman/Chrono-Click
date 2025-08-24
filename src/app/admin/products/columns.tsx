@@ -1,6 +1,7 @@
 'use client';
 
-import { ProductType } from '@/api-lib/api-type';
+import { ProductType } from '@/lib/types/api/product-types';
+
 import { ColumnDef } from '@tanstack/react-table';
 import Image from 'next/image';
 import { MoreHorizontal } from 'lucide-react';

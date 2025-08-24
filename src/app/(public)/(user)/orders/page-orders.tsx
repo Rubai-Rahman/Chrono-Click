@@ -20,7 +20,7 @@ const OrdersPageContent = () => {
               description="View and track your order history and status."
             >
               <Button asChild>
-                <Link href="/products">
+                <Link href="/products/gents">
                   <Plus className="w-4 h-4 mr-2" />
                   Shop More
                 </Link>

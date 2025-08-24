@@ -5,8 +5,8 @@ import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import axiosInstance from '@/lib/axios';
 import { isValidUrl } from '@/lib/utils';
-import { ProductType } from '@/api-lib/api-type';
 import { serverFetch } from '@/lib/fetch/serverFetch';
+import { ProductType } from '@/lib/types/api/product-types';
 
 export async function registerAction(data: {
   email: string;
@@ -86,7 +86,7 @@ export async function loginAction(
     };
   }
   const redirectUrl =
-    callbackUrl && isValidUrl(callbackUrl) ? callbackUrl : '/products';
+    callbackUrl && isValidUrl(callbackUrl) ? callbackUrl : '/products/gents';
   redirect(redirectUrl);
 }
 
