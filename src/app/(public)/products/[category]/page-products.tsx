@@ -1,7 +1,7 @@
 import { fetchProductsData } from '@/data/product/product';
 import { ProductType } from '@/lib/types/api/product-types';
 import { Suspense } from 'react';
-import { ProductsClientWrapper } from './products-client-wrapper';
+import { ProductsClientWrapper } from '../../../../components/products/products-client-wrapper';
 import Loading from './loading';
 
 const ProductsPageContent = async ({

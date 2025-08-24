@@ -2,6 +2,8 @@ import { ProductType } from '@/api-lib/api-type';
 import { fetchProductById } from '@/data/product/product';
 import { Metadata } from 'next';
 import ProductDetailPageContent from './page-product-detail';
+import ProductDetailsSkeleton from '@/components/skeletons/product-details-skeleton';
+import { Suspense } from 'react';
 
 export async function generateMetadata({
   params,
@@ -38,5 +40,9 @@ export default async function ProductPage({
 }) {
   const { id } = await params;
 
-  return <ProductDetailPageContent id={id} />;
+  return (
+    <Suspense fallback={<ProductDetailsSkeleton />}>
+      <ProductDetailPageContent id={id} />;
+    </Suspense>
+  );
 }

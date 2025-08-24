@@ -1,9 +1,9 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '../ui/card';
 
-const ProductSkeleton = ({ key }: { key?: string | number }) => {
+const ProductSkeleton = () => {
   return (
-    <Card key={key} className="overflow-hidden">
+    <Card className="overflow-hidden">
       <CardContent className="p-0">
         <Skeleton className="h-64 w-full" />
         <div className="p-6 space-y-3">
