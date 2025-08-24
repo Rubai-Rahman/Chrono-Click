@@ -45,7 +45,7 @@ export const ProductsClientWrapper = ({
     setCurrentSize(newSizeNum);
     const params = new URLSearchParams(searchParams);
     params.set('size', newSizeNum.toString());
-    params.set('page', '1'); // Reset to first page when changing size
+    // params.set('page', '1');
     router.push(`/products/${category}?${params.toString()}`);
   };
 
@@ -53,15 +53,16 @@ export const ProductsClientWrapper = ({
     setCurrentSort(newSort);
     const params = new URLSearchParams(searchParams);
     params.set('sort', newSort);
-    params.set('page', '1'); // Reset to first page when changing sort
+    // params.set('page', '1');
     router.push(`/products/${category}?${params.toString()}`);
   };
 
   return (
     <Container>
-      <div className="text-center mb-8 sm:mb-16 bg-gradient-to-br from-primary via-muted/5 to-foreground p-6 rounded-md ">
+      <div className="text-center mb-8 sm:mb-16 bg-gradient-to-l from-primary/30 to-card p-3 rounded-md ">
         <p className="uppercase text-4xl font-bold">{category} - Collections</p>
       </div>
+
       <Products
         products={products}
         totalPages={totalPages}
