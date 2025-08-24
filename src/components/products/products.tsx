@@ -52,7 +52,7 @@ const Products = ({
   return (
     <div>
       {/* Filters */}
-      {products.length > 0 && totalPages > 1 && (
+      {products.length > 0 && (
         <div className="flex justify-between bg-card mb-3 p-6 rounded-md shadow-2xs">
           <Select value={currentSize.toString()} onValueChange={onSizeChange}>
             <SelectTrigger className="w-40">

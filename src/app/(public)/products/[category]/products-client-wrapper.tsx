@@ -59,8 +59,8 @@ export const ProductsClientWrapper = ({
 
   return (
     <Container>
-      <div className="text-center mb-8 sm:mb-16 bg-accent capitalize text-4xl p-6">
-        {category}-Collections
+      <div className="text-center mb-8 sm:mb-16 bg-gradient-to-br from-primary via-muted/5 to-foreground p-6 rounded-md ">
+        <p className="uppercase text-4xl font-bold">{category} - Collections</p>
       </div>
       <Products
         products={products}
