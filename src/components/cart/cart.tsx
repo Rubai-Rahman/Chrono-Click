@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const Cart = () => {
   const router = useRouter();
@@ -79,10 +80,10 @@ const Cart = () => {
               </div>
               <div className="flex items-center gap-x-2">
                 <SheetTitle className="text-xl font-bold">
-                  Your Cart Have
+                  Total Item
                 </SheetTitle>
-                <SheetDescription className="text-sm">
-                  {`${items.length} ${items.length <= 1 ? 'item' : 'items'} `}
+                <SheetDescription className="text-xl font-semibold">
+                  {`(${items.length})`}
                 </SheetDescription>
               </div>
             </div>
@@ -105,9 +106,14 @@ const Cart = () => {
               <p className="text-muted-foreground mb-6 max-w-sm">
                 Discover our amazing collection of premium timepieces .
               </p>
-              <Button className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70">
-                Start Shopping
-                <ArrowRight className="ml-2 size-4" />
+              <Button
+                asChild
+                className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+              >
+                <Link href="/products/gents">
+                  Start Shopping
+                  <ArrowRight className="ml-2 size-4" />
+                </Link>
               </Button>
             </div>
           ) : (
