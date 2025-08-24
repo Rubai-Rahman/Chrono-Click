@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Heart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { ProductType } from '@/api-lib/api-type';
 import { toast } from 'sonner';
+import { ProductType } from '@/lib/types/api/product-types';
 
 const formatPrice = (price: number) => {
   return `$${Number(price).toFixed(2)}`;

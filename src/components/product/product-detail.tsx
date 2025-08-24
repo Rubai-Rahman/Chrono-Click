@@ -16,7 +16,8 @@ import {
   Minus,
   Plus,
 } from 'lucide-react';
-import { ProductType } from '@/api-lib/api-type';
+import { ProductType } from '@/lib/types/api/product-types';
+import { toast } from 'sonner';
 
 export default function ProductDetails({ product }: { product: ProductType }) {
   const { items, updateQuantity, addToCart } = useCartStore();
@@ -39,10 +40,8 @@ export default function ProductDetails({ product }: { product: ProductType }) {
   };
 
   const handleAddToCart = () => {
-    if (!cartItem) {
-      // Add new item to cart
-      addToCart(product);
-    }
+    addToCart(product);
+    toast.success(`${product.name} is added to cart`);
   };
 
   return (
@@ -129,10 +128,10 @@ export default function ProductDetails({ product }: { product: ProductType }) {
             {/* Category */}
             {product.category && (
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-muted-foreground">
+                <span className="text-sm font-medium text-muted-foreground up">
                   Category:
                 </span>
-                <Badge variant="outline">{product.category}</Badge>
+                <Badge variant="default" className='uppercase'>{product.category}</Badge>
               </div>
             )}
 
@@ -172,7 +171,7 @@ export default function ProductDetails({ product }: { product: ProductType }) {
                   onClick={handleAddToCart}
                 >
                   <ShoppingCart className="w-5 h-5 mr-2" />
-                  {cartItem ? 'Update Cart' : 'Add to Cart'}
+                  Add to Cart
                 </Button>
                 <Button variant="outline" size="lg" className="h-12 w-12 p-0">
                   <Heart />
