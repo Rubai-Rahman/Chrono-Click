@@ -1,29 +1,26 @@
-'use client';
-
-import { useQuery } from '@tanstack/react-query';
-import { fetchData } from '@/api-lib/products';
-import ProductDetail from '@/components/product/product-detail';
+import ProductDetails from '@/components/product/product-detail';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import ProductDetailsSkeleton from '@/components/skeletons/product-details-skeleton';
 import { ProductType } from '@/api-lib/api-type';
+import { fetchProductById } from '@/data/product/product';
+import { Suspense } from 'react';
 
-const ProductDetailPageContent = ({ productId }: { productId: string }) => {
-  const {
-    data: productData,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['product', productId],
-    queryFn: () => fetchData<ProductType>(`products/${productId}`),
-    enabled: !!productId,
+const ProductDetailPageContent = ({ id }: { id: string }) => {
+  return (
+    <Suspense fallback={<ProductDetailsSkeleton />}>
+      <AsyncProductDetails id={id} />
+    </Suspense>
+  );
+};
+
+const AsyncProductDetails = async ({ id }: { id: string }) => {
+  const productData = await fetchProductById<ProductType>(`/products/${id}`, {
+    next: { tags: ['products'] },
   });
- 
-  console.log('productId', productId);
-  if (isLoading) return <ProductDetailsSkeleton />;
 
-  if (isError || !productData) return <ErrorResultMessage />;
+  if (!productData) return <ErrorResultMessage />;
 
-  return <ProductDetail product={productData} />;
+  return <ProductDetails product={productData} />;
 };
 
 export default ProductDetailPageContent;

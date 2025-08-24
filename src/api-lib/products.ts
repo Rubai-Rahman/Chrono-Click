@@ -11,8 +11,6 @@ export interface ProductDetailsItem {
   // Add other properties of your product here
 }
 
-
-
 export interface ProductData {
   name: string;
   price: string;
@@ -35,18 +33,6 @@ export const fetchData = async <T>(path: string): Promise<T> => {
 export const postData = async <T>(path: string, data: T): Promise<T> => {
   const res = await axiosInstance.post<T>(`/${path}`, data);
   return res.data;
-};
-
-export const fetchProductDetails = async (
-  productId: string
-): Promise<ProductDetailsItem> => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/products/${productId}`
-  );
-  if (!res.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return res.json();
 };
 
 export const addProduct = async (productData: ProductData) => {

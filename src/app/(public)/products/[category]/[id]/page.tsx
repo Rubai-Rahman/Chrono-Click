@@ -1,16 +1,42 @@
-import type { Metadata } from 'next';
+import { ProductType } from '@/api-lib/api-type';
+import { fetchProductById } from '@/data/product/product';
+import { Metadata } from 'next';
 import ProductDetailPageContent from './page-product-detail';
 
-export const metadata: Metadata = {
-  title: 'Product Details - Chrono Click',
-  description: 'View detailed information about our premium products.',
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: { category: string; id: string };
+}): Promise<Metadata> {
+  const { id } = params; // just destructure normally
+  try {
+    const product = await fetchProductById<ProductType>(`/products/${id}`, {
+      next: { tags: ['products'] },
+    });
+
+    return {
+      title: product?.name ?? 'Product not found',
+      description: product?.description ?? 'View product details',
+      openGraph: {
+        title: product?.name,
+        description: product?.description,
+        images: product?.img ? [{ url: product.img }] : [],
+      },
+    };
+  } catch {
+    return {
+      title: 'Product not found',
+      description: 'This product does not exist',
+    };
+  }
+}
 
 export default async function ProductPage({
   params,
 }: {
-  params: Promise<{ id: string }>; // ✅ Promise in Next.js 15+
+  params: { category: string; id: string };
 }) {
   const { id } = await params;
-  return <ProductDetailPageContent productId={id} />;
+
+  return <ProductDetailPageContent id={id} />;
 }

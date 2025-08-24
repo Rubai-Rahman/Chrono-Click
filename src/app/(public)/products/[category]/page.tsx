@@ -6,7 +6,6 @@ interface PageProps {
 }
 
 const ProductPage = async ({ params, searchParams }: PageProps) => {
-  // Await the params and searchParams if they are Promises
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
 

@@ -4,12 +4,12 @@ export async function fetchProductById<T>(
   path: string,
   opts?: { next?: { revalidate?: number | false; tags?: string[] } }
 ): Promise<T> {
-  return serverFetch<T>(`/products`, {
+  return serverFetch<T>(`${path}`, {
     method: 'GET',
     next: {
       revalidate: opts?.next?.revalidate ?? 60,
-      tags:opts?.next?.tags,
-     },
+      tags: opts?.next?.tags,
+    },
   });
 }
 export async function fetchFeaturedProducts<T>(

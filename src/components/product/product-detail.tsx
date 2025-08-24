@@ -1,19 +1,8 @@
 'use client';
-
-import { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbPage,
-} from '@/components/ui/breadcrumb';
 import { useCartStore } from '@/store/useCartStore';
 import { StarRating } from '@/components/ui/render-star';
 import {
@@ -29,9 +18,8 @@ import {
 } from 'lucide-react';
 import { ProductType } from '@/api-lib/api-type';
 
-export default function ProductDetail({ product }: { product: ProductType }) {
+export default function ProductDetails({ product }: { product: ProductType }) {
   const { items, updateQuantity, addToCart } = useCartStore();
-  const [isWishlisted, setIsWishlisted] = useState(false);
 
   // Get current quantity directly from cart state
   const cartItem = items.find((item) => item._id === product._id);
@@ -41,10 +29,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     const newQuantity = Math.max(1, quantity + change);
 
     if (cartItem) {
-      // Item exists in cart, update its quantity
       updateQuantity(product._id, newQuantity);
     } else {
-      // Item not in cart, add it first then update quantity
       addToCart(product);
       if (newQuantity > 1) {
         updateQuantity(product._id, newQuantity);
@@ -62,39 +48,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/5 to-background">
       <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <Breadcrumb className="mb-8">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/">Home</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/products">Products</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            {product.category && (
-              <>
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link href={`/products?category=${product.category}`}>
-                      {product.category}
-                    </Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-              </>
-            )}
-            <BreadcrumbItem>
-              <BreadcrumbPage>{product.name}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Image */}
           <div className="relative group">
@@ -221,17 +174,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   {cartItem ? 'Update Cart' : 'Add to Cart'}
                 </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="h-12 w-12 p-0"
-                  onClick={() => setIsWishlisted(!isWishlisted)}
-                >
-                  <Heart
-                    className={`w-5 h-5 ${
-                      isWishlisted ? 'fill-primary text-primary' : ''
-                    }`}
-                  />
+                <Button variant="outline" size="lg" className="h-12 w-12 p-0">
+                  <Heart />
                 </Button>
                 <Button variant="outline" size="lg" className="h-12 w-12 p-0">
                   <Share2 className="w-5 h-5" />
