@@ -39,7 +39,7 @@ export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="hidden md:flex items-center">
+    <nav className="hidden lg:flex items-center">
       <div className="flex items-center gap-1 bg-muted/30 rounded-full p-1">
         {mainNavigation.map((item) => {
           if (item.type === 'link') {
