@@ -23,7 +23,7 @@ const ProductsPageContent = async ({
   }>(
     `/products?page=${currentPage}&size=${size}&category=${category}&sort=${sort}`,
     {
-      next: { revalidate: 60 },
+      next: { tags: ['products'] },
     }
   );
 

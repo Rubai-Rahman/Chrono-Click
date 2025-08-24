@@ -62,7 +62,7 @@ export async function serverFetch<T, E = { message?: string }>(
       finalInit.next = {
         ...(opts.next.tags ? { tags: opts.next.tags } : {}),
         ...(opts.next.revalidate === undefined
-          ? {}
+          ? { revalidate: 60 }
           : { revalidate: opts.next.revalidate }),
       };
     }
@@ -83,11 +83,7 @@ export async function serverFetch<T, E = { message?: string }>(
   } catch (err) {
     if (err instanceof FetchCoreError) {
       // map to your ApiError type (preserve payload)
-      throw new ApiError<E>(
-        err.status,
-        err.message,
-        (err.payload ?? {}) as E
-      );
+      throw new ApiError<E>(err.status, err.message, (err.payload ?? {}) as E);
     }
     // unknown error
     throw err;

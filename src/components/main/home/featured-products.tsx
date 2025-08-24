@@ -1,16 +1,16 @@
 import React, { Suspense, use } from 'react';
 import Container from '@/components/layout/container';
 import FeaturedProductSkeleton from '@/components/skeletons/featured-product-skeleton';
-import { fetchFeaturedData } from '@/data/product/product';
+import { fetchFeaturedProducts } from '@/data/product/product';
 import Product from '@/components/product/product';
 import { ProductsResponse } from '@/lib/types/api/product-types';
 
 export default function FeaturedProductsServer() {
-  const featuredPromise = fetchFeaturedData<ProductsResponse>(
+  const featuredPromise = fetchFeaturedProducts<ProductsResponse>(
     'products?isFeatured=true&limit=4'
   );
 
-  const latestPromise = fetchFeaturedData<ProductsResponse>(
+  const latestPromise = fetchFeaturedProducts<ProductsResponse>(
     'products?sort=createdAt_desc&limit=4'
   );
 

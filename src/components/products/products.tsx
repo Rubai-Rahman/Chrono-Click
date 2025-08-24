@@ -8,7 +8,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import Container from '../layout/container';
 import {
   Select,
   SelectContent,
