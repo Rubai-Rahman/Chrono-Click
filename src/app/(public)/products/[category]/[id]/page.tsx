@@ -11,19 +11,19 @@ export async function generateMetadata({
 }: {
   params: { category: string; id: string };
 }): Promise<Metadata> {
-  const { id } = params; // just destructure normally
+  const { id } = await params; // just destructure normally
   try {
     const product = await fetchProductById<ProductType>(`/products/${id}`, {
       next: { tags: ['products'] },
     });
 
     return {
-      title: product?.name ?? 'Product not found',
-      description: product?.description ?? 'View product details',
+      title: product.data?.name ?? 'Product not found',
+      description: product.data?.description ?? 'View product details',
       openGraph: {
-        title: product?.name,
-        description: product?.description,
-        images: product?.img ? [{ url: product.img }] : [],
+        title: product.data?.name,
+        description: product.data?.description,
+        images: product.data?.img ? [{ url: product.data.img }] : [],
       },
     };
   } catch {

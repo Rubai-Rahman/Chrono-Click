@@ -9,9 +9,9 @@ const ProductDetailPageContent = async ({ id }: { id: string }) => {
     next: { tags: ['products'] },
   });
 
-  if (!productData) return <ErrorResultMessage />;
+  if (!productData.success || !productData.data) return <ErrorResultMessage />;
 
-  return <ProductDetails product={productData} />;
+  return <ProductDetails product={productData.data} />;
 };
 
 export default ProductDetailPageContent;
