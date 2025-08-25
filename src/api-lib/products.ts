@@ -1,5 +1,4 @@
-import axiosInstance from '@/lib/axios';
-import { ProductsResponse } from '@/lib/types/api/product-types';
+
 
 export interface ProductDetailsItem {
   _id: string;
@@ -16,24 +15,6 @@ export interface ProductData {
   price: string;
   details: string;
 }
-
-export const fetchPages = async (
-  page: number,
-  size: number,
-  path: string
-): Promise<ProductsResponse> => {
-  const res = await axiosInstance.get(`/${path}?page=${page}&size=${size}`);
-  return res.data;
-};
-
-export const fetchData = async <T>(path: string): Promise<T> => {
-  const res = await axiosInstance.get<T>(`/${path}`);
-  return res.data;
-};
-export const postData = async <T>(path: string, data: T): Promise<T> => {
-  const res = await axiosInstance.post<T>(`/${path}`, data);
-  return res.data;
-};
 
 export const addProduct = async (productData: ProductData) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/products`, {
