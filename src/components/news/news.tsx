@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/pagination';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Star } from 'lucide-react';
-import { NewsType, NewsResponse } from '@/api-lib/news';
+import { NewsResponse, NewsType } from '@/data/news/news';
 
 interface NewsProps {
   news: NewsResponse | NewsType[];

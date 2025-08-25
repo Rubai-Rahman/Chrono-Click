@@ -75,7 +75,12 @@ async function coreClientFetch<T>(
     return await fetchCore<T>(doFetch, url, {
       method,
       headers,
-      body: data, // fetchCore handles serialization
+      body:
+        data === undefined || data === null
+          ? undefined
+          : typeof data === 'string' || data instanceof FormData || data instanceof Blob
+          ? data
+          : JSON.stringify(data),
       responseType: config.responseType,
     });
   } catch (err) {
@@ -169,21 +174,3 @@ export const safeClientApi = {
   patch: <T>(path: string, data?: unknown, config?: ClientRequestConfig) =>
     safeCoreClientFetch<T>('PATCH', path, data, config),
 };
-
-/**
- * Legacy clientFetch function for backward compatibility
- * @deprecated Use clientApi.* or safeClientApi.* methods instead
- */
-export async function clientFetch<T>(
-  path: string,
-  options: {
-    method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-    body?: unknown;
-    headers?: Record<string, string>;
-    credentials?: 'omit' | 'same-origin' | 'include';
-    responseType?: 'json' | 'text';
-  } = {}
-): Promise<T> {
-  const { method = 'GET', body, ...config } = options;
-  return coreClientFetch<T>(method, path, body, config);
-}

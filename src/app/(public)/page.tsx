@@ -5,11 +5,11 @@ import Brands from '@/components/main/home/brands';
 import Slider from '@/components/main/home/slider';
 import Banner from '@/components/main/home/banner';
 import Newsletter from '@/components/main/home/news-letter';
-import { fetchNewsData } from '@/data/news/news';
 import { NewsType } from '@/lib/types/api/new-types';
 import { ReviewType } from '@/lib/types/api/review-types';
 import { toast } from 'sonner';
 import NewsCarousel from '@/components/main/home/news-carousel';
+import { fetchNewsData } from '@/data/news/news.server';
 
 export const metadata: Metadata = {
   title: 'Chrono Click - Home',

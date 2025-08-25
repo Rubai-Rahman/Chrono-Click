@@ -21,22 +21,26 @@ export interface OrderItem {
 
 export const placeOrder = async (orderData: OrderData) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/orders`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(orderData),
   });
   if (!res.ok) {
-    throw new Error("Failed to place order");
+    throw new Error('Failed to place order');
   }
   return res.json();
 };
 
-export const fetchOrders = async (email: string | undefined): Promise<CartProduct[]> => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/orders?email=${email}`);
+export const fetchOrders = async (
+  email: string | undefined
+): Promise<CartProduct[]> => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/orders?email=${email}`
+  );
   if (!res.ok) {
-    throw new Error("Failed to fetch orders");
+    throw new Error('Failed to fetch orders');
   }
   return res.json();
 };
@@ -44,17 +48,20 @@ export const fetchOrders = async (email: string | undefined): Promise<CartProduc
 export const fetchAllOrders = async (): Promise<OrderItem[]> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/orders`);
   if (!res.ok) {
-    throw new Error("Failed to fetch all orders");
+    throw new Error('Failed to fetch all orders');
   }
   return res.json();
 };
 
 export const deleteOrder = async (id: string) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/orders/${id}`, {
-    method: "DELETE",
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/orders/${id}`,
+    {
+      method: 'DELETE',
+    }
+  );
   if (!res.ok) {
-    throw new Error("Failed to delete order");
+    throw new Error('Failed to delete order');
   }
   return res.json();
 };

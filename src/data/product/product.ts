@@ -45,30 +45,39 @@ export async function fetchProductsData<T>(
   });
 }
 
-/**
- * Backward compatibility functions - return data or null like before
- * @deprecated Use the enhanced versions for better error handling
- */
-export async function fetchProductByIdLegacy<T>(
-  path: string,
-  opts?: { next?: { revalidate?: number | false; tags?: string[] } }
-): Promise<T | null> {
-  const result = await fetchProductById<T>(path, opts);
-  return result.success ? result.data : null;
+
+//old code
+
+
+export interface ProductData {
+  name: string;
+  price: string;
+  details: string;
 }
 
-export async function fetchFeaturedProductsLegacy<T>(
-  path: string,
-  opts?: { next?: { revalidate?: number | false; tags?: string[] } }
-): Promise<T | null> {
-  const result = await fetchFeaturedProducts<T>(path, opts);
-  return result.success ? result.data : null;
-}
+export const addProduct = async (productData: ProductData) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/products`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(productData),
+  });
+  if (!res.ok) {
+    throw new Error('Failed to add product');
+  }
+  return res.json();
+};
 
-export async function fetchProductsDataLegacy<T>(
-  path: string,
-  opts?: { next?: { revalidate?: number | false; tags?: string[] } }
-): Promise<T | null> {
-  const result = await fetchProductsData<T>(path, opts);
-  return result.success ? result.data : null;
-}
+export const deleteProduct = async (id: string) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/products/${id}`,
+    {
+      method: 'DELETE',
+    }
+  );
+  if (!res.ok) {
+    throw new Error('Failed to delete product');
+  }
+  return res.json();
+};

@@ -65,7 +65,7 @@ const DataResultMessage = ({
 
   if (placeholder === 'image') {
     const imageProps = props as PlaceholderImageProps;
-    const imageSrc = imageProps.image || '/images/folder-empty.svg';
+    const imageSrc = imageProps.image || './images/not-item.svg';
     renderedElement = (
       <div className={cn('relative', imageVariants({ size }))}>
         <Image
@@ -136,7 +136,7 @@ export const NotFoundMessage = ({
       'Seems like you are lost! The page you are looking for might not exist.'
     }
     size={size}
-    image="/images/not-found.svg"
+    image="./not-item.svg"
   >
     <Button variant="outline" asChild>
       <Link href={trackPath || '/'}>Return to track</Link>

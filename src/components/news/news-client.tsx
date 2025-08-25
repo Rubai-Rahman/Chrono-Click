@@ -1,9 +1,9 @@
 'use client';
 
-import { fetchNewsPages } from '@/api-lib/news';
 import News from './news';
 import NewsSkeleton from '@/components/skeletons/news-skeleton';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
+import { fetchNewsPages } from '@/data/news/news';
 import { useQuery } from '@tanstack/react-query';
 import { notFound, useRouter, useSearchParams } from 'next/navigation';
 

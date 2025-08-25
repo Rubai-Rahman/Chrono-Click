@@ -47,7 +47,7 @@ const NewsItem = ({ item }: NewsItemProps) => {
           {/* Category Badge */}
           <Badge
             variant="secondary"
-            className="absolute top-3 right-3 bg-white/90 text-foreground"
+            className="absolute top-3 right-3 text-foreground"
           >
             {item.category}
           </Badge>
@@ -56,7 +56,7 @@ const NewsItem = ({ item }: NewsItemProps) => {
           <Button
             size="icon"
             variant="secondary"
-            className="absolute bottom-3 right-3 rounded-full bg-white/90 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+            className="absolute bottom-3 right-3 rounded-full"
           >
             <Bookmark className="w-4 h-4" />
           </Button>

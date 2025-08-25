@@ -1,13 +1,15 @@
+import { NewsType } from '@/lib/types/api/new-types';
 import Container from '@/components/layout/container';
 import NewsClient from '@/components/news/news-client';
-import { Breadcrumb } from '@/components/navigation/breadcrumb';
+import { fetchNewsData } from '@/data/news/news.server';
 
-const NewsPageContent = () => {
+const NewsPageContent = async () => {
+  const newsResult = await fetchNewsData<NewsType[]>('news', {
+    next: { tags: ['news'] },
+  });
+  console.log(newsResult, 'newsResult');
   return (
     <Container>
-      <div className="py-6">
-        <Breadcrumb />
-      </div>
       <NewsClient />
     </Container>
   );

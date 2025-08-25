@@ -1,10 +1,3 @@
-// Base Product Type
-
-
-
-
-
-
 // Order related types
 export interface OrderItem {
   _id: string;
@@ -29,5 +22,3 @@ export interface OrderType {
     country: string;
   };
 }
-
-
