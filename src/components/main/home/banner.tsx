@@ -8,7 +8,7 @@ const Banner = () => {
 
   return (
     <Container>
-      <div className="relative bg-[url('/banner.webp')] bg-no-repeat bg-cover bg-blend-darken bg-[#b7b7d5] flex flex-col items-center justify-center text-primary-foreground text-center  h-[400px] sm:h-[300px] md:h-[500px] lg:h-[600px] xl:h-[700px] 2xl:h-[800px] px-4">
+      <div className="relative bg-[url('/banner.webp')] bg-no-repeat bg-cover bg-blend-darken flex flex-col items-center justify-center text-primary-foreground text-center  h-[400px] sm:h-[300px] md:h-[500px]  px-4">
         <div className="container mx-auto">
           <h3 className="text-3xl font-bold mb-2">
             Chrono Click ... Time Is Ticking Away!
