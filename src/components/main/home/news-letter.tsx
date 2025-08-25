@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
-import { postData } from '@/api-lib/products';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -19,39 +18,39 @@ import {
 import { Mail, Send, Sparkles, Gift, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Container from '@/components/layout/container';
+import { subscribeAction } from '@/app/actions/newsLetterAction';
 
 // Zod schema for email validation
 const newsletterSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address'),
+  email: z.email('Please enter a valid email address'),
 });
 
 type NewsletterFormData = z.infer<typeof newsletterSchema>;
 
-const Newsletter = () => {
+export const Newsletter = () => {
   const form = useForm<NewsletterFormData>({
     resolver: zodResolver(newsletterSchema),
-    defaultValues: {
-      email: '',
-    },
+    defaultValues: { email: '' },
   });
 
   const mutation = useMutation({
     mutationKey: ['newsletter'],
-    mutationFn: (data: string) => postData('/api/newsletter', data),
+    mutationFn: (email: string) => subscribeAction(email),
     onMutate: () => {
       toast.loading('Subscribing to newsletter...', {
         id: 'newsletter-submit',
       });
     },
     onSuccess: () => {
-      toast.success('🎉 Thank you for subscribing! Welcome to our community.');
+      toast.success('🎉 Thank you for subscribing!', {
+        id: 'newsletter-submit',
+      });
       form.reset();
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Something went wrong. Please try again.');
+      toast.error(error.message || 'Something went wrong', {
+        id: 'newsletter-submit',
+      });
     },
   });
 
@@ -143,7 +142,7 @@ const Newsletter = () => {
 
                       <Button
                         type="submit"
-                        disabled={mutation.isPending || !emailValue?.trim()}
+                        disabled={mutation.isPending || !emailValue}
                         className="w-full h-14 text-lg"
                       >
                         {mutation.isPending ? (
