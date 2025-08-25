@@ -6,29 +6,42 @@ import SignupForm from '@/components/auth/signup-form';
 import { SignupFormData } from '@/lib/validations/auth';
 import { registerAction } from '@/app/actions/authAction';
 import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 
 const SignupPageContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { googleSignIn } = useAuth();
+  const router = useRouter();
 
   const handleSignup = async (data: SignupFormData) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const result = await registerAction({
         email: data.email,
         password: data.password,
         displayName: data.displayName,
       });
-
-      if (result?.errors) {
-        toast.error(result.errors.email?.[0] || 'Registration failed');
+      console.log('reuslt', result);
+      if (!result.success) {
+        // Show validation errors
+        const errorMessage =
+          result.errors?.email?.[0] ||
+          result.errors?.password?.[0] ||
+          result.errors?.displayName?.[0] ||
+          'Registration failed';
+        toast.error(errorMessage, { id: 'signup-error' });
         return;
       }
 
-      toast.success('Account created successfully!');
+      // Success case
+      toast.success('🎉 Account created successfully!', {
+        id: 'signup-success',
+      });
+      router.push('/products/gents');
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Something went wrong'
+        error instanceof Error ? error.message : 'Something went wrong',
+        { id: 'signup-unexpected' }
       );
     } finally {
       setIsLoading(false);

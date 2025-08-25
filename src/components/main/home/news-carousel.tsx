@@ -15,7 +15,7 @@ import Link from 'next/link';
 import Container from '@/components/layout/container';
 import { NewsType } from '@/lib/types/api/new-types';
 
-const News = ({ news }: { news: NewsType[] }) => {
+const NewsCarousel = ({ news }: { news: NewsType[] }) => {
   const plugin = useRef(
     Autoplay({
       delay: 3000,
@@ -106,4 +106,4 @@ const News = ({ news }: { news: NewsType[] }) => {
   );
 };
 
-export default News;
+export default NewsCarousel;

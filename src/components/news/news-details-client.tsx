@@ -36,7 +36,6 @@ const NewsDetailsClient = () => {
     enabled: !!newsId,
   });
 
-  console.log(newsDetails);
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'No date available';
     return new Date(dateString).toLocaleDateString('en-US', {

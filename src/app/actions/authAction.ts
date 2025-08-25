@@ -8,11 +8,92 @@ import { isValidUrl } from '@/lib/utils';
 import { safeApi } from '@/lib/fetch/serverFetch';
 import { ProductType } from '@/lib/types/api/product-types';
 
+//
+// ---- Types ----
+//
+export type RegisterResult =
+  | { success: true }
+  | { success: false; errors: Record<string, string[]> };
+
+type SaveUserOk = {
+  success: true;
+  data: { email: string; name: string; role: 'user' | 'admin' };
+};
+type SaveUserErr = {
+  success: false;
+  error: { message: string; status?: number; details?: unknown };
+};
+type SaveUserResult = SaveUserOk | SaveUserErr;
+
+//
+// ---- saveUser ----
+//
+export async function saveUser(
+  email: string,
+  displayName: string,
+  idToken: string,
+  photoURL?: string,
+  rememberMe: boolean = false
+): Promise<SaveUserResult> {
+  console.log(
+    'email',
+    email,
+    'dispalyName',
+    displayName,
+    'idToken',
+    idToken,
+    'photoURL',
+    photoURL,
+    'rememberMe',
+    rememberMe
+  );
+  const result = await safeApi.put<{
+    email: string;
+    name: string;
+    role: 'user' | 'admin';
+  }>('/users', {
+    email,
+    displayName,
+    name: displayName,
+    idToken,
+    photoURL,
+    rememberMe,
+  });
+
+  if (!result.success || !result.data) {
+    return {
+      success: false,
+      error: {
+        message: result.error?.message || 'Failed to save user',
+        status: result.error?.status,
+        details: result.error?.details,
+      },
+    };
+  }
+
+  const userData = result.data;
+
+  await createSession(
+    idToken,
+    {
+      email: userData.email || email,
+      name: userData.name || displayName,
+      role: userData.role || 'user',
+    },
+    rememberMe
+  );
+
+  return { success: true, data: userData };
+}
+
+//
+// ---- registerAction ----
+//
 export async function registerAction(data: {
   email: string;
   password: string;
   displayName: string;
-}) {
+}): Promise<RegisterResult> {
   try {
     const userCred = await authService.createUserWithEmail(
       data.email,
@@ -20,20 +101,29 @@ export async function registerAction(data: {
       data.displayName
     );
     const idToken = await userCred.user.getIdToken();
-    await saveUser(data.email, data.displayName, idToken);
+
+    const saveResult = await saveUser(data.email, data.displayName, idToken);
+
+    if (!saveResult.success) {
+      return {
+        success: false,
+        errors: { email: [saveResult.error.message] },
+      };
+    }
+
+    return { success: true };
   } catch (error) {
     console.error('Registration error:', error);
     return {
-      errors: {
-        email: ['Registration failed. Please try again.'],
-      },
+      success: false,
+      errors: { email: ['Registration failed. Please try again.'] },
     };
   }
-
-  // Redirect to dashboard on success
-  redirect('/');
 }
 
+//
+// ---- loginAction ----
+//
 export async function loginAction(
   data: { email: string; password: string; rememberMe: boolean },
   callbackUrl?: string
@@ -43,22 +133,31 @@ export async function loginAction(
   try {
     const userCred = await authService.signInWithEmail(email, password);
     const idToken = await userCred.user.getIdToken();
-    await saveUser(
+
+    const saveResult = await saveUser(
       email,
       userCred.user.displayName || '',
       idToken,
       undefined,
       rememberMe
     );
+
+    if (!saveResult.success) {
+      return {
+        errors: { email: [saveResult.error.message] },
+      };
+    }
   } catch (error: unknown) {
-    console.log(error);
+    console.error('Login error:', error);
 
-    // Provide more specific error messages based on Firebase error codes
     let errorMessage = 'Invalid email or password';
-
-    if (error && typeof error === 'object' && 'code' in error) {
-      const firebaseError = error as { code: string };
-      switch (firebaseError.code) {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      typeof (error as { code?: string }).code === 'string'
+    ) {
+      switch ((error as { code: string }).code) {
         case 'auth/user-not-found':
           errorMessage = 'No account found with this email address';
           break;
@@ -74,23 +173,21 @@ export async function loginAction(
         case 'auth/too-many-requests':
           errorMessage = 'Too many failed attempts. Please try again later';
           break;
-        default:
-          errorMessage = 'Invalid email or password';
       }
     }
 
-    return {
-      errors: {
-        email: [errorMessage],
-      },
-    };
+    return { errors: { email: [errorMessage] } };
   }
+
   const redirectUrl =
     callbackUrl && isValidUrl(callbackUrl) ? callbackUrl : '/products/gents';
   redirect(redirectUrl);
 }
 
-export const getProduct = async (): Promise<ProductType[]> => {
+//
+// ---- getProduct ----
+//
+export async function getProduct(): Promise<ProductType[]> {
   try {
     const response = await axiosInstance.get<{ products: ProductType[] }>(
       '/products'
@@ -98,11 +195,13 @@ export const getProduct = async (): Promise<ProductType[]> => {
     return response.data.products || [];
   } catch (error) {
     console.error('Error fetching products:', error);
-    // Return empty array instead of throwing to prevent page crashes
     return [];
   }
-};
+}
 
+//
+// ---- logoutAction ----
+//
 export async function logoutAction() {
   try {
     await authService.signOut();
@@ -110,53 +209,16 @@ export async function logoutAction() {
   } catch (error) {
     console.error('Logout error:', error);
   }
-
   redirect('/');
 }
 
+//
+// ---- resetPasswordAction ----
+//
 export async function resetPasswordAction(email: string) {
   try {
     await authService.resetPassword(email);
   } catch (error) {
-    console.log('error', error);
+    console.error('Reset password error:', error);
   }
 }
-
-export const saveUser = async (
-  email: string,
-  displayName: string,
-  idToken: string,
-  photoURL?: string,
-  rememberMe: boolean = false
-) => {
-  try {
-    const result = await safeApi.put<{
-      email: string;
-      name: string;
-      role: 'user' | 'admin';
-    }>('/users', {
-      data: { email, displayName, idToken, photoURL, rememberMe },
-    });
-
-    if (!result.success || !result.data) {
-      throw new Error(result.error?.message || 'Failed to save user');
-    }
-
-    const userData = result.data;
-
-    await createSession(
-      idToken,
-      {
-        email: userData.email || email,
-        name: userData.name || displayName,
-        role: userData.role || 'user',
-      },
-      rememberMe
-    );
-
-    return userData;
-  } catch (error) {
-    console.error('Error saving user:', error);
-    throw error;
-  }
-};

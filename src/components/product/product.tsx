@@ -24,7 +24,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   const router = useRouter();
   const { addToCart } = useCartStore();
   const { category } = useParams();
-  console.log('category', category);
+
   const handleBuyNow = () => {
     addToCart(product);
     toast.success(`${product.name} is added to cart`);
