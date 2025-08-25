@@ -18,29 +18,19 @@ import {
 } from 'lucide-react';
 import { ProductType } from '@/lib/types/api/product-types';
 import { toast } from 'sonner';
+import { useState } from 'react';
 
 export default function ProductDetails({ product }: { product: ProductType }) {
-  const { items, updateQuantity, addToCart } = useCartStore();
-
-  // Get current quantity directly from cart state
-  const cartItem = items.find((item) => item._id === product._id);
-  const quantity = cartItem?.quantity || 1;
+  const { addToCart } = useCartStore();
+  const [quantity, setQuantity] = useState(1);
 
   const handleQuantityChange = (change: number) => {
     const newQuantity = Math.max(1, quantity + change);
-
-    if (cartItem) {
-      updateQuantity(product._id, newQuantity);
-    } else {
-      addToCart(product);
-      if (newQuantity > 1) {
-        updateQuantity(product._id, newQuantity);
-      }
-    }
+    setQuantity(newQuantity);
   };
 
   const handleAddToCart = () => {
-    addToCart(product);
+    addToCart(product, quantity);
     toast.success(`${product.name} is added to cart`);
   };
 
@@ -131,7 +121,9 @@ export default function ProductDetails({ product }: { product: ProductType }) {
                 <span className="text-sm font-medium text-muted-foreground up">
                   Category:
                 </span>
-                <Badge variant="default" className='uppercase'>{product.category}</Badge>
+                <Badge variant="default" className="uppercase">
+                  {product.category}
+                </Badge>
               </div>
             )}
 
@@ -144,7 +136,7 @@ export default function ProductDetails({ product }: { product: ProductType }) {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleQuantityChange(-1)}
-                    disabled={quantity <= 1}
+                    disabled={quantity <= 0}
                     className="h-10 w-10 p-0"
                   >
                     <Minus className="w-4 h-4" />
