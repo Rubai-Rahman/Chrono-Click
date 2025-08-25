@@ -14,19 +14,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, CommonFormField } from '@/components/ui/form';
 
-import { submitContactForm } from '@/app/actions/contactAction';
-import { useState } from 'react';
+import { contactAction } from '@/app/actions/contactAction';
 import { ContactSchema } from '@/lib/validations/contact';
 import z from 'zod';
+import { useTransition } from 'react';
+import { toast } from 'sonner';
 
 const ContactForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [submitResult, setSubmitResult] = useState<{
-    success: boolean;
-    message?: string;
-    error?: string;
-  } | null>(null);
-
+  const [isPending, startTransition] = useTransition();
   const form = useForm({
     resolver: zodResolver(ContactSchema),
     mode: 'onBlur',
@@ -38,26 +33,21 @@ const ContactForm = () => {
     },
   });
 
-  const handleSubmit = async (data: z.infer<typeof ContactSchema>) => {
-    setIsLoading(true);
-    setSubmitResult(null);
+  const handleSubmit = (data: z.infer<typeof ContactSchema>) => {
+    startTransition(async () => {
+      const result = await contactAction(data);
 
-    try {
-      const result = await submitContactForm(data);
-      setSubmitResult(result);
-
-      if (result.success) {
+      if (result?.success) {
+        toast.success(
+          '🎉 Your message has been sent successfully. We will get back to you soon!'
+        );
         form.reset();
+      } else {
+        toast.error(
+          result?.error || '❌ Something went wrong. Please try again.'
+        );
       }
-    } catch (err) {
-      console.error('Contact form submission error:', err);
-      setSubmitResult({
-        success: false,
-        error: 'An unexpected error occurred. Please try again.',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   return (
@@ -72,59 +62,6 @@ const ContactForm = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
-        {/* Success Message */}
-        {submitResult?.success && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg
-                  className="h-5 w-5 text-green-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-green-800">
-                  {submitResult.message ||
-                    "Message sent successfully! We'll get back to you soon."}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Error Message */}
-        {submitResult?.error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg
-                  className="h-5 w-5 text-red-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-red-800">
-                  {submitResult.error}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
@@ -198,8 +135,8 @@ const ContactForm = () => {
             <Button
               type="submit"
               className="w-full h-12 text-base font-semibold bg-primary text-primary-foreground rounded-md shadow-md hover:bg-primary/90 transition-colors duration-200"
-              loading={isLoading}
-              disabled={isLoading}
+              loading={isPending}
+              disabled={isPending}
             >
               Send Message
             </Button>
