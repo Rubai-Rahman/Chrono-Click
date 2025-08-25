@@ -3,6 +3,7 @@ import { ProductType } from '@/lib/types/api/product-types';
 import { Suspense } from 'react';
 import { ProductsClientWrapper } from '../../../../components/products/products-client-wrapper';
 import Loading from './loading';
+import { ErrorResultMessage } from '@/components/ui/data-result-message';
 
 const ProductsPageContent = async ({
   category,
@@ -27,7 +28,9 @@ const ProductsPageContent = async ({
     }
   );
 
-  const { products, count } = productsData;
+  if (!productsData.success || !productsData.data)
+    return <ErrorResultMessage />;
+  const { products, count } = productsData.data;
   const totalPages = Math.ceil(count / size);
 
   return (

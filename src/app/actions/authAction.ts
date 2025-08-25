@@ -5,7 +5,7 @@ import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import axiosInstance from '@/lib/axios';
 import { isValidUrl } from '@/lib/utils';
-import { serverFetch } from '@/lib/fetch/serverFetch';
+import { safeApi } from '@/lib/fetch/serverFetch';
 import { ProductType } from '@/lib/types/api/product-types';
 
 export async function registerAction(data: {
@@ -130,15 +130,20 @@ export const saveUser = async (
   rememberMe: boolean = false
 ) => {
   try {
-    const response = await serverFetch<{
+    const result = await safeApi.put<{
       email: string;
       name: string;
       role: 'user' | 'admin';
     }>('/users', {
-      method: 'PUT',
-      body: { email, displayName, idToken, photoURL, rememberMe },
+      data: { email, displayName, idToken, photoURL, rememberMe },
     });
-    const userData = response;
+
+    if (!result.success || !result.data) {
+      throw new Error(result.error?.message || 'Failed to save user');
+    }
+
+    const userData = result.data;
+
     await createSession(
       idToken,
       {

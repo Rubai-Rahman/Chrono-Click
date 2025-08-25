@@ -33,24 +33,26 @@ export const Newsletter = () => {
     defaultValues: { email: '' },
   });
 
+  const toastId = 'newsletter-toast';
+
   const mutation = useMutation({
     mutationKey: ['newsletter'],
     mutationFn: (email: string) => subscribeAction(email),
     onMutate: () => {
-      toast.loading('Subscribing to newsletter...', {
-        id: 'newsletter-submit',
-      });
+      toast.loading('Subscribing to newsletter...', { id: toastId });
     },
-    onSuccess: () => {
-      toast.success('🎉 Thank you for subscribing!', {
-        id: 'newsletter-submit',
-      });
-      form.reset();
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success(data.message || '🎉 Thank you for subscribing!', {
+          id: toastId,
+        });
+        form.reset();
+      } else {
+        toast.error(data.message || 'Something went wrong', { id: toastId });
+      }
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Something went wrong', {
-        id: 'newsletter-submit',
-      });
+      toast.error(error.message || 'Something went wrong', { id: toastId });
     },
   });
 

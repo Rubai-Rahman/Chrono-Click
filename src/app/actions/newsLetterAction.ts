@@ -1,21 +1,22 @@
 'use server';
 
-import { serverFetch } from '@/lib/fetch/serverFetch';
+import { safeApi } from '@/lib/fetch/serverFetch';
 
 export async function subscribeAction(email: string) {
-  try {
-    const res = await serverFetch<{ success: boolean; message?: string }>(
-      '/newsletter/subscribe',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      }
-    );
+  const result = await safeApi.post<{ success: boolean; message?: string }>(
+    '/newsletter',
+    { email }
+  );
 
-    return { success: res.success, message: res.message ?? null };
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-    return { success: false, message: errorMessage };
+  if (result.success) {
+    return {
+      success: true,
+      message: result.data?.message || 'Successfully subscribed!',
+    };
   }
+
+  return {
+    success: false,
+    message: result.error?.message || 'Subscription failed',
+  };
 }

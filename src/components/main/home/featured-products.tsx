@@ -4,6 +4,13 @@ import FeaturedProductSkeleton from '@/components/skeletons/featured-product-ske
 import { fetchFeaturedProducts } from '@/data/product/product';
 import Product from '@/components/product/product';
 import { ProductsResponse } from '@/lib/types/api/product-types';
+import { ErrorResultMessage } from '@/components/ui/data-result-message';
+
+type ProductsResult = {
+  success: boolean;
+  data: ProductsResponse | null;
+  error: { message: string; status: number } | null;
+};
 
 export default function FeaturedProductsServer() {
   const featuredPromise = fetchFeaturedProducts<ProductsResponse>(
@@ -40,19 +47,19 @@ function ProductsGrid({
   featuredPromise,
   latestPromise,
 }: {
-  featuredPromise: Promise<ProductsResponse>;
-  latestPromise: Promise<ProductsResponse>;
+  featuredPromise: Promise<ProductsResult>;
+  latestPromise: Promise<ProductsResult>;
 }) {
   const featuredRes = use(featuredPromise);
   const latestRes = use(latestPromise);
 
-  // Combine featured + latest to always show 4 products
-  const combined = [...featuredRes.products];
-  for (const p of latestRes.products) {
+  if (!featuredRes.success || !featuredRes.data) return <ErrorResultMessage />;
+  if (!latestRes.success || !latestRes.data) return <ErrorResultMessage />;
+
+  const combined = [...featuredRes.data.products];
+  for (const p of latestRes.data.products) {
     if (combined.length >= 4) break;
-    if (!combined.find((fp) => fp.id === p.id)) {
-      combined.push(p);
-    }
+    if (!combined.some((fp) => fp.id === p.id)) combined.push(p);
   }
 
   return (
