@@ -1,15 +1,5 @@
 
 
-export interface ProductDetailsItem {
-  _id: string;
-  name: string;
-  price: number;
-  img: string;
-  details: string;
-  quantity?: string;
-  // Add other properties of your product here
-}
-
 export interface ProductData {
   name: string;
   price: string;
