@@ -1,8 +1,8 @@
 import ProductsPageContent from './page-products';
 
 interface PageProps {
-  params: { category: string };
-  searchParams?: { page?: string; sort?: string; size?: string };
+  params: Promise<{ category: string }>;
+  searchParams?: Promise<{ page?: string; sort?: string; size?: string }>;
 }
 
 const ProductPage = async ({ params, searchParams }: PageProps) => {

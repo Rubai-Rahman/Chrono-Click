@@ -2,8 +2,8 @@
 
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { fetchNewsDetails } from '@/api-lib/news';
 import { Breadcrumb } from '@/components/navigation/breadcrumb';
+import { fetchNewsDetails } from '@/data/news/news';
 
 const NewsBreadcrumb = () => {
   const { newsId } = useParams();

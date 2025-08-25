@@ -61,7 +61,16 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    getRowId: (row) => (row as unknown).id || (row as any)._id,
+    getRowId: (row, index) => {
+      if (typeof row === 'object' && row !== null) {
+        return (
+          (row as { id?: string; _id?: string }).id ??
+          (row as { id?: string; _id?: string })._id ??
+          `row-${index}`
+        );
+      }
+      return `row-${index}`;
+    },
     enableRowSelection: true,
     state: {
       sorting,

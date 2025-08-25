@@ -3,14 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  fetchNewsComments,
-  postNewsComment,
-  editNewsComment,
-  deleteNewsComment,
-  reactToComment,
-  CommentType,
-} from '@/api-lib/news';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,6 +11,14 @@ import { MessageCircle, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import CommentItem from './comment-item';
+import {
+  CommentType,
+  deleteNewsComment,
+  editNewsComment,
+  fetchNewsComments,
+  postNewsComment,
+  reactToComment,
+} from '@/data/news/news';
 
 interface CommentSectionProps {
   newsId: string;
@@ -190,7 +191,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       minute: '2-digit',
     });
   };
-
+  console.log(formatDate);
   if (!commentsEnabled) {
     return null;
   }

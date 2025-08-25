@@ -32,6 +32,7 @@ const ForgotPasswordForm = () => {
       await resetPasswordAction(data.email);
       setIsSubmitted(true);
     } catch (error) {
+      console.log(error);
       // Error is handled by useAuth hook with toast notifications
     }
   };

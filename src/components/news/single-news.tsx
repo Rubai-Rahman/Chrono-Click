@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, User, Star, ArrowRight } from 'lucide-react';
-import { NewsType } from '@/api-lib/news';
+import { NewsType } from '@/lib/types/api/new-types';
 
 interface SingleNewsProps {
   article: NewsType;

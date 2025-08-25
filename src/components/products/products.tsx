@@ -1,4 +1,3 @@
-import type { ProductType } from '@/api-lib/api-type';
 import Product from '../product/product';
 import {
   Pagination,
@@ -15,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ProductType } from '@/lib/types/api/product-types';
 
 interface ProductsProps {
   products: ProductType[];

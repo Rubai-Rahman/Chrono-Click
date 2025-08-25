@@ -1,6 +1,6 @@
+import { CartItem, ProductType } from '@/lib/types/api/product-types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { CartItem, ProductType } from '@/api-lib/api-type';
 
 interface CartStore {
   items: CartItem[];

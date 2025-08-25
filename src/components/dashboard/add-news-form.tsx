@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import Image from 'next/image';
 import {
   Newspaper,
   CheckCircle,
@@ -22,7 +23,6 @@ import {
   X,
   Image as ImageIcon,
 } from 'lucide-react';
-import { useSuccessMessage } from '@/hooks/useSuccessMessage';
 
 interface NewsData {
   title: string;
@@ -45,8 +45,7 @@ const AddNewsForm = () => {
     status: 'draft',
   });
   const [newTag, setNewTag] = useState('');
-  const [success, triggerSuccess] = useSuccessMessage();
-
+  const [success, setSuccess] = useState(false);
   const queryClient = useQueryClient();
 
   const addNewsMutation = useMutation({
@@ -60,7 +59,7 @@ const AddNewsForm = () => {
       return response.json();
     },
     onSuccess: () => {
-      triggerSuccess();
+      setSuccess(true);
       setNewsData({
         title: '',
         content: '',
@@ -103,6 +102,7 @@ const AddNewsForm = () => {
     addNewsMutation.mutate(newsData);
   };
 
+  console.log(handleSubmit);
   const handleSaveAsDraft = () => {
     const draftData = { ...newsData, status: 'draft' as const };
     addNewsMutation.mutate(draftData);
@@ -241,13 +241,15 @@ const AddNewsForm = () => {
                 {newsData.featuredImage && (
                   <div className="mt-4">
                     <p className="text-sm font-medium mb-2">Preview:</p>
-                    <div className="w-full h-48 bg-muted rounded-lg overflow-hidden">
-                      <img
+                    <div className="w-full h-64 relative border rounded-md overflow-hidden">
+                      <Image
                         src={newsData.featuredImage}
-                        alt="Featured image preview"
-                        className="w-full h-full object-cover"
+                        alt="Featured"
+                        fill
+                        className="object-cover"
                         onError={(e) => {
-                          e.currentTarget.src = '/default.webp';
+                          (e.target as HTMLImageElement).src =
+                            '/placeholder-image.png';
                         }}
                       />
                     </div>

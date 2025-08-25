@@ -1,10 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/main/header/navbar';
-import Footer from '@/components/main/footer/footer';
-import BackToTop from '@/components/ui/back-to-top';
-import MobileBottomNav from '@/components/main/header/mobile-bottom-nav';
 import Providers from './providers';
 import NextTopLoader from 'nextjs-toploader';
 

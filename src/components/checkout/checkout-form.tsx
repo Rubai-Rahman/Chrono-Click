@@ -34,7 +34,7 @@ const CheckoutForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors },
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -44,10 +44,12 @@ const CheckoutForm = () => {
     mode: 'onChange',
   });
 
-  const onSubmit = {};
+  const onSubmit = handleSubmit((data) => {
+    console.log('Form Data:', data);
+  });
 
   return (
-    <div className="space-y-6">
+    <form className="space-y-6" onSubmit={onSubmit}>
       {/* Personal Information */}
       <Card>
         <CardHeader>
@@ -229,7 +231,7 @@ const CheckoutForm = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </form>
   );
 };
 

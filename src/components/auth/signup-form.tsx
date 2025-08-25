@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input, PasswordInput } from '@/components/ui/input';
-import { User } from 'lucide-react';
 import { Form, CommonFormField } from '@/components/ui/form';
 import { signupSchema, SignupFormData } from '@/lib/validations/auth';
 import { PasswordStrength } from '@/components/ui/password-strength';

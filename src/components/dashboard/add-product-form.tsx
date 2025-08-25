@@ -2,26 +2,24 @@
 
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addProduct } from '@/api-lib/products';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Package, CheckCircle, Loader2 } from 'lucide-react';
-import { useSuccessMessage } from '@/hooks/useSuccessMessage';
+import { addProduct } from '@/data/product/product';
 
 const AddProductForm = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [details, setDetails] = useState('');
-  const [success, triggerSuccess] = useSuccessMessage();
-
+  const [success, setSuccess] = useState(false);
   const queryClient = useQueryClient();
 
   const addProductMutation = useMutation({
     mutationFn: addProduct,
     onSuccess: () => {
-      triggerSuccess();
+      setSuccess(true);
       setName('');
       setPrice('');
       setDetails('');

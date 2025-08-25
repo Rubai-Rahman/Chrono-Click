@@ -1,9 +1,9 @@
 // Optimized server fetch API (Axios-like interceptors)
-export { api, safeApi, serverFetch } from './serverFetch';
+export { api, safeApi } from './serverFetch';
 export type { ApiResult, RequestConfig } from './serverFetch';
 
 // Client fetch API (Axios-like interceptors for client-side)
-export { clientApi, safeClientApi, clientFetch } from './clientFetch';
+export { clientApi, safeClientApi } from './clientFetch';
 export type { ClientApiResult, ClientRequestConfig } from './clientFetch';
 
 // Core utilities

@@ -2,9 +2,8 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { OrderType } from '@/app/dashboard/myOrders/page-myOrders';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -15,9 +14,9 @@ import {
   XCircle,
   Clock,
   Eye,
-  Download,
   RefreshCw,
 } from 'lucide-react';
+import { OrderType } from '@/lib/types/api/order-type';
 
 interface MyOrdersListProps {
   orders: OrderType[];
@@ -67,7 +66,7 @@ const MyOrdersList = ({ orders }: MyOrdersListProps) => {
       day: 'numeric',
     });
   };
-
+  console.log(formatDate);
   if (orders.length === 0) {
     return (
       <div className="space-y-8">
@@ -86,7 +85,7 @@ const MyOrdersList = ({ orders }: MyOrdersListProps) => {
             <ShoppingBag className="w-16 h-16 text-muted-foreground mb-4" />
             <h3 className="text-xl font-semibold mb-2">No orders yet</h3>
             <p className="text-muted-foreground text-center mb-6">
-              You haven't placed any orders yet. Start shopping to see your
+              You haven&apos;t placed any orders yet. Start shopping to see your
               orders here.
             </p>
             <Button asChild>
@@ -117,14 +116,7 @@ const MyOrdersList = ({ orders }: MyOrdersListProps) => {
           <Card key={order._id} className="overflow-hidden">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-lg">
-                    Order #{order.orderNumber}
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    Placed on {formatDate(order.date)}
-                  </p>
-                </div>
+                <div></div>
                 <div className="flex items-center gap-3">
                   <Badge
                     className={`${getStatusColor(
@@ -182,29 +174,6 @@ const MyOrdersList = ({ orders }: MyOrdersListProps) => {
                 </div>
 
                 {/* Order Summary */}
-                <div>
-                  <h4 className="font-medium mb-3">Order Summary</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Total</span>
-                      <span className="font-semibold">
-                        ${order.total.toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Payment</span>
-                      <span>{order.paymentMethod}</span>
-                    </div>
-                    {order.trackingNumber && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Tracking</span>
-                        <span className="font-mono text-xs">
-                          {order.trackingNumber}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
               </div>
             </CardContent>
           </Card>
@@ -217,12 +186,6 @@ const MyOrdersList = ({ orders }: MyOrdersListProps) => {
           <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Order #{selectedOrder.orderNumber}</CardTitle>
-                  <p className="text-muted-foreground">
-                    Placed on {formatDate(selectedOrder.date)}
-                  </p>
-                </div>
                 <div className="flex items-center gap-2">
                   <Badge
                     className={`${getStatusColor(
@@ -282,64 +245,12 @@ const MyOrdersList = ({ orders }: MyOrdersListProps) => {
               <Separator />
 
               {/* Shipping Address */}
-              <div>
-                <h3 className="font-semibold mb-4">Shipping Address</h3>
-                <div className="p-4 bg-muted/50 rounded-lg">
-                  <p className="font-medium">
-                    {selectedOrder.shippingAddress.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {selectedOrder.shippingAddress.address}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {selectedOrder.shippingAddress.city},{' '}
-                    {selectedOrder.shippingAddress.zipCode}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {selectedOrder.shippingAddress.country}
-                  </p>
-                </div>
-              </div>
 
               <Separator />
 
               {/* Order Summary */}
-              <div>
-                <h3 className="font-semibold mb-4">Order Summary</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Subtotal</span>
-                    <span>${(selectedOrder.total * 0.9).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Shipping</span>
-                    <span>${(selectedOrder.total * 0.05).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Tax</span>
-                    <span>${(selectedOrder.total * 0.05).toFixed(2)}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between font-semibold text-lg">
-                    <span>Total</span>
-                    <span>${selectedOrder.total.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
 
               {/* Actions */}
-              <div className="flex gap-4">
-                <Button variant="outline" className="flex-1">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Invoice
-                </Button>
-                {selectedOrder.trackingNumber && (
-                  <Button variant="outline" className="flex-1">
-                    <Truck className="w-4 h-4 mr-2" />
-                    Track Package
-                  </Button>
-                )}
-              </div>
             </CardContent>
           </Card>
         </div>

@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation';
 import ImageWithFallback from '@/components/ui/image-with-fallback';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { fetchNewsDetails, NewsType } from '@/api-lib/news';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -20,6 +19,7 @@ import {
 } from 'lucide-react';
 import NewsDetailsSkeleton from '@/components/skeletons/news-details-skeleton';
 import CommentSection from './comment-section';
+import { fetchNewsDetails, NewsType } from '@/data/news/news';
 
 const NewsDetailsClient = () => {
   const { newsId } = useParams();

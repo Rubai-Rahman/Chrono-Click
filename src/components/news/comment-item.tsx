@@ -14,7 +14,6 @@ import {
   Trash2,
   Loader2,
 } from 'lucide-react';
-import { CommentType } from '@/api-lib/news';
 import CommentReply from './comment-reply';
 import CommentEdit from './comment-edit';
 import {
@@ -23,6 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { CommentType } from '@/data/news/news';
 
 interface CommentItemProps {
   comment: CommentType;
@@ -128,6 +128,7 @@ const CommentItem = ({
     try {
       await onReact(comment._id, newReaction);
     } catch (error) {
+      console.error('Failed to react to comment:', error);
       // Revert the optimistic update on error
       setUserReaction(previousReaction);
     } finally {

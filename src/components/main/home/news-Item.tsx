@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, User, ArrowRight, Bookmark } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { NewsType } from '@/api-lib/news';
+import { NewsType } from '@/data/news/news';
 
 interface NewsItemProps {
   item: NewsType;

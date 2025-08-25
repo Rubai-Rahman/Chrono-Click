@@ -42,7 +42,6 @@ export const ContentCard = ({
   author,
   date,
   rating,
-  status,
   category,
   tags,
   actions = [],
