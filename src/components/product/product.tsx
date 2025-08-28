@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { ProductType } from '@/lib/types/api/product-types';
-import { WishlistButton } from './wishlist-button';
+import { WishlistButton } from '../wishlist/wishlist-button';
 
 const formatPrice = (price: number) => {
   return `$${Number(price).toFixed(2)}`;
@@ -37,7 +37,10 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   return (
     <Card className="group w-full rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card border border-border hover:border-primary py-0 ">
       <CardContent className="p-3">
-        <div className="relative w-full h-60 bg-muted rounded-xl overflow-hidden flex items-center justify-center mb-4 cursor-pointer" onClick={handleProductClick}>
+        <div
+          className="relative w-full h-60 bg-muted rounded-xl overflow-hidden flex items-center justify-center mb-4 cursor-pointer"
+          onClick={handleProductClick}
+        >
           <Image
             src={img || '/placeholder.svg?height=200&width=200&text=Product'}
             alt={name}
@@ -47,7 +50,11 @@ const Product: React.FC<ProductProps> = ({ product }) => {
             priority
             onClick={handleProductClick}
           />
-          <WishlistButton product={product} className="absolute top-3 right-3 w-8 h-8" iconClassName="size-4" />
+          <WishlistButton
+            product={product}
+            className="absolute top-3 right-3 w-8 h-8"
+            iconClassName="size-4"
+          />
         </div>
         {/* Product Details */}
         <div className="px-1 space-y-1">

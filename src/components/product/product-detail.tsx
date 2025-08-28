@@ -18,7 +18,7 @@ import {
 import { ProductType } from '@/lib/types/api/product-types';
 import { toast } from 'sonner';
 import { useState } from 'react';
-import { WishlistButton } from './wishlist-button';
+import { WishlistButton } from '../wishlist/wishlist-button';
 
 export default function ProductDetails({ product }: { product: ProductType }) {
   const { addToCart } = useCartStore();
@@ -168,7 +168,7 @@ export default function ProductDetails({ product }: { product: ProductType }) {
                 <WishlistButton
                   product={product}
                   size="lg"
-                  className="h-12 w-12 p-0 rounded-none"
+                  className="h-12 w-12 p-0 rounded-md"
                 />
                 <Button variant="outline" size="lg" className="h-12 w-12 p-0">
                   <Share2 className="w-5 h-5" />

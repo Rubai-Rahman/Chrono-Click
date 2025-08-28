@@ -43,7 +43,7 @@ export function WishlistButton({
       size={size || 'icon'}
       variant="outline"
       className={cn(
-        'absolute top-3 right-3 rounded-full w-8 h-8 bg-background shadow-2xs focus:ring-0',
+        'rounded-full size-8 bg-background shadow-2xs focus:ring-0',
         className
       )}
       aria-label="Add to wishlist"
