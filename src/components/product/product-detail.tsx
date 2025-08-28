@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useCartStore } from '@/store/useCartStore';
 import { StarRating } from '@/components/ui/render-star';
 import {
-  Heart,
   Share2,
   ShoppingCart,
   Truck,
@@ -19,6 +18,7 @@ import {
 import { ProductType } from '@/lib/types/api/product-types';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { WishlistButton } from './wishlist-button';
 
 export default function ProductDetails({ product }: { product: ProductType }) {
   const { addToCart } = useCartStore();
@@ -155,7 +155,7 @@ export default function ProductDetails({ product }: { product: ProductType }) {
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-4 relative">
                 <Button
                   size="lg"
                   className="flex-1 h-12 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
@@ -165,9 +165,11 @@ export default function ProductDetails({ product }: { product: ProductType }) {
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   Add to Cart
                 </Button>
-                <Button variant="outline" size="lg" className="h-12 w-12 p-0">
-                  <Heart />
-                </Button>
+                <WishlistButton
+                  product={product}
+                  size="lg"
+                  className="h-12 w-12 p-0 rounded-none"
+                />
                 <Button variant="outline" size="lg" className="h-12 w-12 p-0">
                   <Share2 className="w-5 h-5" />
                 </Button>
