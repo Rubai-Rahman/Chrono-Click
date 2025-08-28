@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { ProductType } from '@/lib/types/api/product-types';
 import { toast } from 'sonner';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { WishlistButton } from '../wishlist/wishlist-button';
 
 export default function ProductDetails({ product }: { product: ProductType }) {
@@ -33,6 +33,31 @@ export default function ProductDetails({ product }: { product: ProductType }) {
     addToCart(product, quantity);
     toast.success(`${product.name} is added to cart`);
   };
+
+  const handleShare = useCallback(async () => {
+    const shareData = {
+      title: product.name,
+      text: `Check out ${product.name} on Chrono Click`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        // Web Share API (mobile)
+        await navigator.share(shareData);
+      } else if (navigator.clipboard) {
+        // Fallback: Copy to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success('Link copied to clipboard!');
+      } else {
+        // Fallback: Show the URL in an alert
+        prompt('Copy this link:', window.location.href);
+      }
+    } catch (err) {
+      console.error('Error sharing:', err);
+      toast.error('Failed to share. Please try again.');
+    }
+  }, [product.name]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/5 to-background">
@@ -170,7 +195,13 @@ export default function ProductDetails({ product }: { product: ProductType }) {
                   size="lg"
                   className="h-12 w-12 p-0 rounded-md"
                 />
-                <Button variant="outline" size="lg" className="h-12 w-12 p-0">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="h-12 w-12 p-0"
+                  onClick={() => handleShare()}
+                  aria-label="Share product"
+                >
                   <Share2 className="w-5 h-5" />
                 </Button>
               </div>
