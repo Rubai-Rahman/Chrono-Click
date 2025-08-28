@@ -1,15 +1,14 @@
 'use client';
 
-import React from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MapPin, User, Phone, Mail } from 'lucide-react';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-// Zod validation schema
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { CommonFormField, Form } from '@/components/ui/form';
+import { User, MapPin, Phone, Mail } from 'lucide-react';
+
 const checkoutSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
@@ -30,208 +29,212 @@ const checkoutSchema = z.object({
 
 export type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
-const CheckoutForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CheckoutFormData>({
+const CheckoutForm = ({ formId }: { formId: string }) => {
+  const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: '',
+      city: '',
+      postalCode: '',
       country: 'Bangladesh',
-      paymentMethod: 'sslcommerz',
+      paymentMethod: '',
     },
-    mode: 'onChange',
+    mode: 'onSubmit',
   });
 
-  const onSubmit = handleSubmit((data) => {
-    console.log('Form Data:', data);
-  });
+  const onSubmit = (data: CheckoutFormData) => {
+    // send to API / proceed to payment step
+    
+    console.log('Checkout data:', data);
+  };
 
   return (
-    <form className="space-y-6" onSubmit={onSubmit}>
-      {/* Personal Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Personal Information
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="firstName">First Name</Label>
-              <Input
-                id="firstName"
-                {...register('firstName')}
-                className={errors.firstName ? 'border-red-500' : ''}
-              />
-              {errors.firstName && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.firstName.message}
-                </p>
+    <Form {...form}>
+      <form
+        id={formId}
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6"
+      >
+        {/* Personal Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              Personal Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <CommonFormField
+                control={form.control}
+                name="firstName"
+                label="First Name"
+              >
+                {({ field }) => (
+                  <Input id="firstName" placeholder="John" {...field} />
+                )}
+              </CommonFormField>
+
+              <CommonFormField
+                control={form.control}
+                name="lastName"
+                label="Last Name"
+              >
+                {({ field }) => (
+                  <Input id="lastName" placeholder="Doe" {...field} />
+                )}
+              </CommonFormField>
+            </div>
+
+            <CommonFormField control={form.control} name="email" label="Email">
+              {({ field }) => (
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    className="pl-10"
+                    {...field}
+                  />
+                </div>
               )}
-            </div>
-            <div>
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input
-                id="lastName"
-                {...register('lastName')}
-                className={errors.lastName ? 'border-red-500' : ''}
-              />
-              {errors.lastName && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.lastName.message}
-                </p>
+            </CommonFormField>
+
+            <CommonFormField
+              control={form.control}
+              name="phone"
+              label="Phone Number"
+            >
+              {({ field }) => (
+                <div className="relative">
+                  <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="+880 1XXXXXXXXX"
+                    className="pl-10"
+                    {...field}
+                  />
+                </div>
               )}
-            </div>
-          </div>
+            </CommonFormField>
+          </CardContent>
+        </Card>
 
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                className={`pl-10 ${errors.email ? 'border-red-500' : ''}`}
-                {...register('email')}
-              />
-            </div>
-            {errors.email && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="phone">Phone Number</Label>
-            <div className="relative">
-              <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="phone"
-                type="tel"
-                className={`pl-10 ${errors.phone ? 'border-red-500' : ''}`}
-                placeholder="+880 1XXXXXXXXX"
-                {...register('phone')}
-              />
-            </div>
-            {errors.phone && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.phone.message}
-              </p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Shipping Address */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Shipping Address
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="address">Street Address</Label>
-            <Input
-              id="address"
-              {...register('address')}
-              className={errors.address ? 'border-red-500' : ''}
-            />
-            {errors.address && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.address.message}
-              </p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="city">City</Label>
-              <Input
-                id="city"
-                {...register('city')}
-                className={errors.city ? 'border-red-500' : ''}
-              />
-              {errors.city && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.city.message}
-                </p>
+        {/* Shipping Address */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="h-5 w-5" />
+              Shipping Address
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <CommonFormField
+              control={form.control}
+              name="address"
+              label="Street Address"
+            >
+              {({ field }) => (
+                <Input
+                  id="address"
+                  placeholder="House, road, area"
+                  {...field}
+                />
               )}
+            </CommonFormField>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <CommonFormField control={form.control} name="city" label="City">
+                {({ field }) => (
+                  <Input id="city" placeholder="Dhaka" {...field} />
+                )}
+              </CommonFormField>
+
+              <CommonFormField
+                control={form.control}
+                name="postalCode"
+                label="Postal Code"
+              >
+                {({ field }) => (
+                  <Input id="postalCode" placeholder="1212" {...field} />
+                )}
+              </CommonFormField>
             </div>
-            <div>
-              <Label htmlFor="postalCode">Postal Code</Label>
-              <Input
-                id="postalCode"
-                {...register('postalCode')}
-                className={errors.postalCode ? 'border-red-500' : ''}
-              />
-              {errors.postalCode && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.postalCode.message}
-                </p>
+
+            <CommonFormField
+              control={form.control}
+              name="country"
+              label="Country"
+            >
+              {({ field }) => (
+                <Input id="country" disabled className="bg-muted" {...field} />
               )}
-            </div>
-          </div>
+            </CommonFormField>
+          </CardContent>
+        </Card>
 
-          <div>
-            <Label htmlFor="country">Country</Label>
-            <Input
-              id="country"
-              {...register('country')}
-              disabled
-              className="bg-muted"
-            />
-          </div>
-        </CardContent>
-      </Card>
+        {/* Payment Method */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Payment Method</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <CommonFormField control={form.control} name="paymentMethod">
+              {({ field }) => (
+                <div className="space-y-3">
+                  <label
+                    htmlFor="sslcommerz"
+                    className="flex items-center gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer"
+                  >
+                    <input
+                      id="sslcommerz"
+                      type="radio"
+                      value="sslcommerz"
+                      checked={field.value === 'sslcommerz'}
+                      onChange={() => field.onChange('sslcommerz')}
+                      className="text-primary"
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium">SSLCommerz</div>
+                      <div className="text-sm text-muted-foreground">
+                        Pay securely with bKash, Nagad, cards, and more
+                      </div>
+                    </div>
+                  </label>
 
-      {/* Payment Method */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Payment Method</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center space-x-2 p-4 border rounded-lg bg-muted/20">
-            <input
-              type="radio"
-              id="sslcommerz"
-              value="sslcommerz"
-              {...register('paymentMethod')}
-              className="text-primary"
-            />
-            <label htmlFor="sslcommerz" className="flex-1">
-              <div className="font-medium">SSL Commerce</div>
-              <div className="text-sm text-muted-foreground">
-                Pay securely with bKash, Nagad, Cards, and more
-              </div>
-            </label>
-          </div>
-        </CardContent>
-        <CardContent>
-          <div className="flex items-center space-x-2 p-4 border rounded-lg bg-muted/20">
-            <input
-              type="radio"
-              id="cod"
-              value="cashOndelivary"
-              {...register('paymentMethod')}
-              className="text-primary"
-            />
-            <label htmlFor="cashOndelivary" className="flex-1">
-              <div className="font-medium">CashOndelivary</div>
-              <div className="text-sm text-muted-foreground">
-                Pay After Revciviewign the product
-              </div>
-            </label>
-          </div>
-        </CardContent>
-      </Card>
-    </form>
+                  <label
+                    htmlFor="cod"
+                    className="flex items-center gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer"
+                  >
+                    <input
+                      id="cod"
+                      type="radio"
+                      value="cashOnDelivery"
+                      checked={field.value === 'cashOnDelivery'}
+                      onChange={() => field.onChange('cashOnDelivery')}
+                      className="text-primary"
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium">Cash on Delivery</div>
+                      <div className="text-sm text-muted-foreground">
+                        Pay after receiving the product
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              )}
+            </CommonFormField>
+          </CardContent>
+        </Card>
+
+      </form>
+    </Form>
   );
 };
 
