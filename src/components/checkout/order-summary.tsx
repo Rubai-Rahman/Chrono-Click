@@ -4,7 +4,7 @@ import { useCartStore } from '@/store/useCartStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBag, Package, Truck, Gift } from 'lucide-react';
+import { ShoppingBag, Package, Truck } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 
@@ -87,18 +87,6 @@ const OrderSummary = ({
           </div>
 
           <Separator />
-
-          {/* Free Shipping Banner */}
-          {subtotal < 100 && (
-            <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
-              <div className="flex items-center gap-2 text-sm">
-                <Gift className="size-4 text-amber-600" />
-                <span className="text-amber-800 dark:text-amber-200">
-                  Add {formatPrice(100 - subtotal)} more for free shipping!
-                </span>
-              </div>
-            </div>
-          )}
 
           {/* Price Breakdown */}
           <div className="space-y-2">
