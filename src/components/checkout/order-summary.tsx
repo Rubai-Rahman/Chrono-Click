@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/useCartStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -15,19 +16,23 @@ const OrderSummary = ({
   formId: string;
   shippingMethod?: string;
 }) => {
+  const [mounted, setMounted] = useState(false);
   const items = useCartStore((state) => state.items);
-  const totalPrice = useCartStore((state) => state.totalPrice);
-
-  console.log(formId);
-
+  const totalPrice = useCartStore((state) => state.totalPrice()) || 0;
+  
   const formatPrice = (price: number) => {
+    if (!mounted) return '$0.00';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
     }).format(price);
   };
 
-  const subtotal = totalPrice() || 0;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const subtotal = totalPrice || 0;
 
   // Calculate shipping cost based on selected shipping method
   const getShippingCost = () => {
@@ -79,7 +84,7 @@ const OrderSummary = ({
                     {item.brand || 'Premium Watch'}
                   </p>
                   <p className="text-sm font-semibold text-primary">
-                    {formatPrice(item.price)}
+                    {mounted ? formatPrice(item.price) : '$0.00'}
                   </p>
                 </div>
               </div>
@@ -92,7 +97,7 @@ const OrderSummary = ({
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
-              <span>{formatPrice(subtotal)}</span>
+              <span>{mounted ? formatPrice(subtotal) : '$0.00'}</span>
             </div>
             <div className="flex justify-between text-sm">
               <div className="flex items-center gap-1">
@@ -111,18 +116,18 @@ const OrderSummary = ({
                 {shipping === 0 ? (
                   <span className="text-green-600 font-medium">Free</span>
                 ) : (
-                  formatPrice(shipping)
+                  mounted ? formatPrice(shipping) : '$0.00'
                 )}
               </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Tax</span>
-              <span>{formatPrice(tax)}</span>
+              <span>{mounted ? formatPrice(tax) : '$0.00'}</span>
             </div>
             <Separator />
             <div className="flex justify-between text-lg font-bold">
               <span>Total</span>
-              <span className="text-primary">{formatPrice(total)}</span>
+              <span className="text-primary">{mounted ? formatPrice(total) : '$0.00'}</span>
             </div>
           </div>
 

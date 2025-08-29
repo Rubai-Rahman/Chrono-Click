@@ -13,8 +13,8 @@ export default function CheckoutPageContent() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Checkout form */}
         <div>
-          <CheckoutForm 
-            formId={formId} 
+          <CheckoutForm
+            formId={formId}
             shippingMethod={shippingMethod}
             onShippingMethodChange={setShippingMethod}
           />
@@ -22,10 +22,7 @@ export default function CheckoutPageContent() {
 
         {/* Order summary */}
         <div>
-          <OrderSummary 
-            formId={formId} 
-            shippingMethod={shippingMethod} 
-          />
+          <OrderSummary formId={formId} shippingMethod={shippingMethod} />
         </div>
       </div>
     </div>
