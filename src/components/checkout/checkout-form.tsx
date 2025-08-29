@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { CommonFormField, Form } from '@/components/ui/form';
 import { User, MapPin, Phone, Mail } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Label } from '../ui/label';
 
 const checkoutSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
@@ -25,6 +27,7 @@ const checkoutSchema = z.object({
   postalCode: z.string().min(4, 'Postal code must be at least 4 characters'),
   country: z.string().min(1, 'Country is required'),
   paymentMethod: z.string().min(1, 'Payment method is required'),
+  shippingMethod: z.string().min(1, 'Shipping method is required'),
 });
 
 export type CheckoutFormData = z.infer<typeof checkoutSchema>;
@@ -42,13 +45,14 @@ const CheckoutForm = ({ formId }: { formId: string }) => {
       postalCode: '',
       country: 'Bangladesh',
       paymentMethod: '',
+      shippingMethod: '',
     },
     mode: 'onSubmit',
   });
 
   const onSubmit = (data: CheckoutFormData) => {
     // send to API / proceed to payment step
-    
+
     console.log('Checkout data:', data);
   };
 
@@ -179,60 +183,83 @@ const CheckoutForm = ({ formId }: { formId: string }) => {
           </CardContent>
         </Card>
 
-        {/* Payment Method */}
         <Card>
           <CardHeader>
             <CardTitle>Payment Method</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent>
             <CommonFormField control={form.control} name="paymentMethod">
               {({ field }) => (
-                <div className="space-y-3">
-                  <label
-                    htmlFor="sslcommerz"
-                    className="flex items-center gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer"
-                  >
-                    <input
-                      id="sslcommerz"
-                      type="radio"
-                      value="sslcommerz"
-                      checked={field.value === 'sslcommerz'}
-                      onChange={() => field.onChange('sslcommerz')}
-                      className="text-primary"
-                    />
-                    <div className="flex-1">
+                <RadioGroup
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  className="space-y-3"
+                >
+                  <div className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer">
+                    <RadioGroupItem value="sslcommerz" id="sslcommerz" />
+                    <Label
+                      htmlFor="sslcommerz"
+                      className="flex-1 cursor-pointer"
+                    >
                       <div className="font-medium">SSLCommerz</div>
                       <div className="text-sm text-muted-foreground">
                         Pay securely with bKash, Nagad, cards, and more
                       </div>
-                    </div>
-                  </label>
+                    </Label>
+                  </div>
 
-                  <label
-                    htmlFor="cod"
-                    className="flex items-center gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer"
-                  >
-                    <input
-                      id="cod"
-                      type="radio"
-                      value="cashOnDelivery"
-                      checked={field.value === 'cashOnDelivery'}
-                      onChange={() => field.onChange('cashOnDelivery')}
-                      className="text-primary"
-                    />
-                    <div className="flex-1">
+                  <div className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer">
+                    <RadioGroupItem value="cashOnDelivery" id="cod" />
+                    <Label htmlFor="cod" className="flex-1 cursor-pointer">
                       <div className="font-medium">Cash on Delivery</div>
                       <div className="text-sm text-muted-foreground">
                         Pay after receiving the product
                       </div>
-                    </div>
-                  </label>
-                </div>
+                    </Label>
+                  </div>
+                </RadioGroup>
               )}
             </CommonFormField>
           </CardContent>
         </Card>
 
+        {/* Shipping Method */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Shipping Method</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CommonFormField control={form.control} name="shippingMethod">
+              {({ field }) => (
+                <RadioGroup
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  className="space-y-3"
+                >
+                  <div className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer">
+                    <RadioGroupItem value="standard" id="standard" />
+                    <Label htmlFor="standard" className="flex-1 cursor-pointer">
+                      <div className="font-medium">Standard Shipping</div>
+                      <div className="text-sm text-muted-foreground">
+                        3–5 business days
+                      </div>
+                    </Label>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer">
+                    <RadioGroupItem value="express" id="express" />
+                    <Label htmlFor="express" className="flex-1 cursor-pointer">
+                      <div className="font-medium">Express Shipping</div>
+                      <div className="text-sm text-muted-foreground">
+                        1–2 business days
+                      </div>
+                    </Label>
+                  </div>
+                </RadioGroup>
+              )}
+            </CommonFormField>
+          </CardContent>
+        </Card>
       </form>
     </Form>
   );

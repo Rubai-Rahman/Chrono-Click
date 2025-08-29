@@ -1,3 +1,5 @@
+'use client';
+
 import OrderSummary from '@/components/checkout/order-summary';
 import CheckoutForm from '@/components/checkout/checkout-form';
 
