@@ -32,7 +32,15 @@ const checkoutSchema = z.object({
 
 export type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
-const CheckoutForm = ({ formId }: { formId: string }) => {
+const CheckoutForm = ({ 
+  formId, 
+  shippingMethod, 
+  onShippingMethodChange 
+}: { 
+  formId: string;
+  shippingMethod: string;
+  onShippingMethodChange: (method: string) => void;
+}) => {
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -45,7 +53,7 @@ const CheckoutForm = ({ formId }: { formId: string }) => {
       postalCode: '',
       country: 'Bangladesh',
       paymentMethod: '',
-      shippingMethod: '',
+      shippingMethod: shippingMethod || 'standard',
     },
     mode: 'onSubmit',
   });
@@ -232,10 +240,13 @@ const CheckoutForm = ({ formId }: { formId: string }) => {
             <CommonFormField control={form.control} name="shippingMethod">
               {({ field }) => (
                 <RadioGroup
-                  value={field.value}
-                  onValueChange={field.onChange}
+                  value={shippingMethod}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    onShippingMethodChange(value);
+                  }}
                   className="space-y-3"
-                >
+                  >
                   <div className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer">
                     <RadioGroupItem value="standard" id="standard" />
                     <Label htmlFor="standard" className="flex-1 cursor-pointer">

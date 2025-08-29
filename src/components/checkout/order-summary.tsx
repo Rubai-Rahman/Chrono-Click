@@ -8,7 +8,13 @@ import { ShoppingBag, Package, Truck, Gift } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 
-const OrderSummary = ({ formId }: { formId: string }) => {
+const OrderSummary = ({
+  formId,
+  shippingMethod = 'standard',
+}: {
+  formId: string;
+  shippingMethod?: string;
+}) => {
   const items = useCartStore((state) => state.items);
   const totalPrice = useCartStore((state) => state.totalPrice);
 
@@ -22,7 +28,19 @@ const OrderSummary = ({ formId }: { formId: string }) => {
   };
 
   const subtotal = totalPrice() || 0;
-  const shipping = subtotal > 100 ? 0 : 9.99;
+
+  // Calculate shipping cost based on selected shipping method
+  const getShippingCost = () => {
+    switch (shippingMethod) {
+      case 'express':
+        return 15.99;
+      case 'standard':
+      default:
+        return 0;
+    }
+  };
+
+  const shipping = getShippingCost();
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
@@ -91,7 +109,15 @@ const OrderSummary = ({ formId }: { formId: string }) => {
             <div className="flex justify-between text-sm">
               <div className="flex items-center gap-1">
                 <Truck className="h-3 w-3 text-muted-foreground" />
-                <span className="text-muted-foreground">Shipping</span>
+                <div>
+                  <div className="text-muted-foreground">Shipping</div>
+                  <div className="text-xs text-muted-foreground">
+                    {shippingMethod === 'express'
+                      ? 'Express (1-2 business days)'
+                      : 'Standard (3-5 business days)'}
+                    {shipping === 0 && ' - Free'}
+                  </div>
+                </div>
               </div>
               <span>
                 {shipping === 0 ? (
