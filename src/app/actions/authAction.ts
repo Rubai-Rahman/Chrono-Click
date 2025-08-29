@@ -35,18 +35,6 @@ export async function saveUser(
   photoURL?: string,
   rememberMe: boolean = false
 ): Promise<SaveUserResult> {
-  console.log(
-    'email',
-    email,
-    'dispalyName',
-    displayName,
-    'idToken',
-    idToken,
-    'photoURL',
-    photoURL,
-    'rememberMe',
-    rememberMe
-  );
   const result = await safeApi.put<{
     email: string;
     name: string;
