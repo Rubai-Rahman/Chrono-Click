@@ -1,7 +1,7 @@
+'use client';
 import { useState } from 'react';
 import { Plus, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
 import { toast } from 'sonner';
 import { AddressCard } from '@/components/adresses/adresses-card';
 import { AddressForm } from '@/components/adresses/adresses-form';
