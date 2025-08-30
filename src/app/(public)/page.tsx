@@ -6,9 +6,9 @@ import { Slider, Banner } from '@/components/main/home';
 import Newsletter from '@/components/main/home/news-letter';
 import { NewsType } from '@/lib/types/api/new-types';
 import { ReviewType } from '@/lib/types/api/review-types';
-import { toast } from 'sonner';
 import NewsCarousel from '@/components/main/home/news-carousel';
 import { fetchNewsData } from '@/data/news/news.server';
+import { fetchReviewData } from '@/data/review';
 
 export const metadata: Metadata = {
   title: 'Chrono Click - Home',
@@ -20,16 +20,9 @@ const HomePage = async () => {
     next: { tags: ['news'] },
   });
 
-  const reviews = await fetchNewsData<ReviewType[]>('review', {
-    next: { tags: ['review'] },
+  const reviews = await fetchReviewData<ReviewType[]>('reviews', {
+    next: { tags: ['reviews'] },
   });
-  if (news.error) {
-    toast.error(news.error.message);
-  }
-  if (reviews.error) {
-    toast.error(reviews.error.message);
-  }
-
   const newsItem = news.data ?? [];
   const reviewItem = reviews.data ?? [];
   return (

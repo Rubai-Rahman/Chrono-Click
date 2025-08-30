@@ -5,13 +5,14 @@ export interface ProductType {
   name: string;
   description?: string;
   price: number;
-  img: string;
+  img: string[];
   brand?: string;
   category?: string;
   rating?: number;
   reviews?: number;
   inStock?: boolean;
   isFeatured?: boolean;
+  quantity?: number;
 }
 
 export interface ProductsResponse {
@@ -21,5 +22,5 @@ export interface ProductsResponse {
 
 // Cart Item extends Product with quantity
 export interface CartItem extends ProductType {
-  quantity?: number;
+  cart_quantity?: number;
 }
