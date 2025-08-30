@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useCartStore } from '@/store/useCartStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -9,17 +8,36 @@ import { ShoppingBag, Package, Truck } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 
+interface OrderSummaryProps {
+  formId: string;
+  isPending: boolean;
+  orderSummary: {
+    subtotal: number;
+    shipping: number;
+    tax: number;
+    total: number;
+  };
+  items: Array<{
+    _id: string;
+    name: string;
+    price: number;
+    quantity?: number;
+    img?: string;
+    brand?: string;
+  }>;
+  shippingMethod: string;
+}
+
 const OrderSummary = ({
   formId,
-  shippingMethod = 'standard',
-}: {
-  formId: string;
-  shippingMethod?: string;
-}) => {
+  isPending,
+  orderSummary,
+  items,
+  shippingMethod,
+}: OrderSummaryProps) => {
   const [mounted, setMounted] = useState(false);
-  const items = useCartStore((state) => state.items);
-  const totalPrice = useCartStore((state) => state.totalPrice()) || 0;
-  
+  const { subtotal, shipping, tax, total } = orderSummary;
+
   const formatPrice = (price: number) => {
     if (!mounted) return '$0.00';
     return new Intl.NumberFormat('en-US', {
@@ -31,23 +49,6 @@ const OrderSummary = ({
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const subtotal = totalPrice || 0;
-
-  // Calculate shipping cost based on selected shipping method
-  const getShippingCost = () => {
-    switch (shippingMethod) {
-      case 'express':
-        return 15.99;
-      case 'standard':
-      default:
-        return 0;
-    }
-  };
-
-  const shipping = getShippingCost();
-  const tax = subtotal * 0.08;
-  const total = subtotal + shipping + tax;
 
   return (
     <>
@@ -115,8 +116,10 @@ const OrderSummary = ({
               <span>
                 {shipping === 0 ? (
                   <span className="text-green-600 font-medium">Free</span>
+                ) : mounted ? (
+                  formatPrice(shipping)
                 ) : (
-                  mounted ? formatPrice(shipping) : '$0.00'
+                  '$0.00'
                 )}
               </span>
             </div>
@@ -127,7 +130,9 @@ const OrderSummary = ({
             <Separator />
             <div className="flex justify-between text-lg font-bold">
               <span>Total</span>
-              <span className="text-primary">{mounted ? formatPrice(total) : '$0.00'}</span>
+              <span className="text-primary">
+                {mounted ? formatPrice(total) : '$0.00'}
+              </span>
             </div>
           </div>
 
@@ -147,7 +152,13 @@ const OrderSummary = ({
               </span>
             </div>
           </div>
-          <Button type="submit" form={formId} className="w-full h-12">
+          <Button
+            type="submit"
+            loading={isPending}
+            disabled={isPending}
+            form={formId}
+            className="w-full h-12"
+          >
             Order Product
           </Button>
         </CardContent>

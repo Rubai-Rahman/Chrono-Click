@@ -1,12 +1,54 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import OrderSummary from '@/components/checkout/order-summary';
-import CheckoutForm from '@/components/checkout/checkout-form';
+import CheckoutForm, {
+  CheckoutFormData,
+} from '@/components/checkout/checkout-form';
+import { useCartStore } from '@/store/useCartStore';
+import { checkoutAction } from '@/app/actions/checkoutAction';
+import { OrderData } from '@/data/order';
 
 export default function CheckoutPageContent() {
   const formId = 'checkout-form';
   const [shippingMethod, setShippingMethod] = useState('standard');
+  const [isPending, setTransition] = useTransition();
+  // Get cart items and calculate order summary values
+  const items = useCartStore((state) => state.items);
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.price * (item.quantity || 1),
+    0
+  );
+  const shipping = shippingMethod === 'express' ? 15.99 : 0;
+  const tax = subtotal * 0.08;
+  const total = subtotal + shipping + tax;
+  const orderSummary = { subtotal, shipping, tax, total };
+
+  const handleOrder = (data: CheckoutFormData) => {
+    const orderData: OrderData = {
+      orderInfo: data,
+      orderItems: items.map((item) => ({
+        productId: item._id,
+        quantity: item.quantity ?? 1,
+        price: item.price,
+      })),
+      paymentMethod: 'COD',
+      orderSummary,
+    };
+
+    console.log('payload', orderData);
+
+    setTransition(async () => {
+      try {
+        const res = await checkoutAction(orderData);
+        console.log('Order placed', res);
+        // clear cart or redirect
+      } catch (err) {
+        console.error('Checkout failed', err);
+      }
+    });
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Checkout</h1>
@@ -17,12 +59,19 @@ export default function CheckoutPageContent() {
             formId={formId}
             shippingMethod={shippingMethod}
             onShippingMethodChange={setShippingMethod}
+            handleOrder={handleOrder}
           />
         </div>
 
         {/* Order summary */}
         <div>
-          <OrderSummary formId={formId} shippingMethod={shippingMethod} />
+          <OrderSummary
+            formId={formId}
+            isPending={isPending}
+            items={items}
+            orderSummary={orderSummary}
+            shippingMethod={shippingMethod}
+          />
         </div>
       </div>
     </div>

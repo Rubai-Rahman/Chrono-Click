@@ -32,14 +32,16 @@ const checkoutSchema = z.object({
 
 export type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
-const CheckoutForm = ({ 
-  formId, 
-  shippingMethod, 
-  onShippingMethodChange 
-}: { 
+const CheckoutForm = ({
+  formId,
+  shippingMethod,
+  onShippingMethodChange,
+  handleOrder,
+}: {
   formId: string;
   shippingMethod: string;
   onShippingMethodChange: (method: string) => void;
+  handleOrder: (data: CheckoutFormData) => void;
 }) => {
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
@@ -59,9 +61,7 @@ const CheckoutForm = ({
   });
 
   const onSubmit = (data: CheckoutFormData) => {
-    // send to API / proceed to payment step
-
-    console.log('Checkout data:', data);
+    handleOrder(data);
   };
 
   return (
@@ -246,7 +246,7 @@ const CheckoutForm = ({
                     onShippingMethodChange(value);
                   }}
                   className="space-y-3"
-                  >
+                >
                   <div className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer">
                     <RadioGroupItem value="standard" id="standard" />
                     <Label htmlFor="standard" className="flex-1 cursor-pointer">
