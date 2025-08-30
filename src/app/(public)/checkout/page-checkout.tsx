@@ -32,7 +32,6 @@ export default function CheckoutPageContent() {
         quantity: item.quantity ?? 1,
         price: item.price,
       })),
-      paymentMethod: 'COD',
       orderSummary,
     };
 

@@ -10,7 +10,6 @@ export interface OrderItem {
 export interface OrderData {
   orderInfo: CheckoutFormData;
   orderItems: OrderItem[];
-  paymentMethod: string;
   orderSummary: {
     subtotal: number;
     shipping: number;
