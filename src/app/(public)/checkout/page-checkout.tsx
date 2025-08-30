@@ -8,13 +8,17 @@ import CheckoutForm, {
 import { useCartStore } from '@/store/useCartStore';
 import { checkoutAction } from '@/app/actions/checkoutAction';
 import { OrderData } from '@/data/order';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function CheckoutPageContent() {
   const formId = 'checkout-form';
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [isPending, setTransition] = useTransition();
+  const router = useRouter();
   // Get cart items and calculate order summary values
   const items = useCartStore((state) => state.items);
+  const clearCart = useCartStore((state) => state.clearCart);
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
     0
@@ -35,16 +39,14 @@ export default function CheckoutPageContent() {
       orderSummary,
     };
 
-    console.log('payload', orderData);
-
     setTransition(async () => {
-      try {
-        const res = await checkoutAction(orderData);
-        console.log('Order placed', res);
-        // clear cart or redirect
-      } catch (err) {
-        console.error('Checkout failed', err);
+      const res = await checkoutAction(orderData);
+      if (res.success) {
+        toast.success('Order placed successfully');
+        clearCart();
+        router.push('/checkout/order-success');
       }
+      toast.error(res.error?.message);
     });
   };
 

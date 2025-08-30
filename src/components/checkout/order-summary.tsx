@@ -155,7 +155,7 @@ const OrderSummary = ({
           <Button
             type="submit"
             loading={isPending}
-            disabled={isPending}
+            disabled={isPending || items.length === 0}
             form={formId}
             className="w-full h-12"
           >

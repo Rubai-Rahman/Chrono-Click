@@ -19,7 +19,8 @@ export interface OrderData {
 }
 
 export const placeOrder = async (orderData: OrderData) => {
-  const res = await safeApi.post('/orders', JSON.stringify(orderData));
+  console.log('orderData', orderData);
+  const res = await safeApi.post('/orders', { ...orderData });
 
   return res.data;
 };
