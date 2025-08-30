@@ -4,7 +4,7 @@ export interface NewsType {
   name: string;
   excerpt: string;
   details: string;
-  img: string;
+  image : string;
   date: string;
   updatedAt: string;
   author: string;
