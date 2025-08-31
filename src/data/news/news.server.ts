@@ -42,7 +42,7 @@ export const fetchNewsDetails = async (
   newsId: string,
   opts?: { next?: { revalidate?: number | false; tags?: string[] } }
 ) => {
-  const result = await safeApi.get<{ news: NewsType }>(`/news/${newsId}`, {
+  const result = await safeApi.get<NewsType>(`/news/${newsId}`, {
     next: {
       revalidate: opts?.next?.revalidate,
       tags: opts?.next?.tags,
@@ -53,7 +53,8 @@ export const fetchNewsDetails = async (
     throw new Error(result.error?.message || 'Failed to fetch news details');
   }
 
-  return result.data.news;
+  // Return the data directly since the API returns the news object directly
+  return result.data;
 };
 
 export const fetchNewsComments = async (

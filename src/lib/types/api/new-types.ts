@@ -18,6 +18,7 @@ export interface NewsType {
   views: number;
   commentsEnabled: boolean;
 }
+
 export interface CommentType {
   _id: string;
   newsId: string;

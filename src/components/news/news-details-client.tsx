@@ -1,10 +1,8 @@
 'use client';
 
-import React from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import ImageWithFallback from '@/components/ui/image-with-fallback';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,25 +15,12 @@ import {
   Star,
   Tag,
 } from 'lucide-react';
-import NewsDetailsSkeleton from '@/components/skeletons/news-details-skeleton';
 import CommentSection from './comment-section';
-import { fetchNewsDetails, NewsType } from '@/data/news/news';
+import { NewsType } from '@/lib/types/api/new-types';
 
-const NewsDetailsClient = () => {
-  const { newsId } = useParams();
+const NewsDetailsClient = ({ newsDetails }: { newsDetails: NewsType }) => {
   const router = useRouter();
-
-  const {
-    data: newsDetails,
-    isLoading,
-    isError,
-    error,
-  } = useQuery<NewsType, Error>({
-    queryKey: ['newsDetails', newsId],
-    queryFn: () => fetchNewsDetails(newsId as string),
-    enabled: !!newsId,
-  });
-
+  console.log('newsDetails', newsDetails);
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'No date available';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -80,52 +65,6 @@ const NewsDetailsClient = () => {
       navigator.clipboard.writeText(window.location.href);
     }
   };
-
-  if (isLoading) {
-    return <NewsDetailsSkeleton />;
-  }
-
-  if (isError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="p-8 text-center max-w-md">
-          <CardContent>
-            <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">
-              Error Loading Article
-            </h2>
-            <p className="text-muted-foreground mb-4">{error?.message}</p>
-            <Button onClick={() => router.back()} variant="outline">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Go Back
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!newsDetails) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="p-8 text-center max-w-md">
-          <CardContent>
-            <div className="text-muted-foreground text-6xl mb-4">📰</div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">
-              Article Not Found
-            </h2>
-            <p className="text-muted-foreground mb-4">
-              The news article you&apos;re looking for doesn&apos;t exist.
-            </p>
-            <Button onClick={() => router.push('/news')} variant="outline">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to News
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
@@ -365,11 +304,10 @@ const NewsDetailsClient = () => {
         </div>
       </div>
 
-      {/* Comment Section */}
-      <CommentSection
+      {/* <CommentSection
         newsId={newsDetails._id}
         commentsEnabled={newsDetails.commentsEnabled}
-      />
+      /> */}
 
       {/* Call to Action */}
       <div className="mt-16 text-center bg-gradient-to-r from-primary/10 via-primary/5 to-background rounded-3xl p-8 md:p-12">
