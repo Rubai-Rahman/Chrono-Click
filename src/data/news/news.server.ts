@@ -57,29 +57,6 @@ export const fetchNewsDetails = async (
   return result.data;
 };
 
-export const fetchNewsComments = async (
-  newsId: string,
-  opts?: { next?: { revalidate?: number | false; tags?: string[] } }
-) => {
-  const result = await safeApi.get<{
-    comments: CommentType[];
-    commentsPagination: { total: number };
-  }>(`/news/${newsId}?commentsPage=1&commentsLimit=50`, {
-    next: {
-      revalidate: opts?.next?.revalidate,
-      tags: opts?.next?.tags,
-    },
-  });
-
-  if (!result.success || !result.data) {
-    throw new Error(result.error?.message || 'Failed to fetch comments');
-  }
-
-  return {
-    comments: result.data.comments || [],
-    count: result.data.commentsPagination?.total || 0,
-  };
-};
 
 export const postNewsComment = async (
   newsId: string,

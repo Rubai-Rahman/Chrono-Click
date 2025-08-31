@@ -35,7 +35,6 @@ const WishlistPageContent = () => {
     clearWishlist();
     toast.success('Wishlist cleared successfully');
   };
-  console.log('items', items);
   const handleAddAllToCart = () => {
     const inStockItems = filteredProducts.filter((product) => product.inStock);
 

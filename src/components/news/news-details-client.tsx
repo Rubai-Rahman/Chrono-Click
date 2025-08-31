@@ -15,12 +15,11 @@ import {
   Star,
   Tag,
 } from 'lucide-react';
-import CommentSection from './comment-section';
 import { NewsType } from '@/lib/types/api/new-types';
+import CommentSection from './comment-section';
 
 const NewsDetailsClient = ({ newsDetails }: { newsDetails: NewsType }) => {
   const router = useRouter();
-  console.log('newsDetails', newsDetails);
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'No date available';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -304,10 +303,10 @@ const NewsDetailsClient = ({ newsDetails }: { newsDetails: NewsType }) => {
         </div>
       </div>
 
-      {/* <CommentSection
+      <CommentSection
         newsId={newsDetails._id}
         commentsEnabled={newsDetails.commentsEnabled}
-      /> */}
+      />
 
       {/* Call to Action */}
       <div className="mt-16 text-center bg-gradient-to-r from-primary/10 via-primary/5 to-background rounded-3xl p-8 md:p-12">

@@ -19,7 +19,7 @@ const HomePage = async () => {
   const news = await fetchNewsData<NewsResponse>('news', {
     next: { tags: ['news'] },
   });
-  console.log('news', news.data?.data);
+  
   const reviews = await fetchReviewData<ReviewType[]>('reviews', {
     next: { tags: ['reviews'] },
   });

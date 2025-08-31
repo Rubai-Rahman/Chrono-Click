@@ -18,7 +18,6 @@ const NewsPageContent = async ({ page, searchParams }: PageProps) => {
     next: { tags: ['news'] },
   });
 
-  console.log('newsData', newsData);
   if (!newsData) return <ErrorResultMessage />;
   const { data, count } = newsData;
   const totalPages = Math.ceil(count / size);

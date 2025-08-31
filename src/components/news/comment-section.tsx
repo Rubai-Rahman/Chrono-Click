@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,14 +10,8 @@ import { MessageCircle, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import CommentItem from './comment-item';
-import {
-  CommentType,
-  deleteNewsComment,
-  editNewsComment,
-  fetchNewsComments,
-  postNewsComment,
-  reactToComment,
-} from '@/data/news/news';
+import { CommentType } from '@/lib/types/api/new-types';
+import { fetchNewsComments } from '@/data/news/news.client';
 
 interface CommentSectionProps {
   newsId: string;
@@ -30,7 +23,6 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
   const { user, isInitialized } = useAuthStore();
   const isAuthenticated = !!user && isInitialized;
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const {
     data: commentsData,
@@ -38,81 +30,17 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
     isError,
   } = useQuery({
     queryKey: ['newsComments', newsId],
-    queryFn: () => fetchNewsComments(newsId),
+    queryFn: async () => {
+      const response = await fetchNewsComments(newsId);
+      if (!response.success) {
+        toast.error(response.error?.message || 'Failed to fetch comments');
+      }
+      return response.data;
+    },
     enabled: commentsEnabled,
   });
 
-  const commentMutation = useMutation({
-    mutationFn: ({
-      comment,
-      parentId,
-    }: {
-      comment: string;
-      parentId?: string;
-    }) =>
-      postNewsComment(
-        newsId,
-        comment,
-        user?.name || user?.displayName || 'Anonymous',
-        parentId
-      ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['newsComments', newsId] });
-      setNewComment('');
-      toast.success('Comment posted successfully!');
-    },
-    onError: (error) => {
-      toast.error('Failed to post comment. Please try again.');
-      console.error('Comment error:', error);
-    },
-  });
-
-  const editMutation = useMutation({
-    mutationFn: ({
-      commentId,
-      message,
-    }: {
-      commentId: string;
-      message: string;
-    }) => editNewsComment(commentId, message),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['newsComments', newsId] });
-      toast.success('Comment updated successfully!');
-    },
-    onError: (error) => {
-      toast.error('Failed to update comment. Please try again.');
-      console.error('Edit error:', error);
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (commentId: string) => deleteNewsComment(commentId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['newsComments', newsId] });
-      toast.success('Comment deleted successfully!');
-    },
-    onError: (error) => {
-      toast.error('Failed to delete comment. Please try again.');
-      console.error('Delete error:', error);
-    },
-  });
-
-  const reactionMutation = useMutation({
-    mutationFn: ({
-      commentId,
-      reaction,
-    }: {
-      commentId: string;
-      reaction: 'like' | 'dislike' | 'remove';
-    }) => reactToComment(commentId, reaction),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['newsComments', newsId] });
-    },
-    onError: (error) => {
-      toast.error('Failed to update reaction. Please try again.');
-      console.error('Reaction error:', error);
-    },
-  });
+  console.log('CommentsData', commentsData);
 
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,8 +55,6 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       toast.error('Please enter a comment');
       return;
     }
-
-    commentMutation.mutate({ comment: newComment.trim() });
   };
 
   const handleReply = (parentId: string, message: string) => {
@@ -137,8 +63,6 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       router.push('/login');
       return;
     }
-
-    commentMutation.mutate({ comment: message, parentId });
   };
 
   const handleEdit = (commentId: string, message: string) => {
@@ -148,7 +72,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       return;
     }
 
-    editMutation.mutate({ commentId, message });
+    // editMutation.mutate({ commentId, message });
   };
 
   const handleDelete = async (commentId: string) => {
@@ -158,40 +82,20 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       return;
     }
 
-    deleteMutation.mutate(commentId);
+    // deleteMutation.mutate(commentId);
   };
 
-  const handleReact = async (
-    commentId: string,
-    reaction: 'like' | 'dislike' | 'remove'
-  ) => {
-    if (!isAuthenticated) {
-      toast.error('Please login to react to comments');
-      router.push('/login');
-      return;
-    }
+  const handleReact = () => {};
+  // const formatDate = (dateString: string) => {
+  //   return new Date(dateString).toLocaleDateString('en-US', {
+  //     year: 'numeric',
+  //     month: 'short',
+  //     day: 'numeric',
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   });
+  // };
 
-    return new Promise((resolve, reject) => {
-      reactionMutation.mutate(
-        { commentId, reaction },
-        {
-          onSuccess: () => resolve(undefined),
-          onError: (error) => reject(error),
-        }
-      );
-    });
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-  console.log(formatDate);
   if (!commentsEnabled) {
     return null;
   }
@@ -236,21 +140,13 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
             </div>
             <Button
               type="submit"
-              disabled={
-                !isAuthenticated ||
-                !newComment.trim() ||
-                commentMutation.isPending
-              }
+              disabled={!isAuthenticated || !newComment.trim()}
               size="sm"
             >
-              {commentMutation.isPending ? (
-                'Posting...'
-              ) : (
-                <>
-                  <Send className="w-4 h-4 mr-2" />
-                  Post Comment
-                </>
-              )}
+              <>
+                <Send className="w-4 h-4 mr-2" />
+                Post Comment
+              </>
             </Button>
           </div>
         </form>
@@ -289,12 +185,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
                 onDelete={handleDelete}
                 onReact={handleReact}
                 isAuthenticated={isAuthenticated}
-                isSubmitting={
-                  commentMutation.isPending ||
-                  editMutation.isPending ||
-                  deleteMutation.isPending ||
-                  reactionMutation.isPending
-                }
+                isSubmitting={false}
                 currentUser={user?.name || user?.displayName}
               />
             ))}

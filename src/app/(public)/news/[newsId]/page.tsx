@@ -6,9 +6,9 @@ import NewsDetailsSkeleton from '@/components/skeletons/news-details-skeleton';
 export async function generateMetadata({
   params,
 }: {
-  params: { newsId: string };
+  params: Promise<{ newsId: string }>;
 }) {
-  const { newsId } = params;
+  const { newsId } = await params;
 
   try {
     const data = await fetchNewsDetails(newsId);
