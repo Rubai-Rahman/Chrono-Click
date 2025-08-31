@@ -3,9 +3,9 @@
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import { authService } from '@/lib/firebase/auth';
-import { saveUser } from '@/app/actions/authAction';
 import { isValidUrl } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { saveUser } from '@/app/actions/authAction';
 
 export const useAuth = () => {
   const router = useRouter();
@@ -18,12 +18,7 @@ export const useAuth = () => {
       setError(null);
       const result = await authService.signInWithGoogle();
       const idToken = await result.user.getIdToken();
-      await saveUser(
-        result.user.email || 'test@gmail.com',
-        result.user.displayName || '',
-        idToken,
-        result.user.photoURL || ''
-      );
+      await saveUser(idToken, true);
       // Handle callback redirect
       if (callbackUrl && isValidUrl(callbackUrl)) {
         router.push(callbackUrl);

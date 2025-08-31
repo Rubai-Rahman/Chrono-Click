@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 
 export interface SessionData {
   idToken: string;
-  user: {
+  user?: {
     email: string;
     name: string;
     role: 'admin' | 'user';
@@ -11,15 +11,15 @@ export interface SessionData {
   expiresAt: string;
 }
 
-export async function createSession(
-  idToken: string,
-  userData: {
-    email: string;
-    name: string;
-    role: 'admin' | 'user';
-  },
-  rememberMe: boolean
-) {
+export async function createSession({
+  idToken,
+  userData,
+  rememberMe,
+}: {
+  idToken: string;
+  userData?: { email: string; name: string; role: 'admin' | 'user' };
+  rememberMe?: boolean;
+}) {
   let expiresAt;
   if (rememberMe) {
     expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
