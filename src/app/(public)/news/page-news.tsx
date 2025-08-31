@@ -1,17 +1,38 @@
-import { NewsType } from '@/lib/types/api/new-types';
-import Container from '@/components/layout/container';
-import NewsClient from '@/components/news/news-client';
-import { fetchNewsData } from '@/data/news/news.server';
+import NewsClientWrapper from '@/components/news/news-client';
+import { fetchNewsPages } from '@/data/news/news.server';
 
-const NewsPageContent = async () => {
-  const newsResult = await fetchNewsData<NewsType[]>('news', {
+import { ErrorResultMessage } from '@/components/ui/data-result-message';
+import { Suspense } from 'react';
+import NewsSkeleton from '@/components/skeletons/news-skeleton';
+
+interface PageProps {
+  page?: string;
+  searchParams?: { sort?: string; size?: string };
+}
+const NewsPageContent = async ({ page, searchParams }: PageProps) => {
+  const sort = searchParams?.sort || 'createdAt_desc';
+  const size = parseInt(searchParams?.size || '12', 10);
+  const currentPage = parseInt(page || '1', 10);
+
+  const newsData = await fetchNewsPages(currentPage, size, sort, {
     next: { tags: ['news'] },
   });
-  console.log(newsResult, 'newsResult');
+
+  console.log('newsData', newsData);
+  if (!newsData) return <ErrorResultMessage />;
+  const { data, count } = newsData;
+  const totalPages = Math.ceil(count / size);
+
   return (
-    <Container>
-      <NewsClient />
-    </Container>
+    <Suspense fallback={<NewsSkeleton />}>
+      <NewsClientWrapper
+        news={data}
+        totalPages={totalPages}
+        currentPage={currentPage}
+        sort={sort}
+        size={size}
+      />
+    </Suspense>
   );
 };
 

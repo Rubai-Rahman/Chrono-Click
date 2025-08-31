@@ -4,7 +4,7 @@ import Review from '@/components/main/home/review';
 import Brands from '@/components/main/home/brands';
 import { Slider, Banner } from '@/components/main/home';
 import Newsletter from '@/components/main/home/news-letter';
-import { NewsType } from '@/lib/types/api/new-types';
+import { NewsResponse } from '@/lib/types/api/new-types';
 import { ReviewType } from '@/lib/types/api/review-types';
 import NewsCarousel from '@/components/main/home/news-carousel';
 import { fetchNewsData } from '@/data/news/news.server';
@@ -16,14 +16,14 @@ export const metadata: Metadata = {
 };
 
 const HomePage = async () => {
-  const news = await fetchNewsData<NewsType[]>('news', {
+  const news = await fetchNewsData<NewsResponse>('news', {
     next: { tags: ['news'] },
   });
-
+  console.log('news', news.data?.data);
   const reviews = await fetchReviewData<ReviewType[]>('reviews', {
     next: { tags: ['reviews'] },
   });
-  const newsItem = news.data ?? [];
+  const newsItem = news.data?.data ?? [];
   const reviewItem = reviews.data ?? [];
   return (
     <div>

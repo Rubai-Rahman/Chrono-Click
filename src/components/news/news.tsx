@@ -9,19 +9,23 @@ import {
 } from '@/components/ui/pagination';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Star } from 'lucide-react';
-import { NewsResponse, NewsType } from '@/data/news/news';
+import { NewsType } from '@/lib/types/api/new-types';
 
 interface NewsProps {
-  news: NewsResponse | NewsType[];
+  news: NewsType[];
   totalPages: number;
   currentPage: number;
   onPageChange: (page: number) => void;
+  onSizeChange?: (size: string) => void;
+  onSortChange?: (sort: string) => void;
+  currentSize?: number;
+  currentSort?: string;
 }
 
 const News = ({ news, totalPages, currentPage, onPageChange }: NewsProps) => {
   // Handle the actual API response structure - data might be direct array or nested
-  const newsData = Array.isArray(news) ? news : news.data || [];
-  const newsCount = Array.isArray(news) ? news.length : news.count || 0;
+  const newsData = Array.isArray(news) ? news : news || [];
+  const newsCount = news.length;
 
   const featuredNews = newsData.filter((article) => article.featured);
   const allNews = newsData;
@@ -77,10 +81,11 @@ const News = ({ news, totalPages, currentPage, onPageChange }: NewsProps) => {
           <h2 className="text-3xl font-bold text-foreground font-serif">
             All Articles
           </h2>
+
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Calendar className="w-4 h-4" />
             <span>
-              Page {currentPage + 1} of {totalPages}
+              Page {currentPage + 1} of {Math.max(totalPages, 1)}
             </span>
           </div>
         </div>
@@ -102,7 +107,7 @@ const News = ({ news, totalPages, currentPage, onPageChange }: NewsProps) => {
             </p>
             {totalPages > 1 && (
               <p className="text-xs text-muted-foreground">
-                Page {currentPage + 1} of {totalPages}
+                Page {currentPage + 1} of {Math.max(totalPages, 1)}
               </p>
             )}
           </div>
@@ -152,36 +157,44 @@ const News = ({ news, totalPages, currentPage, onPageChange }: NewsProps) => {
                 )}
 
                 {/* Show current page and surrounding pages */}
-                {[...Array(totalPages)].map((_, index) => {
-                  if (
-                    index === currentPage ||
-                    index === currentPage - 1 ||
-                    index === currentPage + 1 ||
-                    (currentPage <= 1 && index <= 2) ||
-                    (currentPage >= totalPages - 2 && index >= totalPages - 3)
-                  ) {
-                    return (
-                      <PaginationItem key={index}>
-                        <PaginationLink
-                          href="#"
-                          isActive={index === currentPage}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            onPageChange(index);
-                          }}
-                          className={
-                            index === currentPage
-                              ? 'bg-primary text-primary-foreground shadow-lg scale-110'
-                              : 'hover:bg-primary/10 transition-all duration-200 hover:scale-105'
-                          }
-                        >
-                          {index + 1}
-                        </PaginationLink>
-                      </PaginationItem>
-                    );
-                  }
-                  return null;
-                })}
+                {totalPages === 0 ? (
+                  <PaginationItem key={0}>
+                    <PaginationLink href="#" isActive>
+                      1
+                    </PaginationLink>
+                  </PaginationItem>
+                ) : (
+                  [...Array(totalPages)].map((_, index) => {
+                    if (
+                      index === currentPage ||
+                      index === currentPage - 1 ||
+                      index === currentPage + 1 ||
+                      (currentPage <= 1 && index <= 2) ||
+                      (currentPage >= totalPages - 2 && index >= totalPages - 3)
+                    ) {
+                      return (
+                        <PaginationItem key={index}>
+                          <PaginationLink
+                            href="#"
+                            isActive={index === currentPage}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              onPageChange(index);
+                            }}
+                            className={
+                              index === currentPage
+                                ? 'bg-primary text-primary-foreground shadow-lg scale-110'
+                                : 'hover:bg-primary/10 transition-all duration-200 hover:scale-105'
+                            }
+                          >
+                            {index + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    }
+                    return null;
+                  })
+                )}
 
                 {/* Show last page if not in last few pages */}
                 {currentPage < totalPages - 3 && (
@@ -211,15 +224,18 @@ const News = ({ news, totalPages, currentPage, onPageChange }: NewsProps) => {
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      if (currentPage === totalPages - 1) return;
-                      onPageChange(currentPage + 1);
+                      if (currentPage < totalPages - 1) {
+                        onPageChange(currentPage + 1);
+                      }
                     }}
                     className={
-                      currentPage === totalPages - 1
+                      currentPage >= totalPages - 1 || totalPages === 0
                         ? 'opacity-50 pointer-events-none select-none'
                         : 'hover:bg-primary/10 transition-all duration-200 hover:scale-105'
                     }
-                    aria-disabled={currentPage === totalPages - 1}
+                    aria-disabled={
+                      currentPage >= totalPages - 1 || totalPages === 0
+                    }
                   />
                 </PaginationItem>
               </PaginationContent>
