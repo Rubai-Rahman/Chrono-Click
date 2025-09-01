@@ -29,7 +29,7 @@ export const postNewsComment = async (
       console.error('Error details:', {
         message: error.message,
         name: error.name,
-        stack: error.stack
+        stack: error.stack,
       });
     }
     throw error;

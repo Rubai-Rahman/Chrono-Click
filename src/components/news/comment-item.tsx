@@ -22,8 +22,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { CommentType } from '@/lib/types/api/new-types';
-import { string } from 'zod';
 
 interface CommentItemProps {
   comment: CommentType;
@@ -101,13 +111,11 @@ const CommentItem = ({
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this comment?')) {
-      setIsDeleting(true);
-      try {
-        await onDelete(comment._id);
-      } finally {
-        setIsDeleting(false);
-      }
+    setIsDeleting(true);
+    try {
+      await onDelete(comment._id);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -206,14 +214,36 @@ const CommentItem = ({
                     </DropdownMenuItem>
                   )}
                   {canDelete && (
-                    <DropdownMenuItem
-                      onClick={handleDelete}
-                      disabled={isDeleting}
-                      className="text-sm text-red-600 hover:text-red-700"
-                    >
-                      <Trash2 className="w-3 h-3 mr-2" />
-                      {isDeleting ? 'Deleting...' : 'Delete'}
-                    </DropdownMenuItem>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <DropdownMenuItem
+                          onSelect={(e) => e.preventDefault()}
+                          disabled={isDeleting}
+                          className="text-sm text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="w-3 h-3 mr-2" />
+                          {isDeleting ? 'Deleting...' : 'Delete'}
+                        </DropdownMenuItem>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Comment</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete this comment? This
+                            action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={handleDelete}
+                            className="bg-red-600 hover:bg-red-700"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>
