@@ -22,7 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { CommentType } from '@/data/news/news';
+import { CommentType } from '@/lib/types/api/new-types';
 
 interface CommentItemProps {
   comment: CommentType;

@@ -44,6 +44,20 @@ const createClientDoFetch = (
 };
 
 /**
+ * Get auth token from cookies (client-side)
+ */
+function getClientAuthToken(): string | null {
+  if (typeof document === 'undefined') return null;
+
+  const cookies = document.cookie.split(';');
+  const tokenCookie = cookies.find((cookie) =>
+    cookie.trim().startsWith('clientToken=')
+  );
+
+  return tokenCookie ? decodeURIComponent(tokenCookie.split('=')[1]) : null;
+}
+
+/**
  * Core client fetch function using fetchCore with automatic interceptor-like behavior
  * Handles headers, body serialization, and error responses
  */
@@ -62,25 +76,24 @@ async function coreClientFetch<T>(
     ? path
     : `${BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
 
-  // Prepare headers (client-side auth would be handled differently)
+  // Get auth token for client-side requests
+  const token = getClientAuthToken();
+
+  // Prepare headers with authentication
   const headers: Record<string, string> = {
     ...config.headers,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
   // Create client-specific doFetch
   const doFetch = createClientDoFetch(config.credentials);
-
+  console.log("token", headers);
   try {
     // Use fetchCore for all the heavy lifting
     return await fetchCore<T>(doFetch, url, {
       method,
       headers,
-      body:
-        data === undefined || data === null
-          ? undefined
-          : typeof data === 'string' || data instanceof FormData || data instanceof Blob
-          ? data
-          : JSON.stringify(data),
+      body: data ?? undefined,
       responseType: config.responseType,
     });
   } catch (err) {

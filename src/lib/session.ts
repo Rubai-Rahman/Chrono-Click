@@ -25,9 +25,21 @@ export async function createSession({
 
   const cookieStore = await cookies();
 
+  // 🧹 Clear old session cookie if it exists
+  cookieStore.delete('session');
+
   // 🔑 Auth cookie — ONLY the idToken (for backend authentication)
   cookieStore.set('token', idToken, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    expires: expiresAt,
+    sameSite: 'lax',
+    path: '/',
+  });
+
+  // 🔑 Client auth cookie — for client-side API calls
+  cookieStore.set('clientToken', idToken, {
+    httpOnly: false, // JavaScript can access
     secure: process.env.NODE_ENV === 'production',
     expires: expiresAt,
     sameSite: 'lax',
@@ -68,6 +80,15 @@ export async function updateSession() {
       path: '/',
     });
 
+    // Update client token cookie expiration
+    cookieStore.set('clientToken', tokenCookie, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      expires: newExpiry,
+      sameSite: 'lax',
+      path: '/',
+    });
+
     // Update user cookie expiration if it exists
     if (userCookie) {
       cookieStore.set('user', userCookie, {
@@ -100,7 +121,10 @@ export async function updateSession() {
 export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete('token');
+  cookieStore.delete('clientToken');
   cookieStore.delete('user');
+  // 🧹 Also clear old session cookie if it exists
+  cookieStore.delete('session');
 }
 
 // get session data
