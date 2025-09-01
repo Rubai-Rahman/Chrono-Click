@@ -139,11 +139,6 @@ const ProfileMenu = () => {
           </DropdownMenuItem>
 
           <DropdownMenuItem className="cursor-pointer">
-            <CreditCard className="mr-2 size-4" />
-            <span>Payment Methods</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem className="cursor-pointer">
             <Bell className="mr-2 size-4" />
             <span>Notifications</span>
           </DropdownMenuItem>

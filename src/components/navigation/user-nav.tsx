@@ -214,14 +214,6 @@ export function UserNav() {
                 <MapPin className="mr-2 size-4" />
                 <span>Addresses</span>
               </DropdownMenuItem>
-
-              <DropdownMenuItem
-                onClick={() => handleMenuAction('payment')}
-                className="cursor-pointer"
-              >
-                <CreditCard className="mr-2 size-4" />
-                <span>Payment Methods</span>
-              </DropdownMenuItem>
             </>
           )}
         </DropdownMenuGroup>
