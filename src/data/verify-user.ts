@@ -1,29 +1,27 @@
 import 'server-only';
 import { cache } from 'react';
 import { cookies } from 'next/headers';
-import { SessionData } from '@/lib/session';
 
 export const verifyUser = cache(async () => {
-  const sessionCookie = (await cookies()).get('session')?.value;
+  const cookieStore = await cookies();
+  const idToken = cookieStore.get('token')?.value;
+  const userCookie = cookieStore.get('user')?.value;
 
-  if (!sessionCookie) {
+  if (!idToken) {
     return null;
   }
 
-  try {
-    const sessionData: SessionData = JSON.parse(sessionCookie);
-
-    // Check if session is expired
-    if (new Date(sessionData.expiresAt) < new Date()) {
-      return null;
+  let user = null;
+  if (userCookie) {
+    try {
+      user = JSON.parse(userCookie);
+    } catch (error) {
+      console.error('Invalid user cookie:', error);
     }
-
-    return {
-      idToken: sessionData.idToken,
-      user: sessionData.user,
-    };
-  } catch (error) {
-    console.error('Error getting current user:', error);
-    return null;
   }
+
+  return {
+    idToken,
+    user,
+  };
 });

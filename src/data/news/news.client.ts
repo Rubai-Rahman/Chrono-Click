@@ -1,30 +1,39 @@
 'client';
 
-import { clientApi, safeClientApi } from '@/lib/fetch/clientFetch';
+import { clientApi } from '@/lib/fetch/clientFetch';
 import { CommentType } from '@/lib/types/api/new-types';
 
 const NEWS_API_PREFIX = 'comments';
 
 export const fetchNewsComments = async (newsId: string) => {
-  const response = await safeClientApi.get<{
+  return clientApi.get<{
     comments: CommentType[];
     count: number;
   }>(`${NEWS_API_PREFIX}/${newsId}`);
-
-  return response;
 };
 
 export const postNewsComment = async (
   newsId: string,
   message: string,
-  userName: string,
   parentId: string | null = null
 ) => {
-  const response = await clientApi.post<CommentType>(
-    `${NEWS_API_PREFIX}/${newsId}`,
-    { message, userName, parentId }
-  );
-  return response;
+  try {
+    const response = await clientApi.post<CommentType>(
+      `${NEWS_API_PREFIX}/${newsId}`,
+      { message, parentId }
+    );
+    return response;
+  } catch (error) {
+    console.error('Error in postNewsComment:', error);
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      });
+    }
+    throw error;
+  }
 };
 
 export const editNewsComment = async (commentId: string, message: string) => {

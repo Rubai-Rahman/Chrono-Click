@@ -74,7 +74,7 @@ async function coreServerFetch<T>(
     : `${BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
 
   // Get authentication token automatically
-  const token = (await cookies()).get('session')?.value;
+  const token = (await cookies()).get('token')?.value;
 
   // Prepare headers with automatic auth
   const headers: Record<string, string> = {

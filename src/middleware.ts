@@ -35,17 +35,16 @@ const legacyRouteMapping: Record<string, (role: string) => string> = {
 };
 
 export async function middleware(req: NextRequest) {
-  const token = req.cookies.get('session')?.value;
+  const token = req.cookies.get('token')?.value;
+  const userCookie = req.cookies.get('user')?.value;
   let role = null;
 
-  if (token) {
+  if (token && userCookie) {
     try {
-      const sessionData = JSON.parse(token);
-      if (new Date(sessionData.expiresAt) > new Date()) {
-        role = sessionData.user.role;
-      }
+      const userData = JSON.parse(userCookie);
+      role = userData.role;
     } catch {
-      // invalid session
+      // invalid user cookie
     }
   }
 
