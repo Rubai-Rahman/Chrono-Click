@@ -55,21 +55,25 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       setNewComment('');
       toast.success('Comment posted successfully!');
     },
-    onError: (error: Error & {
-      response?: {
-        data?: {
-          message?: string;
+    onError: (
+      error: Error & {
+        response?: {
+          data?: {
+            message?: string;
+          };
         };
-      };
-    }) => {
+      }
+    ) => {
       console.error('Comment error details:', {
         message: error.message,
         name: error.name,
         response: error.response,
-        stack: error.stack
+        stack: error.stack,
       });
-      
-      const errorMessage = error.response?.data?.message || 'Failed to post comment. Please try again.';
+
+      const errorMessage =
+        error.response?.data?.message ||
+        'Failed to post comment. Please try again.';
       toast.error(errorMessage);
     },
   });
@@ -184,6 +188,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
     return null;
   }
 
+  console.log('commentData', commentsData);
   return (
     <Card className="mt-12">
       <CardHeader>

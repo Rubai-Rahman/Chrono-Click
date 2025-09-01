@@ -41,7 +41,6 @@ export function UserNav() {
   const { user } = useAuth();
   const router = useRouter();
 
-  console.log('user', user);
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };

@@ -61,7 +61,7 @@ export default function Error({
           <div className="space-y-3">
             <button
               onClick={reset}
-              className="w-full flex items-center justify-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+              className="w-full flex items-center justify-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors cursor-pointer"
             >
               <RefreshCw className="h-4 w-4" />
               Try Again

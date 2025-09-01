@@ -32,6 +32,7 @@ export interface CommentType {
   dislikes?: number;
   userReaction?: 'like' | 'dislike' | null;
   isDeleted?: boolean;
+  username?: string;
   updatedAt?: string;
   isEdited?: boolean;
 }

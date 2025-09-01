@@ -23,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CommentType } from '@/lib/types/api/new-types';
+import { string } from 'zod';
 
 interface CommentItemProps {
   comment: CommentType;
@@ -65,6 +66,7 @@ const CommentItem = ({
       (now.getTime() - commentDate.getTime()) / (1000 * 60 * 60)
     );
 
+    console.log('comment', comment);
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${diffInHours}h ago`;
     if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;
@@ -77,7 +79,9 @@ const CommentItem = ({
     });
   };
 
-  const getInitials = (name: string) => {
+  const getInitials = (name: string | null | undefined) => {
+    if (!name) return 'U';
+
     return name
       .split(' ')
       .map((word) => word[0])
@@ -150,7 +154,7 @@ const CommentItem = ({
           className={`${depth > 0 ? 'w-7 h-7' : 'w-10 h-10'} flex-shrink-0`}
         >
           <AvatarFallback className="bg-primary/10 text-primary text-xs">
-            {getInitials(comment.user)}
+            {getInitials(comment?.username ?? 'anonymous')}
           </AvatarFallback>
         </Avatar>
 
