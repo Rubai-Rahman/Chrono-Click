@@ -1,8 +1,6 @@
-import { useState } from 'react';
 import { X, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -12,64 +10,71 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-
-interface Address {
-  id: string;
-  name: string;
-  line1: string;
-  line2?: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  isDefault: boolean;
-  type: 'shipping' | 'billing';
-}
+import { CommonFormField, Form } from '../ui/form';
+import { useForm } from 'react-hook-form';
+import { TAddress } from '@/lib/types/api/address-types';
+import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface AddressFormProps {
-  address?: Address;
-  onSave: (address: Omit<Address, 'id'>) => void;
+  defaultAddress?: Omit<TAddress, '_id'>;
+  onSave: (address: Omit<TAddress, '_id'>) => void;
   onCancel: () => void;
   isOpen: boolean;
+  formId: string;
+  isLoading: boolean;
 }
 
+const AddressSchema = z.object({
+  name: z.string().min(1, 'Address name is required'),
+  line1: z.string().min(1, 'Address line 1 is required'),
+  line2: z.string().optional(),
+  city: z.string().min(1, 'City is required'),
+  state: z.string().min(1, 'State is required'),
+  postalCode: z.string().min(1, 'Postal code is required'),
+  country: z.string().min(1, 'Country is required'),
+  isDefault: z.boolean().optional(),
+});
+const AddressFormSchemaType = zodResolver(AddressSchema);
+
 export const AddressForm = ({
-  address,
-  onSave,
+  defaultAddress,
   onCancel,
   isOpen,
+  onSave,
+  formId,
+  isLoading,
 }: AddressFormProps) => {
-  const [formData, setFormData] = useState({
-    name: address?.name || '',
-    line1: address?.line1 || '',
-    line2: address?.line2 || '',
-    city: address?.city || '',
-    state: address?.state || '',
-    postalCode: address?.postalCode || '',
-    country: address?.country || 'United States',
-    isDefault: address?.isDefault || false,
-    type: (address?.type || 'shipping') as 'shipping' | 'billing',
+  const form = useForm({
+    resolver: AddressFormSchemaType,
+    defaultValues: defaultAddress || {
+      name: '',
+      line1: '',
+      line2: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      country: '',
+      isDefault: false,
+    },
   });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSave(formData);
-  };
-
-  const handleChange = (field: string, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
 
   if (!isOpen) return null;
 
+  const onFormSubmit = form.handleSubmit((formData) => {
+    onSave({
+      ...formData,
+      isDefault: formData.isDefault ?? false,
+    });
+  });
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-gradient-card shadow-strong border-border/50 overflow-y-auto">
+      <Card className="w-full max-w-md bg-gradient-card shadow-strong border-border/50 overflow-y-auto max-h-[90vh] ">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
             <CardTitle>
-              {address ? 'Edit Address' : 'Add New Address'}
+              {defaultAddress ? 'Edit Address' : 'Add New Address'}
             </CardTitle>
           </div>
           <Button
@@ -83,140 +88,126 @@ export const AddressForm = ({
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="name">Address Name</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
-                placeholder="Home, Work, etc."
-                required
-                className="mt-1"
-              />
-            </div>
+          <Form {...form}>
+            <form id={formId} onSubmit={onFormSubmit} className="space-y-4">
+              {/* Address Name */}
+              <CommonFormField
+                control={form.control}
+                name="name"
+                label="Address Name"
+              >
+                {({ field }) => (
+                  <Input placeholder="Home, Work, etc." {...field} />
+                )}
+              </CommonFormField>
 
-            <div>
-              <Label htmlFor="line1">Address Line 1</Label>
-              <Input
-                id="line1"
-                value={formData.line1}
-                onChange={(e) => handleChange('line1', e.target.value)}
-                placeholder="Street address"
-                required
-                className="mt-1"
-              />
-            </div>
+              {/* Line 1 */}
+              <CommonFormField
+                control={form.control}
+                name="line1"
+                label="Address Line 1"
+              >
+                {({ field }) => (
+                  <Input placeholder="Street address" {...field} />
+                )}
+              </CommonFormField>
 
-            <div>
-              <Label htmlFor="line2">Address Line 2 (Optional)</Label>
-              <Input
-                id="line2"
-                value={formData.line2}
-                onChange={(e) => handleChange('line2', e.target.value)}
-                placeholder="Apartment, suite, etc."
-                className="mt-1"
-              />
-            </div>
+              {/* Line 2 */}
+              <CommonFormField
+                control={form.control}
+                name="line2"
+                label="Address Line 2 (Optional)"
+              >
+                {({ field }) => (
+                  <Input placeholder="Apartment, suite, etc." {...field} />
+                )}
+              </CommonFormField>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  value={formData.city}
-                  onChange={(e) => handleChange('city', e.target.value)}
-                  required
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="state">State</Label>
-                <Input
-                  id="state"
-                  value={formData.state}
-                  onChange={(e) => handleChange('state', e.target.value)}
-                  required
-                  className="mt-1"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="postalCode">Postal Code</Label>
-                <Input
-                  id="postalCode"
-                  value={formData.postalCode}
-                  onChange={(e) => handleChange('postalCode', e.target.value)}
-                  required
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="country">Country</Label>
-                <Select
-                  value={formData.country}
-                  onValueChange={(value) => handleChange('country', value)}
+              {/* City + State */}
+              <div className="grid grid-cols-2 gap-4">
+                <CommonFormField
+                  control={form.control}
+                  name="city"
+                  label="City"
                 >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="United States">United States</SelectItem>
-                    <SelectItem value="Canada">Canada</SelectItem>
-                    <SelectItem value="United Kingdom">
-                      United Kingdom
-                    </SelectItem>
-                    <SelectItem value="Australia">Australia</SelectItem>
-                  </SelectContent>
-                </Select>
+                  {({ field }) => <Input {...field} />}
+                </CommonFormField>
+
+                <CommonFormField
+                  control={form.control}
+                  name="state"
+                  label="State"
+                >
+                  {({ field }) => <Input {...field} />}
+                </CommonFormField>
               </div>
-            </div>
 
-            <div>
-              <Label htmlFor="type">Address Type</Label>
-              <Select
-                value={formData.type}
-                onValueChange={(value: 'shipping' | 'billing') =>
-                  handleChange('type', value)
-                }
+              {/* Postal Code + Country */}
+              <div className="grid grid-cols-2 gap-4">
+                <CommonFormField
+                  control={form.control}
+                  name="postalCode"
+                  label="Postal Code"
+                >
+                  {({ field }) => <Input {...field} />}
+                </CommonFormField>
+
+                <CommonFormField
+                  control={form.control}
+                  name="country"
+                  label="Country"
+                >
+                  {({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="United States">
+                          United States
+                        </SelectItem>
+                        <SelectItem value="Canada">Canada</SelectItem>
+                        <SelectItem value="United Kingdom">
+                          United Kingdom
+                        </SelectItem>
+                        <SelectItem value="Australia">Australia</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </CommonFormField>
+              </div>
+
+              {/* Default Switch */}
+              <CommonFormField
+                control={form.control}
+                name="isDefault"
+                label="Set as default address"
+                className="gap-x-2"
               >
-                <SelectTrigger className="mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="shipping">Shipping Address</SelectItem>
-                  <SelectItem value="billing">Billing Address</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                {({ field }) => (
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              </CommonFormField>
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="isDefault"
-                checked={formData.isDefault}
-                onCheckedChange={(checked) =>
-                  handleChange('isDefault', checked)
-                }
-              />
-              <Label htmlFor="isDefault">Set as default address</Label>
-            </div>
-
-            <div className="flex gap-3 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button type="submit" className="flex-1">
-                {address ? 'Update Address' : 'Save Address'}
-              </Button>
-            </div>
-          </form>
+              {/* Buttons */}
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={onCancel}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" className="flex-1" disabled={isLoading}>
+                  {defaultAddress ? 'Update Address' : 'Save Address'}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>

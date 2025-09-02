@@ -2,32 +2,18 @@ import { MapPin, Edit, Trash2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-
-interface Address {
-  id: string;
-  name: string;
-  line1: string;
-  line2?: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  isDefault: boolean;
-  type: 'shipping' | 'billing';
-}
+import { TAddress } from '@/lib/types/api/address-types';
 
 interface AddressCardProps {
-  address: Address;
-  onEdit: (address: Address) => void;
+  address: TAddress;
+  onEdit: (address: TAddress) => void;
   onDelete: (id: string) => void;
-  onSetDefault: (id: string) => void;
 }
 
 export const AddressCard = ({
   address,
   onEdit,
   onDelete,
-  onSetDefault,
 }: AddressCardProps) => {
   return (
     <Card className="bg-gradient-card shadow-soft hover:shadow-medium transition-smooth border-border/50">
@@ -48,17 +34,6 @@ export const AddressCard = ({
                 Default
               </Badge>
             )}
-
-            <Badge
-              variant="outline"
-              className={`${
-                address.type === 'shipping'
-                  ? 'border-primary/30 text-primary'
-                  : 'border-muted-foreground/30 text-muted-foreground'
-              }`}
-            >
-              {address.type === 'shipping' ? 'Shipping' : 'Billing'}
-            </Badge>
           </div>
         </div>
 
@@ -86,25 +61,13 @@ export const AddressCard = ({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onDelete(address.id)}
+              onClick={() => onDelete(address._id)}
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
             >
               <Trash2 className="w-4 h-4 mr-1" />
               Delete
             </Button>
           </div>
-
-          {!address.isDefault && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onSetDefault(address.id)}
-              className="text-primary hover:text-primary hover:bg-primary/10"
-            >
-              <Star className="w-4 h-4 mr-1" />
-              Set Default
-            </Button>
-          )}
         </div>
       </CardContent>
     </Card>
