@@ -13,7 +13,7 @@ import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 
 interface LoginFormProps {
-  onSubmit: (data: LoginFormData) => Promise<void>;
+  onSubmit: (data: LoginFormData) => void | Promise<void>;
   onGoogleSignIn: () => void;
   onGetDemoCredentials: (type: 'admin' | 'user') => {
     email: string;

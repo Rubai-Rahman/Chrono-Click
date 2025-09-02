@@ -7,11 +7,13 @@ import { loginAction } from '@/app/actions/authAction';
 import { useAuth } from '@/hooks/useAuth';
 import { validateCallbackUrl } from '@/lib/security';
 import LoginForm from '@/components/auth/login-form';
+import { useTransition } from 'react';
 
 const LoginPageContent = () => {
-  const { isLoading, googleSignIn, setLoading } = useAuth();
+  const { googleSignIn } = useAuth();
   const searchParams = useSearchParams();
   const rawCallbackUrl = searchParams.get('callbackUrl');
+  const [isPending, startTransition] = useTransition();
 
   // Define trusted domains for your application
   const trustedDomains = [
@@ -22,20 +24,20 @@ const LoginPageContent = () => {
 
   const callbackUrl = validateCallbackUrl(rawCallbackUrl, trustedDomains);
 
-  const handleLogin = async (data: LoginFormData) => {
-    try {
-      setLoading(true);
-      await loginAction(data, callbackUrl || undefined);
-    } catch (error) {
-      if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
-        return;
+  const handleLogin = (data: LoginFormData) => {
+    startTransition(async () => {
+      try {
+        await loginAction(data, callbackUrl || undefined);
+        // If loginAction redirects, this may never run
+      } catch (error) {
+        if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
+          return;
+        }
+        toast.error(
+          error instanceof Error ? error.message : 'Invalid email or password'
+        );
       }
-      toast.error(
-        error instanceof Error ? error.message : 'Invalid email or password'
-      );
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   const handleGoogleSignIn = () => {
@@ -51,7 +53,7 @@ const LoginPageContent = () => {
       onSubmit={handleLogin}
       onGoogleSignIn={handleGoogleSignIn}
       onGetDemoCredentials={handleDemoCredentials}
-      isLoading={isLoading}
+      isLoading={isPending}
     />
   );
 };

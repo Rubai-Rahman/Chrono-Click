@@ -64,7 +64,7 @@ export const AddressForm = ({
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-gradient-card shadow-strong border-border/50">
+      <Card className="w-full max-w-md bg-gradient-card shadow-strong border-border/50 overflow-y-auto">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />

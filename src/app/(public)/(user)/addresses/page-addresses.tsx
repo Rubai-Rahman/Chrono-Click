@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+
+import { useState, useMemo } from 'react';
 import { Plus, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -19,7 +20,6 @@ interface Address {
   type: 'shipping' | 'billing';
 }
 
-// Mock data for demonstration
 const initialAddresses: Address[] = [
   {
     id: '1',
@@ -62,83 +62,115 @@ export const AddressesPageContent = () => {
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const handleAddAddress = () => {
-    setEditingAddress(null);
+  // Derived state for shipping/billing separation
+  const { shippingAddresses, billingAddresses } = useMemo(() => {
+    return {
+      shippingAddresses: addresses.filter((a) => a.type === 'shipping'),
+      billingAddresses: addresses.filter((a) => a.type === 'billing'),
+    };
+  }, [addresses]);
+
+  /** Handlers **/
+  const openForm = (address?: Address) => {
+    setEditingAddress(address || null);
     setIsFormOpen(true);
   };
 
-  const handleEditAddress = (address: Address) => {
-    setEditingAddress(address);
-    setIsFormOpen(true);
+  const closeForm = () => {
+    setEditingAddress(null);
+    setIsFormOpen(false);
   };
 
   const handleDeleteAddress = (id: string) => {
-    const addressToDelete = addresses.find((addr) => addr.id === id);
+    const addressToDelete = addresses.find((a) => a.id === id);
+
     if (addressToDelete?.isDefault) {
       toast.error('Cannot delete default address');
       return;
     }
 
-    setAddresses((prev) => prev.filter((addr) => addr.id !== id));
-    toast.error('Address deleted');
+    setAddresses((prev) => prev.filter((a) => a.id !== id));
+    toast.success('Address deleted');
   };
 
   const handleSetDefault = (id: string) => {
     setAddresses((prev) =>
-      prev.map((addr) => ({
-        ...addr,
-        isDefault: addr.id === id,
+      prev.map((a) => ({
+        ...a,
+        isDefault: a.id === id,
       }))
     );
-
-    toast.error('Default address updated');
+    toast.success('Default address updated');
   };
 
   const handleSaveAddress = (addressData: Omit<Address, 'id'>) => {
     if (editingAddress) {
-      // Update existing address
+      // Update existing
       setAddresses((prev) =>
-        prev.map((addr) =>
-          addr.id === editingAddress.id
-            ? { ...addressData, id: editingAddress.id }
+        prev.map((a) =>
+          a.id === editingAddress.id
+            ? { ...editingAddress, ...addressData }
             : addressData.isDefault
-            ? { ...addr, isDefault: false }
-            : addr
+            ? { ...a, isDefault: false }
+            : a
         )
       );
-      toast.error('Address updated');
+      toast.success('Address updated');
     } else {
-      // Add new address
+      // Add new
       const newAddress: Address = {
         ...addressData,
         id: Date.now().toString(),
       };
 
-      if (addressData.isDefault) {
-        setAddresses((prev) => [
-          newAddress,
-          ...prev.map((addr) => ({ ...addr, isDefault: false })),
-        ]);
-      } else {
-        setAddresses((prev) => [newAddress, ...prev]);
-      }
+      setAddresses((prev) =>
+        newAddress.isDefault
+          ? [newAddress, ...prev.map((a) => ({ ...a, isDefault: false }))]
+          : [newAddress, ...prev]
+      );
 
-      toast.error('Address added');
+      toast.success('Address added');
     }
 
-    setIsFormOpen(false);
-    setEditingAddress(null);
+    closeForm();
   };
 
-  const handleCancelForm = () => {
-    setIsFormOpen(false);
-    setEditingAddress(null);
-  };
+  /** UI Helpers **/
+  const renderAddressSection = (
+    title: string,
+    items: Address[],
+    emptyMsg: string,
+    buttonLabel: string
+  ) => (
+    <div className="mb-8">
+      <div className="flex items-center gap-2 mb-4">
+        <h2 className="text-xl font-semibold text-foreground">{title}</h2>
+        <span className="text-sm text-muted-foreground">({items.length})</span>
+      </div>
 
-  const shippingAddresses = addresses.filter(
-    (addr) => addr.type === 'shipping'
+      {items.length === 0 ? (
+        <div className="text-center py-12 bg-muted/30 rounded-lg border-2 border-dashed border-muted">
+          <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground">{emptyMsg}</p>
+          <Button onClick={() => openForm()} variant="outline" className="mt-4">
+            {buttonLabel}
+          </Button>
+        </div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2">
+          {items.map((address) => (
+            <AddressCard
+              key={address.id}
+              address={address}
+              onEdit={openForm}
+              onDelete={handleDeleteAddress}
+              onSetDefault={handleSetDefault}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
-  const billingAddresses = addresses.filter((addr) => addr.type === 'billing');
 
   return (
     <div className="min-h-screen bg-background">
@@ -160,7 +192,7 @@ export const AddressesPageContent = () => {
               </div>
             </div>
 
-            <Button onClick={handleAddAddress} size="lg">
+            <Button onClick={() => openForm()} size="lg">
               <Plus className="w-4 h-4 mr-2" />
               Add Address
             </Button>
@@ -170,92 +202,26 @@ export const AddressesPageContent = () => {
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-6 py-8">
-        {/* Shipping Addresses */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-xl font-semibold text-foreground">
-              Shipping Addresses
-            </h2>
-            <span className="text-sm text-muted-foreground">
-              ({shippingAddresses.length})
-            </span>
-          </div>
+        {renderAddressSection(
+          'Shipping Addresses',
+          shippingAddresses,
+          'No shipping addresses found',
+          'Add Your First Address'
+        )}
 
-          {shippingAddresses.length === 0 ? (
-            <div className="text-center py-12 bg-muted/30 rounded-lg border-2 border-dashed border-muted">
-              <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">
-                No shipping addresses found
-              </p>
-              <Button
-                onClick={handleAddAddress}
-                variant="outline"
-                className="mt-4"
-              >
-                Add Your First Address
-              </Button>
-            </div>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2">
-              {shippingAddresses.map((address) => (
-                <AddressCard
-                  key={address.id}
-                  address={address}
-                  onEdit={handleEditAddress}
-                  onDelete={handleDeleteAddress}
-                  onSetDefault={handleSetDefault}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Billing Addresses */}
-        <div>
-          <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-xl font-semibold text-foreground">
-              Billing Addresses
-            </h2>
-            <span className="text-sm text-muted-foreground">
-              ({billingAddresses.length})
-            </span>
-          </div>
-
-          {billingAddresses.length === 0 ? (
-            <div className="text-center py-12 bg-muted/30 rounded-lg border-2 border-dashed border-muted">
-              <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">
-                No billing addresses found
-              </p>
-              <Button
-                onClick={handleAddAddress}
-                variant="outline"
-                className="mt-4"
-              >
-                Add Billing Address
-              </Button>
-            </div>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2">
-              {billingAddresses.map((address) => (
-                <AddressCard
-                  key={address.id}
-                  address={address}
-                  onEdit={handleEditAddress}
-                  onDelete={handleDeleteAddress}
-                  onSetDefault={handleSetDefault}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        {renderAddressSection(
+          'Billing Addresses',
+          billingAddresses,
+          'No billing addresses found',
+          'Add Billing Address'
+        )}
       </div>
 
       {/* Address Form Modal */}
       <AddressForm
         address={editingAddress || undefined}
         onSave={handleSaveAddress}
-        onCancel={handleCancelForm}
+        onCancel={closeForm}
         isOpen={isFormOpen}
       />
     </div>
