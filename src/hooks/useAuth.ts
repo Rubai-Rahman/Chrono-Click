@@ -23,7 +23,7 @@ export const useAuth = () => {
       if (callbackUrl && isValidUrl(callbackUrl)) {
         router.push(callbackUrl);
       } else {
-        router.push('/dashboard');
+        router.push('/products/gents');
       }
       toast.success('Welcome!');
     } catch (error) {

@@ -44,49 +44,6 @@ const createClientDoFetch = (
 };
 
 /**
- * Get auth token from cookies (client-side)
- */
-function getClientAuthToken(): string | null {
-  if (typeof document === 'undefined') return null;
-
-  const cookies = document.cookie.split(';');
-  const tokenCookie = cookies.find((cookie) =>
-    cookie.trim().startsWith('clientToken=')
-  );
-
-  return tokenCookie ? decodeURIComponent(tokenCookie.split('=')[1]) : null;
-}
-
-/**
- * Refresh Firebase token and update session
- */
-async function refreshAuthToken(): Promise<string | null> {
-  try {
-    // Dynamic import to avoid SSR issues
-    const { auth } = await import('@/lib/firebase/config');
-    const { saveUser } = await import('@/app/actions/authAction');
-
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-      console.log('No Firebase user found for token refresh');
-      return null;
-    }
-
-    console.log('Refreshing expired token...');
-    const newToken = await currentUser.getIdToken(true); // Force refresh
-
-    // Update session with new token
-    await saveUser(newToken, true);
-    console.log('Token refreshed and session updated');
-
-    return newToken;
-  } catch (error) {
-    console.error('Failed to refresh token:', error);
-    return null;
-  }
-}
-
-/**
  * Core client fetch function using fetchCore with automatic interceptor-like behavior
  * Handles headers, body serialization, error responses, and automatic token refresh
  */
@@ -106,12 +63,10 @@ async function coreClientFetch<T>(
     : `${BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
 
   // Get auth token for client-side requests
-  let token = getClientAuthToken();
 
   // Prepare headers with authentication
   const headers: Record<string, string> = {
     ...config.headers,
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
   // Create client-specific doFetch
@@ -126,69 +81,6 @@ async function coreClientFetch<T>(
       responseType: config.responseType,
     });
   } catch (err) {
-    // Handle token expiration with automatic refresh and retry
-    if (err instanceof FetchCoreError && err.status === 401) {
-      const errorPayload = err.payload as any;
-
-      // Check if it's a Firebase token expiration error
-      if (
-        errorPayload?.code === 'auth/id-token-expired' ||
-        errorPayload?.message?.includes('id-token-expired') ||
-        errorPayload?.message?.includes('token has expired')
-      ) {
-        console.log('Token expired, attempting refresh...');
-
-        // Try to refresh the token
-        const newToken = await refreshAuthToken();
-
-        if (newToken) {
-          // Retry the request with the new token
-          const newHeaders = {
-            ...config.headers,
-            Authorization: `Bearer ${newToken}`,
-          };
-
-          console.log('Retrying request with refreshed token...');
-
-          try {
-            return await fetchCore<T>(doFetch, url, {
-              method,
-              headers: newHeaders,
-              body: data ?? undefined,
-              responseType: config.responseType,
-            });
-          } catch (retryErr) {
-            console.error('Request failed even after token refresh:', retryErr);
-            // If retry also fails, throw the original error
-            if (retryErr instanceof FetchCoreError) {
-              throw new ApiError(
-                retryErr.status,
-                retryErr.message,
-                retryErr.payload ?? {}
-              );
-            }
-            throw retryErr;
-          }
-        } else {
-          console.error('Failed to refresh token, logging out user');
-          // If token refresh failed, logout the user
-          try {
-            const { useAuthStore } = await import('@/store/useAuthStore');
-            const { logout } = useAuthStore.getState();
-            await logout();
-
-            // Redirect to login page
-            if (typeof window !== 'undefined') {
-              window.location.href =
-                '/login?message=Session expired, please login again';
-            }
-          } catch (logoutError) {
-            console.error('Error during automatic logout:', logoutError);
-          }
-        }
-      }
-    }
-
     // Convert FetchCoreError to ApiError for consistency
     if (err instanceof FetchCoreError) {
       throw new ApiError(err.status, err.message, err.payload ?? {});

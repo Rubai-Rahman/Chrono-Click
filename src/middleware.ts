@@ -16,15 +16,6 @@ const authRoutes = ['/login', '/signup', '/forgot-password'];
 
 // Route mapping for legacy dashboard routes
 const legacyRouteMapping: Record<string, (role: string) => string> = {
-  '/dashboard': (role) => (role === 'admin' ? '/admin' : '/orders'),
-  '/dashboard/myOrders': () => '/orders',
-  '/dashboard/payment': () => '/payment-methods',
-  '/dashboard/review': () => '/reviews',
-  '/dashboard/manageOrders': () => '/admin/orders',
-  '/dashboard/makeAdmin': () => '/admin/customers',
-  '/dashboard/addProduct': () => '/admin/products',
-  '/dashboard/manageProduct': () => '/admin/products',
-  '/dashboard/addNews': () => '/admin/news',
   // Redirect old account routes to new simplified routes
   '/account': () => '/orders',
   '/account/orders': () => '/orders',

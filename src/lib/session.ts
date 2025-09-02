@@ -25,21 +25,8 @@ export async function createSession({
 
   const cookieStore = await cookies();
 
-  // 🧹 Clear old session cookie if it exists
-  cookieStore.delete('session');
-
-  // 🔑 Auth cookie — ONLY the idToken (for backend authentication)
   cookieStore.set('token', idToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    expires: expiresAt,
-    sameSite: 'lax',
-    path: '/',
-  });
-
-  // 🔑 Client auth cookie — for client-side API calls
-  cookieStore.set('clientToken', idToken, {
-    httpOnly: false, // JavaScript can access
     secure: process.env.NODE_ENV === 'production',
     expires: expiresAt,
     sameSite: 'lax',
@@ -58,73 +45,11 @@ export async function createSession({
   }
 }
 
-//update session
-export async function updateSession() {
-  const cookieStore = await cookies();
-  const tokenCookie = cookieStore.get('token')?.value;
-  const userCookie = cookieStore.get('user')?.value;
-
-  if (!tokenCookie) {
-    return null;
-  }
-
-  try {
-    const newExpiry = new Date(Date.now() + 30 * 60 * 1000);
-
-    // Update token cookie expiration
-    cookieStore.set('token', tokenCookie, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      expires: newExpiry,
-      sameSite: 'lax',
-      path: '/',
-    });
-
-    // Update client token cookie expiration
-    cookieStore.set('clientToken', tokenCookie, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      expires: newExpiry,
-      sameSite: 'lax',
-      path: '/',
-    });
-
-    // Update user cookie expiration if it exists
-    if (userCookie) {
-      cookieStore.set('user', userCookie, {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-        expires: newExpiry,
-        sameSite: 'lax',
-        path: '/',
-      });
-    }
-
-    // Return session data for compatibility
-    let user = null;
-    if (userCookie) {
-      try {
-        user = JSON.parse(userCookie);
-      } catch (e) {
-        console.error('Invalid user cookie:', e);
-      }
-    }
-
-    return { idToken: tokenCookie, user };
-  } catch (error) {
-    console.error('Error updating session:', error);
-    return null;
-  }
-}
-
 //delete session
 export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete('token');
-  cookieStore.delete('clientToken');
   cookieStore.delete('user');
-  // 🧹 Also clear old session cookie if it exists
-  cookieStore.delete('session');
 }
 
 // get session data
@@ -133,9 +58,7 @@ export async function getSession(): Promise<SessionData | null> {
   const idToken = cookieStore.get('token')?.value;
   const userCookie = cookieStore.get('user')?.value;
 
-  if (!idToken) {
-    return null;
-  }
+  if (!idToken) return null;
 
   let user = null;
   if (userCookie) {
@@ -145,7 +68,6 @@ export async function getSession(): Promise<SessionData | null> {
       console.error('Invalid user cookie:', e);
     }
   }
-
   return { idToken, user };
 }
 

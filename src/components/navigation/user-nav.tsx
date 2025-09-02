@@ -21,24 +21,21 @@ import {
   Moon,
   Sun,
   ShoppingBag,
-  Heart,
-  CreditCard,
-  MapPin,
+  Heart, MapPin,
   Shield,
   Package,
-  Users,
+  Users
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { useHydration } from '@/hooks/useHydration';
 import { logoutAction } from '@/app/actions/authAction';
 import Link from 'next/link';
 
 export function UserNav() {
   const { theme, setTheme } = useTheme();
-  const isHydrated = useHydration();
   const { user } = useAuth();
+  console.log("user",user)
   const router = useRouter();
 
   const toggleTheme = () => {
@@ -82,9 +79,9 @@ export function UserNav() {
     }
   };
 
-  if (!isHydrated) {
-    return <CircleUserRound className="size-6 text-muted-foreground" />;
-  }
+  // if (!isHydrated) {
+  //   return <CircleUserRound className="size-6 text-muted-foreground" />;
+  // }
 
   if (!user) {
     return (

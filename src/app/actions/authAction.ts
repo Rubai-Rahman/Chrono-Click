@@ -1,10 +1,10 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { authService } from '@/lib/firebase/auth';
 import { createSession, deleteSession } from '@/lib/session';
-import { safeApi } from '@/lib/fetch/serverFetch';
+import { redirect } from 'next/navigation';
 import { isValidUrl } from '@/lib/utils';
+import { safeApi } from '@/lib/fetch/serverFetch';
 
 //
 // ---- Types ----
@@ -13,9 +13,16 @@ export type RegisterResult =
   | { success: true }
   | { success: false; errors: Record<string, string[]> };
 
-export type UserData = { email: string; name: string; role: 'user' | 'admin' };
+export type UserData = {
+  email: string;
+  name: string;
+  role: 'user' | 'admin';
+};
 
-type SaveUserOk = { success: true; data: UserData };
+type SaveUserOk = {
+  success: true;
+  data: UserData;
+};
 type SaveUserErr = {
   success: false;
   error: { message: string; status?: number; details?: unknown };
@@ -23,15 +30,16 @@ type SaveUserErr = {
 type SaveUserResult = SaveUserOk | SaveUserErr;
 
 //
-// ---- Helpers ----
+// ---- saveUser ----
 //
 export async function saveUser(
   idToken: string,
   rememberMe: boolean
 ): Promise<SaveUserResult> {
   await createSession({ idToken, rememberMe });
-  const result = await safeApi.put<UserData>('/users', {});
 
+  const result = await safeApi.put<UserData>('/users', {});
+  console.log('result', result);
   if (result.success && result.data) {
     createSession({ idToken, rememberMe, userData: result.data });
     return { success: true, data: result.data };
@@ -48,7 +56,7 @@ export async function saveUser(
 }
 
 //
-// ---- Actions ----
+// ---- registerAction ----
 //
 export async function registerAction(data: {
   email: string;
@@ -61,13 +69,15 @@ export async function registerAction(data: {
       data.password,
       data.displayName
     );
-
     const idToken = await userCred.user.getIdToken();
 
     const saveResult = await saveUser(idToken, true);
 
     if (!saveResult.success) {
-      return { success: false, errors: { email: [saveResult.error.message] } };
+      return {
+        success: false,
+        errors: { email: [saveResult.error.message] },
+      };
     }
 
     return { success: true };
@@ -80,6 +90,9 @@ export async function registerAction(data: {
   }
 }
 
+//
+// ---- loginAction ----
+//
 export async function loginAction(
   data: { email: string; password: string; rememberMe: boolean },
   callbackUrl?: string
@@ -90,24 +103,27 @@ export async function loginAction(
     const userCred = await authService.signInWithEmail(email, password);
     const idToken = await userCred.user.getIdToken();
 
-    const saveResult = await saveUser(idToken, rememberMe);
-    console.log('saveResult', saveResult);
+    const saveResult = await saveUser(
+      idToken,
+      rememberMe
+    );
+
     if (!saveResult.success) {
-      return { errors: { email: [saveResult.error.message] } };
+      return {
+        errors: { email: [saveResult.error.message] },
+      };
     }
   } catch (error: unknown) {
     console.error('Login error:', error);
 
     let errorMessage = 'Invalid email or password';
-
     if (
-      error &&
       typeof error === 'object' &&
+      error !== null &&
       'code' in error &&
       typeof (error as { code?: string }).code === 'string'
     ) {
-      const code = (error as { code: string }).code;
-      switch (code) {
+      switch ((error as { code: string }).code) {
         case 'auth/user-not-found':
           errorMessage = 'No account found with this email address';
           break;
@@ -134,26 +150,26 @@ export async function loginAction(
   redirect(redirectUrl);
 }
 
+//
+// ---- logoutAction ----
+//
 export async function logoutAction() {
   try {
     await authService.signOut();
     await deleteSession();
   } catch (error) {
-    console.error(
-      'Logout error:',
-      error instanceof Error ? error.message : error
-    );
+    console.error('Logout error:', error);
   }
   redirect('/');
 }
 
+//
+// ---- resetPasswordAction ----
+//
 export async function resetPasswordAction(email: string) {
   try {
     await authService.resetPassword(email);
   } catch (error) {
-    console.error(
-      'Reset password error:',
-      error instanceof Error ? error.message : error
-    );
+    console.error('Reset password error:', error);
   }
 }

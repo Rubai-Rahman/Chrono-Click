@@ -28,12 +28,10 @@ import {
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { useHydration } from '@/hooks/useHydration';
 import { logoutAction } from '@/app/actions/authAction';
 
 const ProfileMenu = () => {
   const { theme, setTheme } = useTheme();
-  const isHydrated = useHydration();
   const { user } = useAuth();
   const router = useRouter();
 
@@ -63,9 +61,9 @@ const ProfileMenu = () => {
     }
   };
 
-  if (!isHydrated) {
-    return <CircleUserRound className="size-6 text-muted-foreground" />;
-  }
+  // if (!isHydrated) {
+  //   return <CircleUserRound className="size-6 text-muted-foreground" />;
+  // }
 
   return (
     <DropdownMenu>

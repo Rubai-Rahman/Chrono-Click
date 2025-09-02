@@ -27,7 +27,9 @@ interface CommentSectionProps {
 const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
   const [newComment, setNewComment] = useState('');
   const { user, isInitialized } = useAuthStore();
+  console.log('user', user, 'lllll', isInitialized);
   const isAuthenticated = !!user && isInitialized;
+  console.log('isAuthenticated', isAuthenticated);
   const router = useRouter();
 
   const queryClient = useQueryClient();
