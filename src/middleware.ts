@@ -7,23 +7,9 @@ const protectedRoutes = [
   { pattern: /^\/addresses(\/|$)/, roles: ['user', 'admin'] },
   { pattern: /^\/payment-methods(\/|$)/, roles: ['user', 'admin'] },
   { pattern: /^\/settings(\/|$)/, roles: ['user', 'admin'] },
-  // Legacy dashboard routes - will be redirected
-  { pattern: /^\/dashboard(\/|$)/, roles: ['user', 'admin'] },
-  { pattern: /^\/account(\/|$)/, roles: ['user', 'admin'] },
 ];
 
 const authRoutes = ['/login', '/signup', '/forgot-password'];
-
-// Route mapping for legacy dashboard routes
-const legacyRouteMapping: Record<string, (role: string) => string> = {
-  // Redirect old account routes to new simplified routes
-  '/account': () => '/orders',
-  '/account/orders': () => '/orders',
-  '/account/wishlist': () => '/wishlist',
-  '/account/addresses': () => '/addresses',
-  '/account/payment-methods': () => '/payment-methods',
-  '/account/settings': () => '/settings',
-};
 
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get('token')?.value;
@@ -41,22 +27,9 @@ export async function middleware(req: NextRequest) {
 
   const url = req.nextUrl.clone();
 
-  // Handle legacy route redirects
-  if (
-    url.pathname.startsWith('/dashboard') ||
-    url.pathname.startsWith('/account')
-  ) {
-    const newRoute = legacyRouteMapping[url.pathname];
-    if (newRoute) {
-      const redirectPath =
-        typeof newRoute === 'function' ? newRoute(role || 'user') : newRoute;
-      return NextResponse.redirect(new URL(redirectPath, req.nextUrl.origin));
-    }
-  }
-
   // Redirect authenticated users away from auth pages
   if (role && authRoutes.includes(url.pathname)) {
-    const redirectPath = role === 'admin' ? '/admin' : '/account';
+    const redirectPath = role === 'admin' ? '/admin' : '/orders';
     return NextResponse.redirect(new URL(redirectPath, req.nextUrl.origin));
   }
 
@@ -84,8 +57,6 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/account/:path*',
     '/admin/:path*',
     '/orders/:path*',
     '/wishlist/:path*',

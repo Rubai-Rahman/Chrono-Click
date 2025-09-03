@@ -103,16 +103,15 @@ export async function loginAction(
     const userCred = await authService.signInWithEmail(email, password);
     const idToken = await userCred.user.getIdToken();
 
-    const saveResult = await saveUser(
-      idToken,
-      rememberMe
-    );
+    const saveResult = await saveUser(idToken, rememberMe);
 
     if (!saveResult.success) {
       return {
         errors: { email: [saveResult.error.message] },
       };
     }
+
+    // Success - user is now logged in and session is created
   } catch (error: unknown) {
     console.error('Login error:', error);
 

@@ -77,7 +77,7 @@ async function coreClientFetch<T>(
     return await fetchCore<T>(doFetch, url, {
       method,
       headers,
-      body: data ?? undefined,
+      body: data as Record<string, unknown> | BodyInit | undefined,
       responseType: config.responseType,
     });
   } catch (err) {

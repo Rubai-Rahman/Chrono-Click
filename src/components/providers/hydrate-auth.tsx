@@ -17,10 +17,13 @@ export const HydrateAuth = ({
     // Set initial auth state from server session
     if (session?.user) {
       setUser(session.user);
-      setInitialized(true);
     } else {
       setUser(null);
     }
+
+    // Always set initialized to true after processing session
+    setInitialized(true);
+    setLoading(false);
 
     // Cleanup function
     return () => {};
