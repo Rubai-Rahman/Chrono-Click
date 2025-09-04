@@ -2,7 +2,6 @@ import 'server-only';
 import { cookies } from 'next/headers';
 
 export interface SessionData {
-  idToken: string;
   user?: {
     email: string;
     name: string;
@@ -11,11 +10,9 @@ export interface SessionData {
 }
 
 export async function createSession({
-  idToken,
   userData,
   rememberMe,
 }: {
-  idToken: string;
   userData?: { email: string; name: string; role: 'admin' | 'user' };
   rememberMe?: boolean;
 }) {
@@ -24,14 +21,6 @@ export async function createSession({
     : new Date(Date.now() + 2 * 60 * 60 * 1000);
 
   const cookieStore = await cookies();
-
-  cookieStore.set('token', idToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    expires: expiresAt,
-    sameSite: 'lax',
-    path: '/',
-  });
 
   // Optional: user info cookie (frontend-readable, no auth role)
   if (userData) {
@@ -48,17 +37,15 @@ export async function createSession({
 //delete session
 export async function deleteSession() {
   const cookieStore = await cookies();
-  cookieStore.delete('token');
   cookieStore.delete('user');
 }
 
 // get session data
 export async function getSession(): Promise<SessionData | null> {
   const cookieStore = await cookies();
-  const idToken = cookieStore.get('token')?.value;
   const userCookie = cookieStore.get('user')?.value;
 
-  if (!idToken) return null;
+  if (!userCookie) return null;
 
   let user = null;
   if (userCookie) {
@@ -68,13 +55,7 @@ export async function getSession(): Promise<SessionData | null> {
       console.error('Invalid user cookie:', e);
     }
   }
-  return { idToken, user };
-}
-
-// get just the ID token (for API calls)
-export async function getIdToken(): Promise<string | null> {
-  const cookieStore = await cookies();
-  return cookieStore.get('token')?.value || null;
+  return { user };
 }
 
 // get current user data from session

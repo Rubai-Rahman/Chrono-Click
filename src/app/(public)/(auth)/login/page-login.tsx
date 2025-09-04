@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { validateCallbackUrl } from '@/lib/security';
 import LoginForm from '@/components/auth/login-form';
 import { useTransition } from 'react';
+import { authService } from '@/lib/firebase/auth';
 
 const LoginPageContent = () => {
   const { googleSignIn } = useAuth();
@@ -27,7 +28,13 @@ const LoginPageContent = () => {
   const handleLogin = (data: LoginFormData) => {
     startTransition(async () => {
       try {
-        await loginAction(data, callbackUrl || undefined);
+        const userCred = await authService.signInWithEmail(
+          data.email,
+          data.password
+        );
+        const idToken = await userCred.user.getIdToken();
+        console.log('idToken', idToken);
+        // await loginAction(data, callbackUrl || undefined);
         // If loginAction redirects, this may never run
       } catch (error) {
         if (error instanceof Error && error.message === 'NEXT_REDIRECT') {

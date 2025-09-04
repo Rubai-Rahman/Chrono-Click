@@ -18,7 +18,7 @@ export const useAuth = () => {
       setError(null);
       const result = await authService.signInWithGoogle();
       const idToken = await result.user.getIdToken();
-      await saveUser(idToken, true);
+      await saveUser(idToken);
       // Handle callback redirect
       if (callbackUrl && isValidUrl(callbackUrl)) {
         router.push(callbackUrl);

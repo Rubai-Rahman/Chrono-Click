@@ -32,16 +32,10 @@ type SaveUserResult = SaveUserOk | SaveUserErr;
 //
 // ---- saveUser ----
 //
-export async function saveUser(
-  idToken: string,
-  rememberMe: boolean
-): Promise<SaveUserResult> {
-  await createSession({ idToken, rememberMe });
-
+export async function saveUser(idToken: string): Promise<SaveUserResult> {
   const result = await safeApi.put<UserData>('/users', {});
-  console.log('result', result);
+  console.log('result', result, idToken);
   if (result.success && result.data) {
-    createSession({ idToken, rememberMe, userData: result.data });
     return { success: true, data: result.data };
   }
 
@@ -71,8 +65,7 @@ export async function registerAction(data: {
     );
     const idToken = await userCred.user.getIdToken();
 
-    const saveResult = await saveUser(idToken, true);
-
+    const saveResult = await saveUser(idToken);
     if (!saveResult.success) {
       return {
         success: false,
@@ -102,14 +95,22 @@ export async function loginAction(
   try {
     const userCred = await authService.signInWithEmail(email, password);
     const idToken = await userCred.user.getIdToken();
+    console.log('idToken', idToken);
 
-    const saveResult = await saveUser(idToken, rememberMe);
-
+    const saveResult = await saveUser(idToken);
+    console.log('saveResult', saveResult);
     if (!saveResult.success) {
       return {
         errors: { email: [saveResult.error.message] },
       };
     }
+
+    const userData = {
+      email: saveResult.data.email,
+      name: saveResult.data.name,
+      role: saveResult.data.role,
+    };
+    await createSession({ rememberMe, userData: userData });
 
     // Success - user is now logged in and session is created
   } catch (error: unknown) {

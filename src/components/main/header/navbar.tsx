@@ -7,8 +7,12 @@ import Cart from '../../cart/cart';
 import { MainNav } from '@/components/navigation/main-nav';
 import { UserNav } from '@/components/navigation/user-nav';
 import MobileNav from '@/components/navigation/mobile-nav';
+import { getAuth } from 'firebase/auth';
 
 const Navbar = () => {
+  const auth = getAuth();
+  console.log('authToken', auth.currentUser?.getIdToken());
+  console.log('test');
   return (
     <nav className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-3">
