@@ -2,7 +2,7 @@
 
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
-import { authService } from '@/lib/firebase/auth';
+import { authService } from '@/lib/better-auth/auth';
 import { isValidUrl } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { saveUser } from '@/app/actions/authAction';

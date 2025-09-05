@@ -1,6 +1,6 @@
 'use server';
 
-import { authService } from '@/lib/firebase/auth';
+import { authService } from '@/lib/better-auth/auth';
 import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { isValidUrl } from '@/lib/utils';

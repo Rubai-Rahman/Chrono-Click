@@ -8,7 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { validateCallbackUrl } from '@/lib/security';
 import LoginForm from '@/components/auth/login-form';
 import { useTransition } from 'react';
-import { authService } from '@/lib/firebase/auth';
+import { authService } from '@/lib/better-auth/auth';
 
 const LoginPageContent = () => {
   const { googleSignIn } = useAuth();
