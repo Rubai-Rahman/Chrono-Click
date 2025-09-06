@@ -1,6 +1,6 @@
 'use server';
 
-import { deleteSession } from '@/lib/session';
+import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { safeApi } from '@/lib/fetch/serverFetch';
 import { cookies } from 'next/headers';
@@ -44,12 +44,7 @@ export async function registerAction(data: {
       };
     }
     if (result.success && result.data && 'payload' in result.data) {
-      const cookieStore = await cookies();
-      cookieStore.set('accessToken', result.data?.payload.accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-      });
+      createSession(result.data?.payload.accessToken);
     }
 
     return result.data!;
@@ -80,14 +75,9 @@ export async function loginAction(data: {
         message: result.error?.message || 'Unknown error',
       };
     }
-if (result.success && result.data && 'payload' in result.data) {
-  const cookieStore = await cookies();
-  cookieStore.set('accessToken', result.data?.payload.accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-  });
-}
+    if (result.success && result.data && 'payload' in result.data) {
+      createSession(result.data?.payload.accessToken);
+    }
     return result.data!;
   } catch (error: unknown) {
     return {
@@ -102,7 +92,6 @@ if (result.success && result.data && 'payload' in result.data) {
 //
 export async function logoutAction() {
   try {
-
     await deleteSession();
   } catch (error) {
     console.error('Logout error:', error);
