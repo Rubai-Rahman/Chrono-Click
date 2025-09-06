@@ -8,13 +8,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { validateCallbackUrl } from '@/lib/security';
 import LoginForm from '@/components/auth/login-form';
 import { useTransition } from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
 
 const LoginPageContent = () => {
   const { googleSignIn } = useAuth();
   const searchParams = useSearchParams();
   const rawCallbackUrl = searchParams.get('callbackUrl');
   const [isPending, startTransition] = useTransition();
-
+  const { setUser, setAccessToken } = useAuthStore();
+  const router = useRouter();
   // Define trusted domains for your application
   const trustedDomains = [
     'localhost:3000',
@@ -23,14 +26,26 @@ const LoginPageContent = () => {
   ];
 
   const callbackUrl = validateCallbackUrl(rawCallbackUrl, trustedDomains);
-
+  console.log('callbackUrl', callbackUrl);
   const handleLogin = (data: LoginFormData) => {
     startTransition(async () => {
       try {
-        console.log('data', data);
-        // await loginAction(data, callbackUrl || undefined);
-        // If loginAction redirects, this may never run
+        const result = await loginAction(data);
+        if (result.success) {
+          setUser(result.payload.user);
+          setAccessToken(result.payload.accessToken);
+          router.push(callbackUrl || '/products/gents');
+        }
+        if (!result.success) {
+          const errorMessage = result.message;
+          toast.error(errorMessage, { id: 'signup-error' });
+          return;
+        }
+        toast.success(`🎉 Welcome back!${result.payload.user.name}`, {
+          id: 'signup-success',
+        });
       } catch (error) {
+        console.log('error', error);
         if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
           return;
         }

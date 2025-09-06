@@ -41,7 +41,6 @@ const SignupPageContent = () => {
           error instanceof Error ? error.message : 'Something went wrong',
           { id: 'signup-unexpected' }
         );
-      } finally {
       }
     });
   };

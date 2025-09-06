@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export interface AuthUser {
   name: string;
@@ -11,7 +12,7 @@ export interface AuthUser {
 interface AuthState {
   accessToken: string;
   user: AuthUser | null;
-  isLoading: boolean; // optional, depending on your usage
+  isLoading: boolean;
   isInitialized: boolean;
   error: string | null;
 }
@@ -26,45 +27,52 @@ interface AuthActions {
   reset: () => void;
 }
 
-export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
-  accessToken: '',
-  user: null,
-  isLoading: false,
-  isInitialized: false,
-  error: null,
-
-  setUser: (user) => set({ user, error: null }),
-  setAccessToken: (accessToken) => set({ accessToken }),
-  setLoading: (isLoading) => set({ isLoading }),
-  setInitialized: (isInitialized) => set({ isInitialized }),
-  setError: (error) => set({ error }),
-  logout: async () => {
-    try {
-      // Clear auth store state
-      set({
-        user: null,
-        isLoading: false,
-        accessToken: '',
-        error: null,
-      });
-
-      // Clear cookies and Firebase auth (dynamic import to avoid SSR issues)
-      if (typeof window !== 'undefined') {
-        const { logoutAction } = await import('@/app/actions/authAction');
-        await logoutAction();
-      }
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  },
-  reset: () =>
-    set({
+export const useAuthStore = create<AuthState & AuthActions>()(
+  persist(
+    (set) => ({
+      accessToken: '',
       user: null,
       isLoading: false,
-      accessToken: '',
       isInitialized: false,
       error: null,
+
+      setUser: (user) => set({ user, error: null }),
+      setAccessToken: (accessToken) => set({ accessToken }),
+      setLoading: (isLoading) => set({ isLoading }),
+      setInitialized: (isInitialized) => set({ isInitialized }),
+      setError: (error) => set({ error }),
+      logout: async () => {
+        try {
+          set({
+            user: null,
+            isLoading: false,
+            accessToken: '',
+            error: null,
+          });
+
+          if (typeof window !== 'undefined') {
+            const { logoutAction } = await import('@/app/actions/authAction');
+            await logoutAction();
+          }
+        } catch (error) {
+          console.error('Logout error:', error);
+        }
+      },
+      reset: () =>
+        set({
+          user: null,
+          isLoading: false,
+          accessToken: '',
+          isInitialized: false,
+          error: null,
+        }),
     }),
-  name: 'auth-storage',
-  persist: true,
-}));
+    {
+      name: 'auth-storage', // key in localStorage
+      partialize: (state) => ({
+        accessToken: state.accessToken,
+        user: state.user,
+      }), // optional: only persist what you need
+    }
+  )
+);

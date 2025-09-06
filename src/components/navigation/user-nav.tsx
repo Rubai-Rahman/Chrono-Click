@@ -21,21 +21,23 @@ import {
   Moon,
   Sun,
   ShoppingBag,
-  Heart, MapPin,
+  Heart,
+  MapPin,
   Shield,
   Package,
-  Users
+  Users,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { logoutAction } from '@/app/actions/authAction';
 import Link from 'next/link';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export function UserNav() {
   const { theme, setTheme } = useTheme();
-  const { user } = useAuth();
-  console.log("user",user)
+  const { user, accessToken } = useAuthStore();
+  console.log('user', user, 'accessToken', accessToken);
+
   const router = useRouter();
 
   const toggleTheme = () => {
