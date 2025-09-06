@@ -1,14 +1,15 @@
 import { create } from 'zustand';
 
 export interface AuthUser {
-  email: string;
   name: string;
-  displayName?: string;
+  userId: string;
+  email: string;
   photoURL?: string;
   role: 'user' | 'admin';
 }
 
 interface AuthState {
+  accessToken: string;
   user: AuthUser | null;
   isLoading: boolean; // optional, depending on your usage
   isInitialized: boolean;
@@ -17,6 +18,7 @@ interface AuthState {
 
 interface AuthActions {
   setUser: (user: AuthUser | null) => void;
+  setAccessToken: (accessToken: string) => void;
   setLoading: (loading: boolean) => void;
   setInitialized: (initialized: boolean) => void;
   setError: (error: string | null) => void;
@@ -25,12 +27,14 @@ interface AuthActions {
 }
 
 export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
+  accessToken: '',
   user: null,
   isLoading: false,
   isInitialized: false,
   error: null,
 
   setUser: (user) => set({ user, error: null }),
+  setAccessToken: (accessToken) => set({ accessToken }),
   setLoading: (isLoading) => set({ isLoading }),
   setInitialized: (isInitialized) => set({ isInitialized }),
   setError: (error) => set({ error }),
@@ -40,6 +44,7 @@ export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
       set({
         user: null,
         isLoading: false,
+        accessToken: '',
         error: null,
       });
 
@@ -56,7 +61,10 @@ export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
     set({
       user: null,
       isLoading: false,
+      accessToken: '',
       isInitialized: false,
       error: null,
     }),
+  name: 'auth-storage',
+  persist: true,
 }));

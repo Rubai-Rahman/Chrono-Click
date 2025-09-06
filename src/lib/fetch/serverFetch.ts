@@ -92,6 +92,7 @@ async function coreServerFetch<T>(
       headers,
       body: data, // fetchCore handles serialization
       responseType: config.responseType,
+      credentials: config.credentials,
     });
   } catch (err) {
     // Convert FetchCoreError to ApiError for consistency

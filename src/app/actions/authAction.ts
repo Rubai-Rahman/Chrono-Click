@@ -5,18 +5,23 @@ import { redirect } from 'next/navigation';
 import { isValidUrl } from '@/lib/utils';
 import { safeApi } from '@/lib/fetch/serverFetch';
 
-//
-// ---- Types ----
-//
-export type RegisterResult =
-  | { success: true }
-  | { success: false; errors: Record<string, string[]> };
+interface SignupPayload {
+  accessToken: string;
+  user: { userId: string; email: string; name: string; role: 'user' | 'admin' };
+  message: string;
+}
 
-export type UserData = {
-  email: string;
-  name: string;
-  role: 'user' | 'admin';
-};
+interface SignupSuccess {
+  success: true;
+  payload: SignupPayload;
+}
+
+interface ErrorResponse {
+  success: false;
+  message: string;
+}
+
+type RegisterResultAlt = SignupSuccess | ErrorResponse;
 
 //
 // ---- registerAction ----
@@ -24,17 +29,26 @@ export type UserData = {
 export async function registerAction(data: {
   email: string;
   password: string;
-  displayName: string;
-}): Promise<RegisterResult> {
+  name: string;
+}): Promise<RegisterResultAlt> {
   try {
-    console.log('data', data);
+    const result = await safeApi.post<RegisterResultAlt>('auth/signup', data, {
+      credentials: 'include',
+    });
 
-    return { success: true };
+    if (!result.success) {
+      // Return a proper ErrorResponse, not the whole ApiResult
+      return {
+        success: false,
+        message: result.error?.message || 'Unknown error',
+      };
+    }
+    return result.data!;
   } catch (error) {
     console.error('Registration error:', error);
     return {
       success: false,
-      errors: { email: ['Registration failed. Please try again.'] },
+      message: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }

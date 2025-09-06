@@ -8,7 +8,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { validateCallbackUrl } from '@/lib/security';
 import LoginForm from '@/components/auth/login-form';
 import { useTransition } from 'react';
-import { authService } from '@/lib/better-auth/auth';
 
 const LoginPageContent = () => {
   const { googleSignIn } = useAuth();
@@ -28,12 +27,7 @@ const LoginPageContent = () => {
   const handleLogin = (data: LoginFormData) => {
     startTransition(async () => {
       try {
-        const userCred = await authService.signInWithEmail(
-          data.email,
-          data.password
-        );
-        const idToken = await userCred.user.getIdToken();
-        console.log('idToken', idToken);
+        console.log('data', data);
         // await loginAction(data, callbackUrl || undefined);
         // If loginAction redirects, this may never run
       } catch (error) {

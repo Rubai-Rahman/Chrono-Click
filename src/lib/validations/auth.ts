@@ -18,13 +18,13 @@ export const loginSchema = z.object({
 // Signup form validation schema
 export const signupSchema = z
   .object({
-    displayName: z
+    name: z
       .string()
       .min(1, 'Full name is required')
       .min(2, 'Name must be at least 2 characters long')
       .max(50, 'Name must be less than 50 characters')
       .regex(/^[a-zA-Z\s]+$/, 'Name can only contain letters and spaces'),
-    email: z.string().email('Please enter a valid email address'),
+    email: z.email('Please enter a valid email address'),
     password: z
       .string()
       .min(1, 'Password is required')
@@ -55,10 +55,12 @@ export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 export const DEMO_CREDENTIALS = {
   admin: {
     email: 'admin@chronoclick.com',
+    name: 'Admin',
     password: 'Admin123!',
   },
   user: {
     email: 'test1@gmail.com',
+    name: 'Test User',
     password: 'SrongTestter#1',
   },
 } as const;

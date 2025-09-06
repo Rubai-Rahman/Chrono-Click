@@ -5,6 +5,7 @@ export type DoFetch = (url: string, init: RequestInit) => Promise<Response>;
 export type CoreOptions = {
   method?: string;
   headers?: Record<string, string>;
+  credentials?: RequestCredentials;
   /**
    * If FormData is passed, it will be forwarded as-is; otherwise, any object will be JSON.stringified.
    */
@@ -25,7 +26,7 @@ export async function fetchCore<T, E = { message?: string }>(
   url: string,
   opts: CoreOptions = {}
 ): Promise<T> {
-  const { method = 'GET', headers = {}, body, responseType = 'json' } = opts;
+  const { method = 'GET', headers = {}, body, responseType = 'json', credentials } = opts;
 
   const isForm =
     typeof FormData !== 'undefined' &&
@@ -53,6 +54,7 @@ export async function fetchCore<T, E = { message?: string }>(
     method,
     headers: finalHeaders,
     body: finalBody,
+    credentials,
   };
 
   const res = await doFetch(url, init);

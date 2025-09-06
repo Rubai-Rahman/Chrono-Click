@@ -26,7 +26,7 @@ const SignupForm = ({
     resolver: zodResolver(signupSchema),
     mode: 'onBlur',
     defaultValues: {
-      displayName: '',
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -88,7 +88,7 @@ const SignupForm = ({
                       {/* Full Name Input */}
                       <CommonFormField
                         control={form.control}
-                        name="displayName"
+                        name="name"
                         label="Full Name"
                       >
                         {({ field }) => (
