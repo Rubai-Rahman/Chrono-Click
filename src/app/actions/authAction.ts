@@ -1,6 +1,5 @@
 'use server';
 
-import { authService } from '@/lib/better-auth/auth';
 import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { isValidUrl } from '@/lib/utils';
@@ -19,36 +18,6 @@ export type UserData = {
   role: 'user' | 'admin';
 };
 
-type SaveUserOk = {
-  success: true;
-  data: UserData;
-};
-type SaveUserErr = {
-  success: false;
-  error: { message: string; status?: number; details?: unknown };
-};
-type SaveUserResult = SaveUserOk | SaveUserErr;
-
-//
-// ---- saveUser ----
-//
-export async function saveUser(idToken: string): Promise<SaveUserResult> {
-  const result = await safeApi.put<UserData>('/users', {});
-  console.log('result', result, idToken);
-  if (result.success && result.data) {
-    return { success: true, data: result.data };
-  }
-
-  return {
-    success: false,
-    error: {
-      message: result.error?.message || 'Failed to save user',
-      status: result.error?.status,
-      details: result.error?.details,
-    },
-  };
-}
-
 //
 // ---- registerAction ----
 //
@@ -58,20 +27,7 @@ export async function registerAction(data: {
   displayName: string;
 }): Promise<RegisterResult> {
   try {
-    const userCred = await authService.createUserWithEmail(
-      data.email,
-      data.password,
-      data.displayName
-    );
-    const idToken = await userCred.user.getIdToken();
-
-    const saveResult = await saveUser(idToken);
-    if (!saveResult.success) {
-      return {
-        success: false,
-        errors: { email: [saveResult.error.message] },
-      };
-    }
+    console.log('data', data);
 
     return { success: true };
   } catch (error) {
@@ -93,10 +49,6 @@ export async function loginAction(
   const { email, password, rememberMe } = data;
 
   try {
-    const userCred = await authService.signInWithEmail(email, password);
-    const idToken = await userCred.user.getIdToken();
-    console.log('idToken', idToken);
-
     const saveResult = await saveUser(idToken);
     console.log('saveResult', saveResult);
     if (!saveResult.success) {
@@ -155,7 +107,6 @@ export async function loginAction(
 //
 export async function logoutAction() {
   try {
-    await authService.signOut();
     await deleteSession();
   } catch (error) {
     console.error('Logout error:', error);
@@ -168,7 +119,7 @@ export async function logoutAction() {
 //
 export async function resetPasswordAction(email: string) {
   try {
-    await authService.resetPassword(email);
+    console.log('email', email);
   } catch (error) {
     console.error('Reset password error:', error);
   }

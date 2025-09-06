@@ -2,10 +2,8 @@
 
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
-import { authService } from '@/lib/better-auth/auth';
 import { isValidUrl } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-import { saveUser } from '@/app/actions/authAction';
 
 export const useAuth = () => {
   const router = useRouter();
@@ -16,9 +14,6 @@ export const useAuth = () => {
     try {
       setLoading(true);
       setError(null);
-      const result = await authService.signInWithGoogle();
-      const idToken = await result.user.getIdToken();
-      await saveUser(idToken);
       // Handle callback redirect
       if (callbackUrl && isValidUrl(callbackUrl)) {
         router.push(callbackUrl);
