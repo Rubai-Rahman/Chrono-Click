@@ -2,20 +2,10 @@ import 'server-only';
 import { cookies } from 'next/headers';
 
 export interface SessionData {
-  user?: {
-    email: string;
-    name: string;
-    role: 'admin' | 'user';
-  };
+  accessToken: string;
 }
 
-export async function createSession({
-  userData,
-  rememberMe,
-}: {
-  userData?: { email: string; name: string; role: 'admin' | 'user' };
-  rememberMe?: boolean;
-}) {
+export async function createSession({ accessToken }: { accessToken: string }) {
   const expiresAt = rememberMe
     ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     : new Date(Date.now() + 2 * 60 * 60 * 1000);

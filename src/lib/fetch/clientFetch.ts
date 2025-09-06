@@ -2,6 +2,7 @@
 
 import { fetchCore, DoFetch } from './fetchCore';
 import { ApiError, FetchCoreError } from './apiError';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
@@ -63,10 +64,12 @@ async function coreClientFetch<T>(
     : `${BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
 
   // Get auth token for client-side requests
+  const { accessToken, setAccessToken, logout } = useAuthStore.getState();
 
   // Prepare headers with authentication
   const headers: Record<string, string> = {
     ...config.headers,
+    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
   };
 
   // Create client-specific doFetch
@@ -81,6 +84,47 @@ async function coreClientFetch<T>(
       responseType: config.responseType,
     });
   } catch (err) {
+    if (err instanceof FetchCoreError && err.status === 401) {
+      // try refresh
+      try {
+        const refreshRes = await fetch(`${BASE_URL}/auth/refresh`, {
+          method: 'POST',
+          credentials: 'include', // send cookies!
+        });
+
+        if (!refreshRes.ok) {
+          await logout();
+          throw new ApiError(401, 'Refresh failed', {});
+        }
+
+        const refreshData = await refreshRes.json();
+        const newToken = refreshData?.payload?.accessToken;
+
+        if (!newToken) {
+          await logout();
+          throw new ApiError(401, 'No new access token', {});
+        }
+
+        // update token in store
+        setAccessToken(newToken);
+
+        // retry original request with new token
+        const retryHeaders = {
+          ...headers,
+          Authorization: `Bearer ${newToken}`,
+        };
+
+        return await fetchCore<T>(doFetch, url, {
+          method,
+          headers: retryHeaders,
+          body: data as Record<string, unknown> | BodyInit | undefined,
+          responseType: config.responseType,
+        });
+      } catch (refreshError) {
+        await logout();
+        throw refreshError;
+      }
+    }
     // Convert FetchCoreError to ApiError for consistency
     if (err instanceof FetchCoreError) {
       throw new ApiError(err.status, err.message, err.payload ?? {});

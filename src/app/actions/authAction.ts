@@ -3,6 +3,7 @@
 import { deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { safeApi } from '@/lib/fetch/serverFetch';
+import { cookies } from 'next/headers';
 
 interface SignupPayload {
   accessToken: string;
@@ -42,6 +43,15 @@ export async function registerAction(data: {
         message: result.error?.message || 'Unknown error',
       };
     }
+    if (result.success && result.data && 'payload' in result.data) {
+      const cookieStore = await cookies();
+      cookieStore.set('accessToken', result.data?.payload.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      });
+    }
+
     return result.data!;
   } catch (error) {
     return {
@@ -70,7 +80,14 @@ export async function loginAction(data: {
         message: result.error?.message || 'Unknown error',
       };
     }
-
+if (result.success && result.data && 'payload' in result.data) {
+  const cookieStore = await cookies();
+  cookieStore.set('accessToken', result.data?.payload.accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  });
+}
     return result.data!;
   } catch (error: unknown) {
     return {
@@ -85,6 +102,7 @@ export async function loginAction(data: {
 //
 export async function logoutAction() {
   try {
+
     await deleteSession();
   } catch (error) {
     console.error('Logout error:', error);
