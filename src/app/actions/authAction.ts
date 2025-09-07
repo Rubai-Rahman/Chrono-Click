@@ -101,11 +101,25 @@ export async function loginAction(data: {
 //
 export async function logoutAction() {
   try {
+    const result = await safeApi.post<RegisterResultAlt>(
+      'auth/logout',
+      {},
+      {
+        credentials: 'include',
+      }
+    );
+
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.error?.message || 'Unknown error',
+      };
+    }
     await deleteSession();
+    redirect('/');
   } catch (error) {
     console.error('Logout error:', error);
   }
-  redirect('/');
 }
 
 //
