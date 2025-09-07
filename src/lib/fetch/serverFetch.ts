@@ -3,6 +3,7 @@ import 'server-only';
 import { cookies } from 'next/headers';
 import { fetchCore, DoFetch } from './fetchCore';
 import { ApiError, FetchCoreError } from './apiError';
+import { createSession, deleteSession } from '../session';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
@@ -89,15 +90,18 @@ export async function coreServerFetch<T>(
       credentials: config.credentials,
     });
   } catch (err) {
-    console.log('err', err);
-    if (err instanceof FetchCoreError && err.status === 401) {
+    console.log('errFetchCore==', err);
+    if (
+      err instanceof FetchCoreError &&
+      (err.status === 401 || err.status === 403)
+    ) {
       // 🔄 Refresh token flow
       try {
         const refreshRes = await fetch(`${BASE_URL}/auth/refresh`, {
           method: 'POST',
-          credentials: 'include', // sends HttpOnly refresh cookie
+          credentials: 'include',
         });
-
+        
         if (!refreshRes.ok) {
           throw new ApiError(401, 'Session expired', {});
         }
@@ -108,13 +112,9 @@ export async function coreServerFetch<T>(
         if (!accessToken) {
           throw new ApiError(401, 'Invalid refresh response', {});
         }
-
+        deleteSession();
+        createSession(accessToken);
         // Save the new accessToken in the server cookie (optional)
-        cookieStore.set('accessToken', accessToken, {
-          httpOnly: false, // allow server to read it for subsequent fetches
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-        });
 
         // Retry original request
         const retryHeaders = {

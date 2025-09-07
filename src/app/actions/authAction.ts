@@ -3,11 +3,12 @@
 import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { safeApi } from '@/lib/fetch/serverFetch';
-import { cookies } from 'next/headers';
 
 interface SignupPayload {
   accessToken: string;
-  user: { userId: string; email: string; name: string; role: 'user' | 'admin' };
+  refreshToken: string;
+  maxAge: number;
+  user: { email: string; name: string; role: 'user' | 'admin' };
   message: string;
 }
 
@@ -44,7 +45,11 @@ export async function registerAction(data: {
       };
     }
     if (result.success && result.data && 'payload' in result.data) {
-      createSession(result.data?.payload.accessToken);
+      createSession(
+        result.data?.payload.accessToken,
+        result.data?.payload.refreshToken,
+        result.data?.payload.maxAge
+      );
     }
 
     return result.data!;
@@ -76,7 +81,11 @@ export async function loginAction(data: {
       };
     }
     if (result.success && result.data && 'payload' in result.data) {
-      createSession(result.data?.payload.accessToken);
+      createSession(
+        result.data?.payload.accessToken,
+        result.data?.payload.refreshToken,
+        result.data?.payload.maxAge
+      );
     }
     return result.data!;
   } catch (error: unknown) {
