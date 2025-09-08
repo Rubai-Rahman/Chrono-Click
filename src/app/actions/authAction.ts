@@ -129,7 +129,7 @@ export async function resetEmailAction(email: string) {
   try {
     console.log('email', email);
     const result = await safeApi.post<RegisterResultAlt>(
-      'auth/reset-password',
+      'auth/forgot-password',
       { email },
       {
         credentials: 'include',
@@ -160,10 +160,7 @@ export async function resetPasswordAction(data: {
   try {
     const result = await safeApi.post<RegisterResultAlt>(
       'auth/reset-password',
-      data,
-      {
-        credentials: 'include',
-      }
+      data
     );
     if (!result.success) {
       return {
