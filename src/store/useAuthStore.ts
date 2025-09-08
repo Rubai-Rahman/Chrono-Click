@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 export interface AuthUser {
   name: string;
   email: string;
-  photoURL?: string;
+  avatar?: string | null;
   role: 'user' | 'admin';
 }
 
@@ -34,7 +34,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       isLoading: false,
       isInitialized: false,
       error: null,
-
       setUser: (user) => set({ user, error: null }),
       setAccessToken: (accessToken) => set({ accessToken }),
       setLoading: (isLoading) => set({ isLoading }),

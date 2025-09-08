@@ -82,10 +82,6 @@ export function UserNav() {
     }
   };
 
-  // if (!isHydrated) {
-  //   return <CircleUserRound className="size-6 text-muted-foreground" />;
-  // }
-
   if (!user) {
     return (
       <div className="flex items-center gap-2">
@@ -104,10 +100,10 @@ export function UserNav() {
           size="icon"
           className="relative h-10 w-10 rounded-full"
         >
-          {user?.photoURL ? (
+          {user?.avatar ? (
             <Avatar className="h-10 w-10">
               <AvatarImage
-                src={user?.photoURL || '/placeholder.svg'}
+                src={user?.avatar || '/placeholder.svg'}
                 alt={user?.name || 'User'}
               />
               <AvatarFallback>

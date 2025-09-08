@@ -73,7 +73,6 @@ export async function coreServerFetch<T>(
 
   const cookieStore = await cookies();
   let accessToken = cookieStore.get('accessToken')?.value ?? '';
-  console.log('accessToken==', accessToken);
   const headers: Record<string, string> = {
     ...config.headers,
     ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
@@ -101,7 +100,7 @@ export async function coreServerFetch<T>(
           method: 'POST',
           credentials: 'include',
         });
-        
+
         if (!refreshRes.ok) {
           throw new ApiError(401, 'Session expired', {});
         }

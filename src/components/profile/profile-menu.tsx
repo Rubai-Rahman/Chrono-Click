@@ -22,7 +22,6 @@ import {
   Sun,
   ShoppingBag,
   Heart,
-  CreditCard,
   Bell,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
@@ -34,7 +33,7 @@ const ProfileMenu = () => {
   const { theme, setTheme } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
-
+  console.log('user', user?.avatar);
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
@@ -73,10 +72,10 @@ const ProfileMenu = () => {
           size="icon"
           className="relative h-10 w-10 rounded-full"
         >
-          {user?.photoURL ? (
+          {user?.avatar ? (
             <Avatar className="h-10 w-10">
               <AvatarImage
-                src={user?.photoURL || '/placeholder.svg'}
+                src={user?.avatar || '/placeholder.svg'}
                 alt={user?.name || 'User'}
               />
               <AvatarFallback>

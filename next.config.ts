@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com', // 👈 Google avatar domain
+        port: '',
+        pathname: '/**',
+      },
     ],
     // Add timeout and retry configuration
     dangerouslyAllowSVG: true,
