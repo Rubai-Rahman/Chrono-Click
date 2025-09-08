@@ -3,16 +3,15 @@
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { LoginFormData, DEMO_CREDENTIALS } from '@/lib/validations/auth';
-import { loginAction } from '@/app/actions/authAction';
-import { useAuth } from '@/hooks/useAuth';
+import { googleSignInAction, loginAction } from '@/app/actions/authAction';
 import { validateCallbackUrl } from '@/lib/security';
 import LoginForm from '@/components/auth/login-form';
 import { useTransition } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
+import { CredentialResponse } from '@react-oauth/google';
 
 const LoginPageContent = () => {
-  const { googleSignIn } = useAuth();
   const searchParams = useSearchParams();
   const rawCallbackUrl = searchParams.get('callbackUrl');
   const [isPending, startTransition] = useTransition();
@@ -27,6 +26,7 @@ const LoginPageContent = () => {
 
   const callbackUrl = validateCallbackUrl(rawCallbackUrl, trustedDomains);
   console.log('callbackUrl', callbackUrl);
+
   const handleLogin = (data: LoginFormData) => {
     startTransition(async () => {
       try {
@@ -55,9 +55,33 @@ const LoginPageContent = () => {
       }
     });
   };
-
-  const handleGoogleSignIn = () => {
-    googleSignIn(callbackUrl || undefined);
+  const rememberMe = true;
+  const handleGoogleSignIn = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse?.credential) {
+      toast.error('Google login failed');
+      return;
+    }
+    try {
+      const res = await googleSignInAction(
+        credentialResponse?.credential,
+        rememberMe
+      );
+      if (res.success) {
+        setUser(res.payload.user);
+        setAccessToken(res.payload.accessToken);
+        router.push(callbackUrl || '/products/gents');
+      }
+      if (!res.success) {
+        const errorMessage = res.message;
+        toast.error(errorMessage, { id: 'signup-error' });
+        return;
+      }
+      toast.success(`🎉 Welcome back!${res.payload.user.name}`, {
+        id: 'signup-success',
+      });
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   const handleDemoCredentials = (type: 'admin' | 'user') => {

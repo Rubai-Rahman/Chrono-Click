@@ -11,14 +11,14 @@ export async function sendMailAction(formData: {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
     await transporter.sendMail({
       from: `"${formData.name}" <${formData.email}>`,
-      to: process.env.RECEIVER_EMAIL, // তোমার ইমেইল যেখানে পাবে
+      to: process.env.RECEIVER_EMAIL,
       subject: `Contact Form Submission from ${formData.name}`,
       text: formData.message,
       html: `

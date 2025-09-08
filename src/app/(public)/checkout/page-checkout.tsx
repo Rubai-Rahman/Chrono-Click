@@ -41,7 +41,6 @@ export default function CheckoutPageContent() {
 
     setTransition(async () => {
       const res = await checkoutAction(orderData);
-      console.log('res', res);
       if (res.success) {
         toast.success('Order placed successfully');
         clearCart();

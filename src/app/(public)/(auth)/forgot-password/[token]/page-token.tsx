@@ -25,12 +25,10 @@ const TokenPageContent = ({ token }: { token: string }) => {
     },
   });
 
-  console.log('token', token);
   const watchPassword = form.watch('password');
   const onSubmit = (data: NewPasswordFormData) => {
     startTransition(async () => {
       try {
-        console.log(data);
         const response = await resetPasswordAction({
           password: data.password,
           token: token,

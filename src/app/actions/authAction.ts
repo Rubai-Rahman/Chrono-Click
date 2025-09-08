@@ -127,7 +127,6 @@ export async function logoutAction() {
 //
 export async function resetEmailAction(email: string) {
   try {
-    console.log('email', email);
     const result = await safeApi.post<RegisterResultAlt>(
       'auth/forgot-password',
       { email },
@@ -177,6 +176,40 @@ export async function resetPasswordAction(data: {
     return {
       success: false,
       message: 'Failed to reset password.',
+    };
+  }
+}
+
+//googleSignInAction
+
+export async function googleSignInAction(
+  idToken: string,
+  rememberMe: boolean
+): Promise<RegisterResultAlt> {
+  try {
+    const result = await safeApi.post<RegisterResultAlt>('auth/google', {
+      idToken,
+      rememberMe,
+    });
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.error?.message || 'Unknown error',
+      };
+    }
+    if (result.success && result.data && 'payload' in result.data) {
+      createSession(
+        result.data?.payload.accessToken,
+        result.data?.payload.refreshToken,
+        result.data?.payload.maxAge
+      );
+    }
+    return result.data!;
+  } catch (error) {
+    console.error('Google sign-in error:', error);
+    return {
+      success: false,
+      message: 'Failed to sign in with Google.',
     };
   }
 }

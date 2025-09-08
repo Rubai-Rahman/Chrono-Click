@@ -118,7 +118,6 @@ const WishlistPageContent = () => {
     return <WishlistEmptyState />;
   }
 
-  console.log('filteredProducts', filteredProducts);
   return (
     <div className="min-h-screen bg-background animate-fade-in container mx-auto px-4 py-8 ">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 pb-4">
