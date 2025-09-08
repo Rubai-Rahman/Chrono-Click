@@ -1,26 +1,52 @@
 'use client';
-import { Form, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Mail, ArrowLeft } from 'lucide-react';
-import {
-  forgotPasswordSchema,
-  ForgotPasswordFormData,
-} from '@/lib/validations/auth';
-import { FormField, FormLabel } from '@/components/ui/form';
+import { PasswordInput } from '@/components/ui/input';
+import { ArrowLeft } from 'lucide-react';
+import { NewPasswordFormData } from '@/lib/validations/auth';
+import { Form, FormField, FormLabel } from '@/components/ui/form';
 import Link from 'next/link';
 import { useTransition } from 'react';
+import { newPasswordSchema } from '@/lib/validations/auth';
+import { PasswordStrength } from '@/components/ui/password-strength';
+import { toast } from 'sonner';
+import { resetPasswordAction } from '@/app/actions/authAction';
 
-const TokenPageContent = () => {
+const TokenPageContent = ({ token }: { token: string }) => {
   const [isLoading, startTransition] = useTransition();
-  const form = useForm<ForgotPasswordFormData>({
-    resolver: zodResolver(forgotPasswordSchema),
+  const form = useForm<NewPasswordFormData>({
+    resolver: zodResolver(newPasswordSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
   });
 
-  const onSubmit = (data: ForgotPasswordFormData) => {
-    console.log(data);
+  console.log('token', token);
+  const watchPassword = form.watch('password');
+  const onSubmit = (data: NewPasswordFormData) => {
+    startTransition(async () => {
+      try {
+        console.log(data);
+        const response = await resetPasswordAction({
+          password: data.password,
+          token: token,
+        });
+        if (response.success) {
+          toast.success('Password reset successfully!');
+        }
+        if (!response.success) {
+          toast.error(response.message);
+        }
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : 'Something went wrong'
+        );
+      }
+    });
   };
 
   return (
@@ -30,10 +56,7 @@ const TokenPageContent = () => {
           <h3 className="text-3xl font-bold text-foreground">
             Forgot Password?
           </h3>
-          <p className="text-muted-foreground mt-2">
-            Enter your email address and we&apos;ll send you a link to reset
-            your password.
-          </p>
+          <p className="text-muted-foreground mt-2">Enter your New password.</p>
         </div>
 
         <Card className="border-0 shadow-xl bg-card/60 backdrop-blur-md">
@@ -42,22 +65,45 @@ const TokenPageContent = () => {
           </CardHeader>
 
           <CardContent>
-            <Form {...form} className="space-y-6">
+            <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="password"
                   render={({ field }) => (
                     <div>
-                      <FormLabel>Email Address</FormLabel>
+                      <FormLabel>Password</FormLabel>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                        <Input
-                          type="email"
-                          placeholder="Enter your email"
-                          className="pl-10"
+                        <PasswordInput
+                          placeholder="Enter your password"
                           {...field}
                         />
+                        {form.formState.errors.password && (
+                          <p className="text-destructive text-sm mt-1">
+                            {form.formState.errors.password.message}
+                          </p>
+                        )}
+                      </div>
+                      <PasswordStrength password={watchPassword || ''} />
+                    </div>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <div>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <div className="relative">
+                        <PasswordInput
+                          placeholder="Enter your password"
+                          {...field}
+                        />
+                        {form.formState.errors.confirmPassword && (
+                          <p className="text-destructive text-sm mt-1">
+                            {form.formState.errors.confirmPassword.message}
+                          </p>
+                        )}
                       </div>
                     </div>
                   )}
@@ -65,11 +111,11 @@ const TokenPageContent = () => {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 text-lg font-semibold"
+                  className="w-full h-12 text-lg font-semibold mt-6"
                   disabled={isLoading}
                   loading={isLoading}
                 >
-                  Send Reset Link
+                  Reset Password
                 </Button>
               </form>
             </Form>

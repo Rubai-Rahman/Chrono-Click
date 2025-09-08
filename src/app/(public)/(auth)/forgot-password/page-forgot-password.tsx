@@ -2,7 +2,7 @@
 
 import ForgotPasswordForm from '@/components/auth/forgot-password-form';
 import { useTransition } from 'react';
-import { resetPasswordAction } from '@/app/actions/authAction';
+import { resetEmailAction} from '@/app/actions/authAction';
 import { toast } from 'sonner';
 
 const ForgotPasswordContent = () => {
@@ -11,7 +11,7 @@ const ForgotPasswordContent = () => {
   const onSubmit = (data: { email: string }) => {
     startTransition(async () => {
       try {
-        const response = await resetPasswordAction(data.email);
+        const response = await resetEmailAction(data.email);
         if (response.success) {
           toast.success('Password reset email sent successfully!');
         }

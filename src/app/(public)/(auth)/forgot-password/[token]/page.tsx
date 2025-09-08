@@ -1,9 +1,12 @@
-const TokenPage = () => {
-  return (
-    <div>
-      <h1>This is page</h1>
-    </div>
-  );
+import TokenPageContent from './page-token';
+
+const TokenPage = async ({
+  params,
+}: {
+  params: Promise<{ token: string }>;
+}) => {
+  const token = await params;
+  return <TokenPageContent token={token.token} />;
 };
 
 export default TokenPage;

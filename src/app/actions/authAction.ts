@@ -125,7 +125,7 @@ export async function logoutAction() {
 //
 // ---- resetPasswordAction ----
 //
-export async function resetPasswordAction(email: string) {
+export async function resetEmailAction(email: string) {
   try {
     console.log('email', email);
     const result = await safeApi.post<RegisterResultAlt>(
@@ -150,6 +150,36 @@ export async function resetPasswordAction(email: string) {
     return {
       success: false,
       message: 'Failed to send password reset email.',
+    };
+  }
+}
+export async function resetPasswordAction(data: {
+  password: string;
+  token: string;
+}) {
+  try {
+    const result = await safeApi.post<RegisterResultAlt>(
+      'auth/reset-password',
+      data,
+      {
+        credentials: 'include',
+      }
+    );
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.error?.message || 'Unknown error',
+      };
+    }
+    return {
+      success: true,
+      message: 'Password reset successfully!',
+    };
+  } catch (error) {
+    console.error('Reset password error:', error);
+    return {
+      success: false,
+      message: 'Failed to reset password.',
     };
   }
 }

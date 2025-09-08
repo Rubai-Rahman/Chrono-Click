@@ -45,12 +45,26 @@ export const signupSchema = z
 export const forgotPasswordSchema = z.object({
   email: z.email('Please enter a valid email address'),
 });
+//newPassword form validation schema
+export const newPasswordSchema = z.object({
+  password: z
+    .string()
+    .min(2, 'Password is required')
+    .min(6, 'Password must be at least 6 characters long')
+    .max(30, 'Password must be less than 30 characters')
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+  ),
+  confirmPassword: z.string().min(1, 'Please confirm your password'),
+
+});
 
 // Type exports
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type SignupFormData = z.infer<typeof signupSchema>;
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
-
+export type NewPasswordFormData = z.infer<typeof newPasswordSchema>;
 // Demo credentials (for development only)
 export const DEMO_CREDENTIALS = {
   admin: {
