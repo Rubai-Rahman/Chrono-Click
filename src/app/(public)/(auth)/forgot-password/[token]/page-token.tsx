@@ -1,7 +1,5 @@
 'use client';
-
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
+import { Form, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,24 +9,18 @@ import {
   forgotPasswordSchema,
   ForgotPasswordFormData,
 } from '@/lib/validations/auth';
-import { Form, FormField, FormLabel } from '../ui/form';
+import { FormField, FormLabel } from '@/components/ui/form';
+import Link from 'next/link';
+import { useTransition } from 'react';
 
-const ForgotPasswordForm = ({
-  onSubmit,
-  isLoading,
-}: {
-  onSubmit: (data: ForgotPasswordFormData) => void;
-  isLoading: boolean;
-}) => {
+const TokenPageContent = () => {
+  const [isLoading, startTransition] = useTransition();
   const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: {
-      email: '',
-    },
   });
 
-  const onSubmitForm = async (data: ForgotPasswordFormData) => {
-    onSubmit(data);
+  const onSubmit = (data: ForgotPasswordFormData) => {
+    console.log(data);
   };
 
   return (
@@ -50,11 +42,8 @@ const ForgotPasswordForm = ({
           </CardHeader>
 
           <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmitForm)}
-                className="space-y-6"
-              >
+            <Form {...form} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FormField
                   control={form.control}
                   name="email"
@@ -78,12 +67,12 @@ const ForgotPasswordForm = ({
                   type="submit"
                   className="w-full h-12 text-lg font-semibold"
                   disabled={isLoading}
+                  loading={isLoading}
                 >
-                  {isLoading ? 'Sending...' : 'Send Reset Link'}
+                  Send Reset Link
                 </Button>
               </form>
             </Form>
-
             <div className="mt-6 text-center">
               <Link
                 href="/login"
@@ -100,4 +89,4 @@ const ForgotPasswordForm = ({
   );
 };
 
-export default ForgotPasswordForm;
+export default TokenPageContent;

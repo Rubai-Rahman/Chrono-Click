@@ -43,7 +43,7 @@ export const signupSchema = z
 
 // Forgot password form validation schema
 export const forgotPasswordSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
+  email: z.email('Please enter a valid email address'),
 });
 
 // Type exports
