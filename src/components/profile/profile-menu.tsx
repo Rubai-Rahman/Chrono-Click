@@ -33,7 +33,6 @@ const ProfileMenu = () => {
   const { theme, setTheme } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
-  console.log('user', user?.avatar);
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };

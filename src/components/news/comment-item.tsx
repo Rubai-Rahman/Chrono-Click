@@ -76,7 +76,6 @@ const CommentItem = ({
       (now.getTime() - commentDate.getTime()) / (1000 * 60 * 60)
     );
 
-    console.log('comment', comment);
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${diffInHours}h ago`;
     if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;

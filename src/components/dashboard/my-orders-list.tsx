@@ -59,14 +59,6 @@ const MyOrdersList = ({ orders }: MyOrdersListProps) => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-  console.log(formatDate);
   if (orders.length === 0) {
     return (
       <div className="space-y-8">

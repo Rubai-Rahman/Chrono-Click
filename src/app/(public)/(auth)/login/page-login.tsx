@@ -25,6 +25,7 @@ const LoginPageContent = () => {
   ];
 
   const callbackUrl = validateCallbackUrl(rawCallbackUrl, trustedDomains);
+  console.log("callbackUrl", callbackUrl);
 
   const handleLogin = (data: LoginFormData) => {
     startTransition(async () => {

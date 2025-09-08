@@ -36,7 +36,6 @@ import { useAuthStore } from '@/store/useAuthStore';
 export function UserNav() {
   const { theme, setTheme } = useTheme();
   const { user, accessToken, logout } = useAuthStore();
-  console.log('user', user, 'accessToken', accessToken);
 
   const router = useRouter();
 

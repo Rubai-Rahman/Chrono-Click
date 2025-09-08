@@ -27,9 +27,7 @@ interface CommentSectionProps {
 const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
   const [newComment, setNewComment] = useState('');
   const { user, isInitialized } = useAuthStore();
-  console.log('user', user, 'lllll', isInitialized);
   const isAuthenticated = !!user && isInitialized;
-  console.log('isAuthenticated', isAuthenticated);
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -190,7 +188,6 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
     return null;
   }
 
-  console.log('commentData', commentsData);
   return (
     <Card className="mt-12">
       <CardHeader>
@@ -217,7 +214,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
           <div className="flex justify-between items-center">
             <div className="text-sm text-muted-foreground">
               {isAuthenticated ? (
-                `Commenting as ${user?.name || user?.displayName}`
+                `Commenting as ${user?.name}`
               ) : (
                 <Button
                   type="button"
@@ -282,7 +279,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
                   deleteMutation.isPending ||
                   reactionMutation.isPending
                 }
-                currentUser={user?.name || user?.displayName}
+                currentUser={user?.name}
               />
             ))}
           </div>
