@@ -12,11 +12,11 @@ const protectedRoutes = [
 const authRoutes = ['/login', '/signup', '/forgot-password'];
 
 export async function middleware(req: NextRequest) {
-  const token = req.cookies.get('token')?.value;
+  const accessToken = req.cookies.get('accessToken')?.value;
   const userCookie = req.cookies.get('user')?.value;
   let role = null;
 
-  if (token && userCookie) {
+  if (accessToken && userCookie) {
     try {
       const userData = JSON.parse(userCookie);
       role = userData.role;

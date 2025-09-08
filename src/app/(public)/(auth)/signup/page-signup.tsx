@@ -4,15 +4,14 @@ import { useTransition } from 'react';
 import { toast } from 'sonner';
 import SignupForm from '@/components/auth/signup-form';
 import { SignupFormData } from '@/lib/validations/auth';
-import { registerAction } from '@/app/actions/authAction';
-import { useAuth } from '@/hooks/useAuth';
+import { googleSignInAction, registerAction } from '@/app/actions/authAction';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
+import { CredentialResponse } from '@react-oauth/google';
 
 const SignupPageContent = () => {
   const { setUser, setAccessToken } = useAuthStore();
   const [isPending, startTransition] = useTransition();
-  const { googleSignIn } = useAuth();
   const router = useRouter();
 
   const handleSignup = async (data: SignupFormData) => {
@@ -45,8 +44,32 @@ const SignupPageContent = () => {
     });
   };
 
-  const handleGoogleSignIn = async () => {
-    await googleSignIn();
+  const handleGoogleSignIn = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse?.credential) {
+      toast.error('Google login failed');
+      return;
+    }
+    try {
+      const res = await googleSignInAction(
+        credentialResponse?.credential,
+        false
+      );
+      if (res.success) {
+        setUser(res.payload.user);
+        setAccessToken(res.payload.accessToken);
+        router.push('/products/gents');
+      }
+      if (!res.success) {
+        const errorMessage = res.message;
+        toast.error(errorMessage, { id: 'signup-error' });
+        return;
+      }
+      toast.success(`🎉 Welcome back!${res.payload.user.name}`, {
+        id: 'signup-success',
+      });
+    } catch (error) {
+      console.log('error', error);
+    }
   };
 
   return (

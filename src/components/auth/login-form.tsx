@@ -161,23 +161,6 @@ const LoginForm = ({
                   Sign In
                 </Button>
 
-                {/* Google Sign In */}
-                {/* <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full h-12"
-                  onClick={onGoogleSignIn}
-                  disabled={isLoading}
-                >
-                  <Image
-                    className="rounded"
-                    src="/google_logo.jpg"
-                    width={20}
-                    height={20}
-                    alt="Google logo"
-                  />
-                  Sign In with Google
-                </Button> */}
                 <GoogleLogin onSuccess={onGoogleSignIn} onError={handleError} />
               </form>
             </Form>
