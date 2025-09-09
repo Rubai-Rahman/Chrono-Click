@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
+import { createSession, deleteSession } from './lib/session';
+
+const secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
 
 const protectedRoutes = [
   { pattern: /^\/admin(\/|$)/, roles: ['admin'] },
@@ -11,17 +15,83 @@ const protectedRoutes = [
 
 const authRoutes = ['/login', '/signup', '/forgot-password'];
 
-export async function middleware(req: NextRequest) {
-  const accessToken = req.cookies.get('accessToken')?.value;
-  const userCookie = req.cookies.get('user')?.value;
-  let role = null;
+async function verifyJwt(token: string) {
+  try {
+    const { payload } = await jwtVerify(token, secret, {
+      algorithms: ['HS256'],
+    });
+    return payload as { userId: string; role: string };
+  } catch (err) {
+    if (err) {
+      console.log('Expired===');
+      throw new Error('Expired');
+    }
+    // console.error('JWT verification failed:', err);
+    return null;
+  }
+}
 
-  if (accessToken && userCookie) {
+export async function middleware(req: NextRequest) {
+  let accessToken = req.cookies.get('accessToken')?.value;
+  console.log('accessToken===', accessToken);
+  let role: string | null = null;
+  let userData: { userId: string; role: string } | null = null;
+  console.log('role===', role, '===userData===', userData);
+  if (accessToken) {
     try {
-      const userData = JSON.parse(userCookie);
-      role = userData.role;
-    } catch {
-      // invalid user cookie
+      userData = await verifyJwt(accessToken);
+      console.log('innerUserData===', userData);
+      role = userData?.role ?? null;
+    } catch (err) {
+      console.log('err===', err);
+      if (err instanceof Error && err.message === 'Expired') {
+        try {
+          const refreshToken = req.cookies.get('refreshToken')?.value;
+
+          const refreshRes = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                cookie: req.cookies.toString(), // forward cookies
+              },
+              body: JSON.stringify({ refreshToken }),
+            }
+          );
+
+          if (refreshRes.ok) {
+            const refreshData = await refreshRes.json();
+            accessToken = refreshData?.payload?.accessToken;
+
+            if (accessToken) {
+              // ✅ Save new tokens in cookies/session
+              createSession(
+                refreshData.payload.accessToken,
+                refreshData.payload.refreshToken,
+                refreshData.payload.maxAge
+              );
+
+              // Re-verify new token
+              userData = await verifyJwt(accessToken);
+              role = userData?.role ?? null;
+            }
+          }
+          console.log('userData===', userData);
+          if (!role) {
+            deleteSession();
+            const loginUrl = req.nextUrl.clone();
+            loginUrl.pathname = '/login';
+            return NextResponse.redirect(loginUrl);
+          }
+        } catch (refreshErr) {
+          console.error('Refresh token failed:', refreshErr);
+          deleteSession();
+          const loginUrl = req.nextUrl.clone();
+          loginUrl.pathname = '/login';
+          return NextResponse.redirect(loginUrl);
+        }
+      }
     }
   }
 
