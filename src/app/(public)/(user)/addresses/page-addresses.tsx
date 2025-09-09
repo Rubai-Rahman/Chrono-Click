@@ -47,13 +47,19 @@ type AddressFormValues = TAddress | Omit<TAddress, '_id'>;
 export const AddressesPageContent = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [address, setAddress] = useState<TAddress>();
+  const [formId, setFormId] = useState<string>('create');
   /** Handlers **/
 
   const handleEditAddress = (address: TAddress) => {
     setAddress(address);
-    setIsFormOpen(true);
+    if (address._id) {
+      setIsFormOpen(true);
+      setFormId(`edit-${address._id}`);
+    }
   };
   const toggleForm = () => {
+    setFormId('create');
+    setAddress(undefined);
     setIsFormOpen(!isFormOpen);
   };
 
@@ -62,9 +68,11 @@ export const AddressesPageContent = () => {
     toast.success('Address deleted');
   };
 
-  const handleSubmitAddressForm = (address: AddressFormValues) => {
-    console.log('address', address);
-    setIsFormOpen(true);
+  const handleSubmitAddressForm = (data: AddressFormValues) => {
+    setIsFormOpen(false);
+    console.log('data', data);
+    // Clear address after submit
+    setAddress(undefined);
   };
   /** UI Helpers **/
   const renderAddressSection = (
@@ -143,11 +151,12 @@ export const AddressesPageContent = () => {
 
         {/* Address Form Modal */}
         <AddressForm
+          key={formId}
           defaultAddress={address}
           onSave={handleSubmitAddressForm}
           onCancel={toggleForm}
           isOpen={isFormOpen}
-          formId="address-form"
+          formId={formId}
           isLoading={false}
         />
       </div>

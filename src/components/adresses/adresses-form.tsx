@@ -17,7 +17,7 @@ import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 interface AddressFormProps {
-  defaultAddress?: Omit<TAddress, '_id'>;
+  defaultAddress?: TAddress;
   onSave: (address: Omit<TAddress, '_id'>) => void;
   onCancel: () => void;
   isOpen: boolean;
@@ -59,6 +59,7 @@ export const AddressForm = ({
     },
   });
 
+  console.log('formId', formId);
   if (!isOpen) return null;
 
   const onFormSubmit = form.handleSubmit((formData) => {
@@ -68,8 +69,14 @@ export const AddressForm = ({
     });
   });
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-gradient-card shadow-strong border-border/50 overflow-y-auto max-h-[90vh] ">
+    <div
+      key={formId}
+      className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+      <Card
+        key={formId}
+        className="w-full max-w-md bg-gradient-card shadow-strong border-border/50 overflow-y-auto max-h-[90vh] "
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
@@ -88,7 +95,7 @@ export const AddressForm = ({
         </CardHeader>
 
         <CardContent>
-          <Form {...form}>
+          <Form {...form} key={formId}>
             <form id={formId} onSubmit={onFormSubmit} className="space-y-4">
               {/* Address Name */}
               <CommonFormField
@@ -158,7 +165,11 @@ export const AddressForm = ({
                   label="Country"
                 >
                   {({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select
+                      key={field.value}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select country" />
                       </SelectTrigger>
@@ -182,7 +193,7 @@ export const AddressForm = ({
                 control={form.control}
                 name="isDefault"
                 label="Set as default address"
-                className="gap-x-2"
+                formItemProps={{ className: 'flex items-center gap-2' }}
               >
                 {({ field }) => (
                   <Switch
