@@ -19,8 +19,9 @@ async function verifyJwt(token: string) {
     const { payload } = await jwtVerify(token, secret, {
       algorithms: ['HS256'],
     });
+    console.log('payload', payload);
     return payload as { userId: string; role: string };
-  } catch (err) {
+  } catch {
     throw new Error('Expired');
   }
 }
@@ -31,13 +32,26 @@ export async function middleware(req: NextRequest) {
   let role: string | null = null;
   let userData: { userId: string; role: string } | null = null;
 
+  const redirectToLogin = () => {
+    url.pathname = '/login';
+    url.searchParams.set(
+      'callbackUrl',
+      req.nextUrl.pathname + req.nextUrl.search
+    );
+    return NextResponse.redirect(url);
+  };
+
+  // ---- Verify or refresh token ----
   if (accessToken) {
     try {
+      console.log('verifying',accessToken);
       userData = await verifyJwt(accessToken);
       role = userData?.role ?? null;
-    } catch (err) {
+      console.log('userData===', userData);
+    } catch {
       // Token expired → try refresh
       const refreshToken = req.cookies.get('refreshToken')?.value;
+      console.log('refreshToken', refreshToken);
       if (refreshToken) {
         try {
           const refreshRes = await fetch(
@@ -51,13 +65,15 @@ export async function middleware(req: NextRequest) {
               body: JSON.stringify({ refreshToken }),
             }
           );
-
+          console.log('refreshToken response', refreshRes);
           if (refreshRes.ok) {
             const refreshData = await refreshRes.json();
             accessToken = refreshData.payload.accessToken;
 
-            // Create response and set refreshed cookies
+            // Create response
             const response = NextResponse.next();
+
+            // 🔑 Inject new accessToken into *current request*
             if (accessToken) {
               response.cookies.set('accessToken', accessToken, {
                 httpOnly: true,
@@ -65,6 +81,16 @@ export async function middleware(req: NextRequest) {
                 sameSite: 'lax',
                 maxAge: refreshData.payload.maxAge,
               });
+
+              // <-- This is the fix
+              req.cookies.set('accessToken', accessToken);
+
+              try {
+                userData = await verifyJwt(accessToken);
+                role = userData?.role ?? null;
+              } catch {
+                return redirectToLogin();
+              }
             }
 
             if (refreshData.payload.refreshToken) {
@@ -78,60 +104,33 @@ export async function middleware(req: NextRequest) {
                   maxAge: refreshData.payload.maxAge,
                 }
               );
+
+              req.cookies.set('refreshToken', refreshData.payload.refreshToken);
             }
 
-            if (refreshData.payload.refreshToken) {
-              response.cookies.set(
-                'refreshToken',
-                refreshData.payload.refreshToken,
-                {
-                  httpOnly: true,
-                  secure: process.env.NODE_ENV === 'production',
-                  sameSite: 'lax',
-                  maxAge: refreshData.payload.maxAge,
-                }
-              );
-            }
-
-            // Re-verify token
-            if (accessToken) {
-              userData = await verifyJwt(accessToken);
-              role = userData?.role ?? null;
-            }
-
-            return response; // continue with refreshed token
+            return response;
           }
         } catch (refreshErr) {
           console.error('Refresh failed:', refreshErr);
+          return redirectToLogin();
         }
       }
 
-      // Refresh failed or missing → redirect to login
-      url.pathname = '/login';
-      url.searchParams.set(
-        'callbackUrl',
-        req.nextUrl.pathname + req.nextUrl.search
-      );
-      return NextResponse.redirect(url);
+      return redirectToLogin();
     }
   }
 
-  // Redirect authenticated users away from auth pages
+  // ---- Redirect authenticated users away from auth pages ----
   if (role && authRoutes.includes(url.pathname)) {
     const redirectPath = role === 'admin' ? '/admin' : '/orders';
     return NextResponse.redirect(new URL(redirectPath, req.nextUrl.origin));
   }
 
-  // Check protected routes
+  // ---- Protected route checks ----
   for (const route of protectedRoutes) {
     if (route.pattern.test(url.pathname)) {
       if (!role) {
-        url.pathname = '/login';
-        url.searchParams.set(
-          'callbackUrl',
-          req.nextUrl.pathname + req.nextUrl.search
-        );
-        return NextResponse.redirect(url);
+        return redirectToLogin();
       }
       if (!route.roles.includes(role)) {
         return NextResponse.redirect(

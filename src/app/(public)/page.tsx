@@ -7,7 +7,7 @@ import Newsletter from '@/components/main/home/news-letter';
 import { NewsResponse } from '@/lib/types/api/new-types';
 import { ReviewType } from '@/lib/types/api/review-types';
 import NewsCarousel from '@/components/main/home/news-carousel';
-import { fetchNewsData } from '@/data/news/news.server';
+import { fetchNewsData } from '@/data/news.server';
 import { fetchReviewData } from '@/data/review';
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ const HomePage = async () => {
   const news = await fetchNewsData<NewsResponse>('news', {
     next: { tags: ['news'] },
   });
-  
+
   const reviews = await fetchReviewData<ReviewType[]>('reviews', {
     next: { tags: ['reviews'] },
   });

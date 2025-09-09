@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Package, CheckCircle, Loader2 } from 'lucide-react';
-import { addProduct } from '@/data/product/product';
+import { addProduct } from '@/data/product';
 
 const AddProductForm = () => {
   const [name, setName] = useState('');

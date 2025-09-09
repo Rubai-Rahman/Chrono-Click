@@ -1,4 +1,4 @@
-import { fetchNewsDetails } from '@/data/news/news.server';
+import { fetchNewsDetails } from '@/data/news.server';
 import NewsDetailsPageContent from './page-news-details';
 import { Suspense } from 'react';
 import NewsDetailsSkeleton from '@/components/skeletons/news-details-skeleton';

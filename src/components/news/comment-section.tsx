@@ -17,7 +17,7 @@ import {
   fetchNewsComments,
   postNewsComment,
   reactToComment,
-} from '@/data/news/news.client';
+} from '@/data/news.client';
 
 interface CommentSectionProps {
   newsId: string;

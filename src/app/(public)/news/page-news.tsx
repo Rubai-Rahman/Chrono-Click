@@ -1,5 +1,5 @@
 import NewsClientWrapper from '@/components/news/news-client';
-import { fetchNewsPages } from '@/data/news/news.server';
+import { fetchNewsPages } from '@/data/news.server';
 
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
 import { Suspense } from 'react';

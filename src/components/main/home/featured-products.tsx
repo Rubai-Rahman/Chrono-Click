@@ -1,7 +1,7 @@
 import React, { Suspense, use } from 'react';
 import Container from '@/components/layout/container';
 import FeaturedProductSkeleton from '@/components/skeletons/featured-product-skeleton';
-import { fetchFeaturedProducts } from '@/data/product/product';
+import { fetchFeaturedProducts } from '@/data/product';
 import Product from '@/components/product/product';
 import { ProductsResponse } from '@/lib/types/api/product-types';
 import { ErrorResultMessage } from '@/components/ui/data-result-message';
