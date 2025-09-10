@@ -16,17 +16,21 @@ export const placeAddress = async (address: TAddress) => {
   }
 };
 
-export const fetchAllAddresses = async () => {
+export const fetchAllAddresses = async <T>(
+  path: string,
+  opts?: { next?: { revalidate?: number | false; tags?: string[] } }
+): Promise<T | null> => {
   await requireSession();
   try {
-    const result = await safeApi.get<TAddress[]>('address/all', {
+    const result = await safeApi.get<T>(path, {
       next: {
-        revalidate: 6000,
-        tags: ['addresses'],
+        revalidate: opts?.next?.revalidate,
+        tags: opts?.next?.tags ?? ['addresses'],
       },
     });
     return result.data;
   } catch (error) {
-    return error;
+    console.error('Failed to fetch addresses:', error);
+    return null;
   }
 };

@@ -18,7 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 interface AddressFormProps {
   defaultAddress?: TAddress;
-  onSave: (address: Omit<TAddress, '_id'>) => void;
+  onSave: (address: TAddress) => void;
   onCancel: () => void;
   isOpen: boolean;
   formId: string;

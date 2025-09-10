@@ -9,7 +9,7 @@ export async function fetchProductById<T>(
 ) {
   return await safeApi.get<T>(path, {
     next: {
-      revalidate: opts?.next?.revalidate ?? 60, // 1 minute for product details
+      revalidate: opts?.next?.revalidate,
       tags: opts?.next?.tags ?? ['products'],
     },
   });

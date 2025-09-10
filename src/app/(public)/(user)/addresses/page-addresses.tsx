@@ -10,8 +10,6 @@ import Container from '@/components/layout/container';
 import { TAddress } from '@/lib/types/api/address-types';
 import { addressAction } from '@/app/actions/addressAction';
 
-type AddressFormValues = TAddress | Omit<TAddress, '_id'>;
-
 export const AddressesPageContent = ({
   addresses,
 }: {
@@ -42,7 +40,7 @@ export const AddressesPageContent = ({
     toast.success('Address deleted');
   };
 
-  const handleSubmitAddressForm = (data: AddressFormValues) => {
+  const handleSubmitAddressForm = (data: TAddress) => {
     startTransition(async () => {
       setIsFormOpen(false);
       try {
