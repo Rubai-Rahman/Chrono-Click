@@ -1,5 +1,9 @@
 import 'server-only';
 import { cookies } from 'next/headers';
+import { jwtVerify } from 'jose';
+import { SessionPayload } from '@/data/auth';
+
+const secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
 
 export async function createSession(
   accessToken: string,
@@ -29,6 +33,19 @@ export async function deleteSession() {
   cookieStore.delete('refreshToken');
 }
 
+// Decrypt JWT back into session payload
+export async function decrypt(session: string | undefined = '') {
+  if (!session) return null;
+  try {
+    const { payload } = await jwtVerify(session, secret, {
+      algorithms: ['HS256'],
+    });
+    return payload as SessionPayload;
+  } catch (error) {
+    console.error('Session decrypt failed:', error);
+    return null;
+  }
+}
 // get session data
 export async function getSession() {
   const cookieStore = await cookies();

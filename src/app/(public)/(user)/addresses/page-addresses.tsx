@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { Plus, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -8,48 +8,22 @@ import { AddressCard } from '@/components/adresses/adresses-card';
 import { AddressForm } from '@/components/adresses/adresses-form';
 import Container from '@/components/layout/container';
 import { TAddress } from '@/lib/types/api/address-types';
+import { addressAction } from '@/app/actions/addressAction';
 
-const initialAddresses: TAddress[] = [
-  {
-    _id: '1',
-    name: 'Home',
-    line1: '123 Main Street',
-    line2: 'Apt 4B',
-    city: 'New York',
-    state: 'NY',
-    postalCode: '10001',
-    country: 'United States',
-    isDefault: true,
-  },
-  {
-    _id: '2',
-    name: 'Office',
-    line1: '456 Business Ave',
-    city: 'New York',
-    state: 'NY',
-    postalCode: '10002',
-    country: 'United States',
-    isDefault: false,
-  },
-  {
-    _id: '3',
-    name: "Parents' House",
-    line1: '789 Family Lane',
-    city: 'Brooklyn',
-    state: 'NY',
-    postalCode: '11201',
-    country: 'United States',
-    isDefault: false,
-  },
-];
 type AddressFormValues = TAddress | Omit<TAddress, '_id'>;
 
-export const AddressesPageContent = () => {
+export const AddressesPageContent = ({
+  addresses,
+}: {
+  addresses: TAddress[];
+}) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [address, setAddress] = useState<TAddress>();
   const [formId, setFormId] = useState<string>('create');
+  const [isPending, startTransition] = useTransition();
   /** Handlers **/
 
+  console.log('addresses', addresses);
   const handleEditAddress = (address: TAddress) => {
     setAddress(address);
     if (address._id) {
@@ -69,10 +43,20 @@ export const AddressesPageContent = () => {
   };
 
   const handleSubmitAddressForm = (data: AddressFormValues) => {
-    setIsFormOpen(false);
-    console.log('data', data);
-    // Clear address after submit
-    setAddress(undefined);
+    startTransition(async () => {
+      setIsFormOpen(false);
+      try {
+        const result = await addressAction(data);
+        if (result.success) {
+          toast.success('Address saved');
+        }
+      } catch (error) {
+        toast.error('Failed to save address');
+      }
+      console.log('data', data);
+      // Clear address after submit
+      setAddress(undefined);
+    });
   };
   /** UI Helpers **/
   const renderAddressSection = (
@@ -143,7 +127,7 @@ export const AddressesPageContent = () => {
         <div className="w-full py-8">
           {renderAddressSection(
             'Shipping Addresses',
-            initialAddresses,
+            addresses,
             'No shipping addresses found',
             'Add Your First Address'
           )}
@@ -157,7 +141,7 @@ export const AddressesPageContent = () => {
           onCancel={toggleForm}
           isOpen={isFormOpen}
           formId={formId}
-          isLoading={false}
+          isLoading={isPending}
         />
       </div>
     </Container>

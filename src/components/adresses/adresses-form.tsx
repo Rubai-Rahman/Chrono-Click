@@ -213,7 +213,12 @@ export const AddressForm = ({
                 >
                   Cancel
                 </Button>
-                <Button type="submit" className="flex-1" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  className="flex-1"
+                  disabled={isLoading}
+                  loading={isLoading}
+                >
                   {defaultAddress ? 'Update Address' : 'Save Address'}
                 </Button>
               </div>
