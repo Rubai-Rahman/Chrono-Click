@@ -47,19 +47,18 @@ export const AddressForm = ({
 }: AddressFormProps) => {
   const form = useForm({
     resolver: AddressFormSchemaType,
-    defaultValues: defaultAddress || {
-      name: '',
-      line1: '',
-      line2: '',
-      city: '',
-      state: '',
-      postalCode: '',
-      country: '',
-      isDefault: false,
+    defaultValues: {
+      name: defaultAddress?.name ?? '',
+      line1: defaultAddress?.line1 ?? '',
+      line2: defaultAddress?.line2 ?? '',
+      city: defaultAddress?.city ?? '',
+      state: defaultAddress?.state ?? '',
+      postalCode: defaultAddress?.postalCode ?? '',
+      country: defaultAddress?.country ?? '',
+      isDefault: defaultAddress?.isDefault ?? false,
     },
   });
 
-  console.log('formId', formId);
   if (!isOpen) return null;
 
   const onFormSubmit = form.handleSubmit((formData) => {
@@ -126,7 +125,11 @@ export const AddressForm = ({
                 label="Address Line 2 (Optional)"
               >
                 {({ field }) => (
-                  <Input placeholder="Apartment, suite, etc." {...field} />
+                  <Input
+                    placeholder="Apartment, suite, etc."
+                    {...field}
+                    value={field.value}
+                  />
                 )}
               </CommonFormField>
 
@@ -137,7 +140,7 @@ export const AddressForm = ({
                   name="city"
                   label="City"
                 >
-                  {({ field }) => <Input {...field} />}
+                  {({ field }) => <Input {...field} value={field.value} />}
                 </CommonFormField>
 
                 <CommonFormField
@@ -145,7 +148,7 @@ export const AddressForm = ({
                   name="state"
                   label="State"
                 >
-                  {({ field }) => <Input {...field} />}
+                  {({ field }) => <Input {...field} value={field.value} />}
                 </CommonFormField>
               </div>
 
@@ -156,7 +159,7 @@ export const AddressForm = ({
                   name="postalCode"
                   label="Postal Code"
                 >
-                  {({ field }) => <Input {...field} />}
+                  {({ field }) => <Input {...field} value={field.value} />}
                 </CommonFormField>
 
                 <CommonFormField
@@ -167,7 +170,7 @@ export const AddressForm = ({
                   {({ field }) => (
                     <Select
                       key={field.value}
-                      value={field.value}
+                      value={field.value ?? ''}
                       onValueChange={field.onChange}
                     >
                       <SelectTrigger>

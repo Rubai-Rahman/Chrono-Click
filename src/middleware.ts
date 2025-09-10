@@ -19,7 +19,6 @@ async function verifyJwt(token: string) {
     const { payload } = await jwtVerify(token, secret, {
       algorithms: ['HS256'],
     });
-    console.log('payload', payload);
     return payload as { userId: string; role: string };
   } catch {
     throw new Error('Expired');
@@ -44,14 +43,11 @@ export async function middleware(req: NextRequest) {
   // ---- Verify or refresh token ----
   if (accessToken) {
     try {
-      console.log('verifying',accessToken);
       userData = await verifyJwt(accessToken);
       role = userData?.role ?? null;
-      console.log('userData===', userData);
     } catch {
       // Token expired → try refresh
       const refreshToken = req.cookies.get('refreshToken')?.value;
-      console.log('refreshToken', refreshToken);
       if (refreshToken) {
         try {
           const refreshRes = await fetch(
@@ -65,7 +61,6 @@ export async function middleware(req: NextRequest) {
               body: JSON.stringify({ refreshToken }),
             }
           );
-          console.log('refreshToken response', refreshRes);
           if (refreshRes.ok) {
             const refreshData = await refreshRes.json();
             accessToken = refreshData.payload.accessToken;

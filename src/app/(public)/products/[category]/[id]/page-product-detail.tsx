@@ -15,3 +15,4 @@ const ProductDetailPageContent = async ({ id }: { id: string }) => {
 };
 
 export default ProductDetailPageContent;
+// 

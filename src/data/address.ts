@@ -1,36 +1,43 @@
-import { safeApi } from '@/lib/fetch';
+// data/address.ts
 import { TAddress } from '@/lib/types/api/address-types';
 import { requireSession } from './dal';
+import { ApiResult, safeApi } from '@/lib/fetch';
 
-export const placeAddress = async (address: TAddress) => {
+// Create
+export const placeAddress = async (
+  address: TAddress
+): Promise<ApiResult<TAddress>> => {
   await requireSession();
-  try {
-    const result = await safeApi.post<TAddress>('address/create', address, {
-      next: {
-        tags: ['addresses'],
-      },
-    });
-    return result.data;
-  } catch (error) {
-    return error;
-  }
+  return safeApi.post<TAddress>('address/create', address, {
+    next: { tags: ['addresses'] },
+  });
 };
 
-export const fetchAllAddresses = async <T>(
-  path: string,
-  opts?: { next?: { revalidate?: number | false; tags?: string[] } }
-): Promise<T | null> => {
+// Update
+export const updateAddress = async (
+  address: TAddress,
+  _id: string
+): Promise<ApiResult<TAddress>> => {
   await requireSession();
-  try {
-    const result = await safeApi.get<T>(path, {
-      next: {
-        revalidate: opts?.next?.revalidate,
-        tags: opts?.next?.tags ?? ['addresses'],
-      },
-    });
-    return result.data;
-  } catch (error) {
-    console.error('Failed to fetch addresses:', error);
-    return null;
-  }
+  return safeApi.put<TAddress>(`address/update/${_id}`, address, {
+    next: { tags: ['addresses'] },
+  });
+};
+
+// Delete
+export const deleteAddress = async (
+  _id: string
+): Promise<ApiResult<TAddress>> => {
+  await requireSession();
+  return safeApi.delete<TAddress>(`address/delete/${_id}`, {
+    next: { tags: ['addresses'] },
+  });
+};
+
+// Fetch all
+export const fetchAllAddresses = async (): Promise<ApiResult<TAddress[]>> => {
+  await requireSession();
+  return safeApi.get<TAddress[]>('address/all', {
+    next: { tags: ['addresses'] },
+  });
 };

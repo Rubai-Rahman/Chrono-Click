@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { use, useState, useTransition } from 'react';
 import { Plus, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -8,25 +8,30 @@ import { AddressCard } from '@/components/adresses/adresses-card';
 import { AddressForm } from '@/components/adresses/adresses-form';
 import Container from '@/components/layout/container';
 import { TAddress } from '@/lib/types/api/address-types';
-import { addressAction } from '@/app/actions/addressAction';
+import {
+  createAddressAction,
+  deleteAddressAction,
+  updateAddressAction,
+} from '@/app/actions/addressAction';
+import { ApiResult } from '@/lib/fetch';
 
 export const AddressesPageContent = ({
   addresses,
 }: {
-  addresses: TAddress[];
+  addresses: Promise<ApiResult<TAddress[]>>;
 }) => {
+  const addressesResult = use(addresses) as ApiResult<TAddress[]>;
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [address, setAddress] = useState<TAddress>();
   const [formId, setFormId] = useState<string>('create');
   const [isPending, startTransition] = useTransition();
-  /** Handlers **/
 
-  console.log('addresses', addresses);
-  const handleEditAddress = (address: TAddress) => {
-    setAddress(address);
-    if (address._id) {
+  const handleEditAddress = (formData: TAddress) => {
+    setAddress(formData);
+    if (formData._id) {
       setIsFormOpen(true);
-      setFormId(`edit-${address._id}`);
+      setFormId(`edit-${formData._id}-${Date.now()}`);
     }
   };
   const toggleForm = () => {
@@ -36,24 +41,49 @@ export const AddressesPageContent = ({
   };
 
   const handleDeleteAddress = (_id: string) => {
-    console.log('id', _id);
-    toast.success('Address deleted');
+    startTransition(async () => {
+      try {
+        const result = await deleteAddressAction(_id);
+        if (result.success) {
+          toast.success('Address deleted');
+        } else {
+          toast.error('Failed to delete address');
+        }
+      } catch (err) {
+        toast.error((err as Error)?.message ?? 'Failed to delete address');
+      }
+    });
   };
 
   const handleSubmitAddressForm = (data: TAddress) => {
     startTransition(async () => {
       setIsFormOpen(false);
       try {
-        const result = await addressAction(data);
-        if (result.success) {
-          toast.success('Address saved');
+        if (address?._id) {
+          const result = await updateAddressAction(data, address._id);
+          if (result.success) {
+            toast.success('Address updated');
+          } else {
+            toast.error('Failed to update address');
+          }
+        } else {
+          if ((addressesResult?.data as TAddress[])?.length >= 3) {
+            toast.error('You can only have 3 addresses');
+            return;
+          }
+          const result = await createAddressAction(data);
+          if (result.success) {
+            toast.success('Address created');
+          } else {
+            toast.error('Failed to create address');
+          }
         }
-      } catch (error) {
-        toast.error('Failed to save address');
+      } catch (err) {
+        toast.error((err as Error)?.message ?? 'Failed to create address');
       }
-      console.log('data', data);
-      // Clear address after submit
+      setIsFormOpen(false);
       setAddress(undefined);
+      setFormId(`create-${Date.now()}`);
     });
   };
   /** UI Helpers **/
@@ -89,6 +119,7 @@ export const AddressesPageContent = ({
               address={address}
               onEdit={handleEditAddress}
               onDelete={handleDeleteAddress}
+              isDeleting={isPending}
             />
           ))}
         </div>
@@ -125,7 +156,7 @@ export const AddressesPageContent = ({
         <div className="w-full py-8">
           {renderAddressSection(
             'Shipping Addresses',
-            addresses,
+            addressesResult.data?.length ? addressesResult.data : [],
             'No shipping addresses found',
             'Add Your First Address'
           )}

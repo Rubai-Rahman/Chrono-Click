@@ -1,20 +1,29 @@
 'use server';
 
-import { placeAddress } from '@/data/address';
+import { placeAddress, updateAddress, deleteAddress } from '@/data/address';
 import { TAddress } from '@/lib/types/api/address-types';
+import { revalidateTag } from 'next/cache';
 
-export async function addressAction(address: TAddress) {
-  const result = await placeAddress(address);
-  if (!result) {
-    return {
-      success: false,
-      error: {
-        message: 'Failed to place address',
-        status: 'error',
-        details: 'Failed to place address',
-      },
-    };
+export async function deleteAddressAction(id: string) {
+  const result = await deleteAddress(id);
+  if (result.success) {
+    revalidateTag('addresses'); 
   }
+  return result;
+}
 
-  return { success: true, data: result };
+export async function createAddressAction(data: TAddress) {
+  const result = await placeAddress(data);
+  if (result.success) {
+    revalidateTag('addresses');
+  }
+  return result;
+}
+
+export async function updateAddressAction(data: TAddress, id: string) {
+  const result = await updateAddress(data, id);
+  if (result.success) {
+    revalidateTag('addresses');
+  }
+  return result;
 }

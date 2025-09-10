@@ -2,14 +2,14 @@
 
 import { useAuthStore } from '@/store/useAuthStore';
 import { GoogleLogin } from '@react-oauth/google';
+import { CredentialResponse } from '@react-oauth/google';
 
 export default function GoogleSignInButton() {
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
   const setUser = useAuthStore((s) => s.setUser);
 
-  const handleSuccess = async (credentialResponse: unknown) => {
+  const handleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
-      console.log('credentialResponse', credentialResponse);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/users/google`,
         {

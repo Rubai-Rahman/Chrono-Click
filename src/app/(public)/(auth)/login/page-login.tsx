@@ -25,7 +25,6 @@ const LoginPageContent = () => {
   ];
 
   const callbackUrl = validateCallbackUrl(rawCallbackUrl, trustedDomains);
-  console.log("callbackUrl", callbackUrl);
 
   const handleLogin = (data: LoginFormData) => {
     startTransition(async () => {
@@ -45,7 +44,6 @@ const LoginPageContent = () => {
           id: 'signup-success',
         });
       } catch (error) {
-        console.log('error', error);
         if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
           return;
         }

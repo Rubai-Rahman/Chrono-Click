@@ -89,7 +89,6 @@ export async function coreServerFetch<T>(
       credentials: config.credentials,
     });
   } catch (err) {
-    console.log('errFetchCore==', err);
     if (
       err instanceof FetchCoreError &&
       (err.status === 401 || err.status === 403)
