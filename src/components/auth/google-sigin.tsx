@@ -3,6 +3,7 @@
 import { useAuthStore } from '@/store/useAuthStore';
 import { GoogleLogin } from '@react-oauth/google';
 import { CredentialResponse } from '@react-oauth/google';
+import { toast } from 'sonner';
 
 export default function GoogleSignInButton() {
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
@@ -31,7 +32,7 @@ export default function GoogleSignInButton() {
   };
 
   const handleError = () => {
-    console.error('Google login failed');
+    toast.error('Google login failed');
   };
 
   return <GoogleLogin onSuccess={handleSuccess} onError={handleError} />;
