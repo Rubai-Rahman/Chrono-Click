@@ -1,5 +1,6 @@
 import { CheckoutFormData } from '@/components/checkout/checkout-form';
-import { safeApi } from '@/lib/fetch';
+import { ApiResult, safeApi } from '@/lib/fetch';
+import { requireSession } from './dal';
 
 export interface OrderItem {
   productId: string;
@@ -12,8 +13,15 @@ export interface OrderData {
   orderItems: Omit<OrderItem, 'price'>[];
 }
 
-export const placeOrder = async (orderData: OrderData) => {
-  const res = await safeApi.post('/orders', { ...orderData });
-
-  return res.data;
+export const placeOrder = async (
+  orderData: OrderData
+): Promise<ApiResult<OrderData>> => {
+  await requireSession();
+  return await safeApi.post(
+    '/orders/create',
+    { ...orderData },
+    {
+      next: { tags: ['orders'] },
+    }
+  );
 };

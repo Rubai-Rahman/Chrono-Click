@@ -6,12 +6,12 @@ import CheckoutForm, {
   CheckoutFormData,
 } from '@/components/checkout/checkout-form';
 import { useCartStore } from '@/store/useCartStore';
-import { checkoutAction } from '@/app/actions/checkoutAction';
 import { OrderData } from '@/data/order';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { TAddress } from '@/lib/types/api/address-types';
 import { ApiResult } from '@/lib/fetch';
+import { placeOrderAction } from '@/app/actions/orderAction';
 
 export default function CheckoutPageContent({
   addresses,
@@ -35,13 +35,14 @@ export default function CheckoutPageContent({
       })),
     };
     setTransition(async () => {
-      const res = await checkoutAction(orderData);
+      const res = await placeOrderAction(orderData);
       if (res.success) {
         toast.success('Order placed successfully');
         clearCart();
         router.push('/checkout/order-success');
+      } else {
+        toast.error(res.error?.message);
       }
-      toast.error(res.error?.message);
     });
   };
 

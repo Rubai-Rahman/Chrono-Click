@@ -11,6 +11,7 @@ import { User, MapPin, Phone, Mail } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
 import { TAddress } from '@/lib/types/api/address-types';
+import {shippingMethods } from '@/lib/constant';
 
 const checkoutSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
@@ -43,7 +44,6 @@ const CheckoutForm = ({
   handleOrder: (data: CheckoutFormData) => void;
   addresses: TAddress[];
 }) => {
-  console.log('shiippingAddress', addresses);
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -52,7 +52,7 @@ const CheckoutForm = ({
       email: '',
       phone: '',
       address: addresses.find((addr) => addr.isDefault)?._id || '',
-      paymentMethod: '',
+      paymentMethod: 'sslcommerz',
       shippingMethod: shippingMethod || 'standard',
     },
     mode: 'onSubmit',
@@ -154,10 +154,19 @@ const CheckoutForm = ({
                 >
                   {addresses.map((addr) => {
                     const id = `address-${addr._id}`;
+                    const isSelected = field.value === addr._id;
                     return (
                       <div
                         key={addr._id}
-                        className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer"
+                        className={`
+              flex items-start gap-3 p-4 border rounded-lg cursor-pointer
+              ${
+                isSelected
+                  ? ' border-primary' /* selected styles */
+                  : '' /* unselected styles */
+              }
+              transition-colors
+            `}
                       >
                         <RadioGroupItem value={addr._id!} id={id} />
                         <Label htmlFor={id} className="flex-1 cursor-pointer">
@@ -171,7 +180,7 @@ const CheckoutForm = ({
             </CommonFormField>
           </CardContent>
         </Card>
-
+        {/* Payment method */}
         <Card>
           <CardHeader>
             <CardTitle>Payment Method</CardTitle>
@@ -184,7 +193,11 @@ const CheckoutForm = ({
                   onValueChange={field.onChange}
                   className="space-y-3"
                 >
-                  <div className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer">
+                  <div
+                    className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                      field.value === 'sslcommerz' ? 'border-primary' : ''
+                    }`}
+                  >
                     <RadioGroupItem value="sslcommerz" id="sslcommerz" />
                     <Label
                       htmlFor="sslcommerz"
@@ -197,8 +210,14 @@ const CheckoutForm = ({
                     </Label>
                   </div>
 
-                  <div className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer">
-                    <RadioGroupItem value="cashOnDelivery" id="cod" />
+                  <div
+                    className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                      field.value === 'cash_on_delivery'
+                        ? ' border-primary'
+                        : ''
+                    }`}
+                  >
+                    <RadioGroupItem value="cash_on_delivery" id="cod" />
                     <Label htmlFor="cod" className="flex-1 cursor-pointer">
                       <div className="font-medium">Cash on Delivery</div>
                       <div className="text-sm text-muted-foreground">
@@ -221,32 +240,36 @@ const CheckoutForm = ({
             <CommonFormField control={form.control} name="shippingMethod">
               {({ field }) => (
                 <RadioGroup
-                  value={shippingMethod}
                   onValueChange={(value) => {
                     field.onChange(value);
                     onShippingMethodChange(value);
                   }}
                   className="space-y-3"
                 >
-                  <div className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer">
-                    <RadioGroupItem value="standard" id="standard" />
-                    <Label htmlFor="standard" className="flex-1 cursor-pointer">
-                      <div className="font-medium">Standard Shipping</div>
-                      <div className="text-sm text-muted-foreground">
-                        3–5 business days
+                  {shippingMethods.map((option) => {
+                    const isSelected = field.value === option.value;
+                    return (
+                      <div
+                        key={option.value}
+                        className={`
+              flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors
+              ${isSelected ? ' border-primary' : ''}
+            `}
+                        onClick={() => field.onChange(option.value)}
+                      >
+                        <RadioGroupItem value={option.value} id={option.id} />
+                        <Label
+                          htmlFor={option.id}
+                          className="flex-1 cursor-pointer"
+                        >
+                          <div className="font-medium">{option.label}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {option.description}
+                          </div>
+                        </Label>
                       </div>
-                    </Label>
-                  </div>
-
-                  <div className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer">
-                    <RadioGroupItem value="express" id="express" />
-                    <Label htmlFor="express" className="flex-1 cursor-pointer">
-                      <div className="font-medium">Express Shipping</div>
-                      <div className="text-sm text-muted-foreground">
-                        1–2 business days
-                      </div>
-                    </Label>
-                  </div>
+                    );
+                  })}
                 </RadioGroup>
               )}
             </CommonFormField>
