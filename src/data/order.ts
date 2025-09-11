@@ -9,13 +9,7 @@ export interface OrderItem {
 
 export interface OrderData {
   orderInfo: CheckoutFormData;
-  orderItems: OrderItem[];
-  orderSummary: {
-    subtotal: number;
-    shipping: number;
-    tax: number;
-    total: number;
-  };
+  orderItems: Omit<OrderItem, 'price'>[];
 }
 
 export const placeOrder = async (orderData: OrderData) => {

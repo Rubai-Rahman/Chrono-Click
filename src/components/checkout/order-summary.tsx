@@ -11,12 +11,6 @@ import { Button } from '../ui/button';
 interface OrderSummaryProps {
   formId: string;
   isPending: boolean;
-  orderSummary: {
-    subtotal: number;
-    shipping: number;
-    tax: number;
-    total: number;
-  };
   items: Array<{
     _id: string;
     name: string;
@@ -31,12 +25,10 @@ interface OrderSummaryProps {
 const OrderSummary = ({
   formId,
   isPending,
-  orderSummary,
   items,
   shippingMethod,
 }: OrderSummaryProps) => {
   const [mounted, setMounted] = useState(false);
-  const { subtotal, shipping, tax, total } = orderSummary;
 
   const formatPrice = (price: number) => {
     if (!mounted) return '$0.00';
@@ -46,6 +38,13 @@ const OrderSummary = ({
     }).format(price);
   };
 
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.price * (item.quantity || 1),
+    0
+  );
+  const shipping = shippingMethod === 'express' ? 15.99 : 0;
+  const tax = subtotal * 0.08;
+  const total = subtotal + shipping + tax;
   useEffect(() => {
     setMounted(true);
   }, []);

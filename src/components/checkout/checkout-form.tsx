@@ -10,6 +10,7 @@ import { CommonFormField, Form } from '@/components/ui/form';
 import { User, MapPin, Phone, Mail } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
+import { TAddress } from '@/lib/types/api/address-types';
 
 const checkoutSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
@@ -23,9 +24,6 @@ const checkoutSchema = z.object({
       'Please enter a valid Bangladeshi phone number'
     ),
   address: z.string().min(10, 'Address must be at least 10 characters'),
-  city: z.string().min(2, 'City must be at least 2 characters'),
-  postalCode: z.string().min(4, 'Postal code must be at least 4 characters'),
-  country: z.string().min(1, 'Country is required'),
   paymentMethod: z.string().min(1, 'Payment method is required'),
   shippingMethod: z.string().min(1, 'Shipping method is required'),
 });
@@ -37,12 +35,15 @@ const CheckoutForm = ({
   shippingMethod,
   onShippingMethodChange,
   handleOrder,
+  addresses,
 }: {
   formId: string;
   shippingMethod: string;
   onShippingMethodChange: (method: string) => void;
   handleOrder: (data: CheckoutFormData) => void;
+  addresses: TAddress[];
 }) => {
+  console.log('shiippingAddress', addresses);
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -50,10 +51,7 @@ const CheckoutForm = ({
       lastName: '',
       email: '',
       phone: '',
-      address: '',
-      city: '',
-      postalCode: '',
-      country: 'Bangladesh',
+      address: addresses.find((addr) => addr.isDefault)?._id || '',
       paymentMethod: '',
       shippingMethod: shippingMethod || 'standard',
     },
@@ -147,45 +145,28 @@ const CheckoutForm = ({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <CommonFormField
-              control={form.control}
-              name="address"
-              label="Street Address"
-            >
+            <CommonFormField control={form.control} name="address">
               {({ field }) => (
-                <Input
-                  id="address"
-                  placeholder="House, road, area"
-                  {...field}
-                />
-              )}
-            </CommonFormField>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <CommonFormField control={form.control} name="city" label="City">
-                {({ field }) => (
-                  <Input id="city" placeholder="Dhaka" {...field} />
-                )}
-              </CommonFormField>
-
-              <CommonFormField
-                control={form.control}
-                name="postalCode"
-                label="Postal Code"
-              >
-                {({ field }) => (
-                  <Input id="postalCode" placeholder="1212" {...field} />
-                )}
-              </CommonFormField>
-            </div>
-
-            <CommonFormField
-              control={form.control}
-              name="country"
-              label="Country"
-            >
-              {({ field }) => (
-                <Input id="country" disabled className="bg-muted" {...field} />
+                <RadioGroup
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  className="space-y-3"
+                >
+                  {addresses.map((addr) => {
+                    const id = `address-${addr._id}`;
+                    return (
+                      <div
+                        key={addr._id}
+                        className="flex items-start gap-3 p-4 border rounded-lg bg-muted/20 cursor-pointer"
+                      >
+                        <RadioGroupItem value={addr._id!} id={id} />
+                        <Label htmlFor={id} className="flex-1 cursor-pointer">
+                          <div className="font-medium">{addr.name}</div>
+                        </Label>
+                      </div>
+                    );
+                  })}
+                </RadioGroup>
               )}
             </CommonFormField>
           </CardContent>

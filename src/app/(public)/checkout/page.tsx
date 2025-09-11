@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import CheckoutPageContent from './page-checkout';
+import { fetchAllAddresses } from '@/data/address';
 
 export const metadata: Metadata = {
   title: 'Check Out - Chrono Click',
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
 };
 
 const CheckoutPage = async () => {
-  return <CheckoutPageContent />;
+  const addressesPromise = fetchAllAddresses();
+  const addresses = await addressesPromise;
+  return <CheckoutPageContent addresses={addresses} />;
 };
 
 export default CheckoutPage;

@@ -10,8 +10,14 @@ import { checkoutAction } from '@/app/actions/checkoutAction';
 import { OrderData } from '@/data/order';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { TAddress } from '@/lib/types/api/address-types';
+import { ApiResult } from '@/lib/fetch';
 
-export default function CheckoutPageContent() {
+export default function CheckoutPageContent({
+  addresses,
+}: {
+  addresses: ApiResult<TAddress[]>;
+}) {
   const formId = 'checkout-form';
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [isPending, setTransition] = useTransition();
@@ -19,14 +25,6 @@ export default function CheckoutPageContent() {
   // Get cart items and calculate order summary values
   const items = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.price * (item.quantity || 1),
-    0
-  );
-  const shipping = shippingMethod === 'express' ? 15.99 : 0;
-  const tax = subtotal * 0.08;
-  const total = subtotal + shipping + tax;
-  const orderSummary = { subtotal, shipping, tax, total };
 
   const handleOrder = (data: CheckoutFormData) => {
     const orderData: OrderData = {
@@ -34,11 +32,8 @@ export default function CheckoutPageContent() {
       orderItems: items.map((item) => ({
         productId: item._id,
         quantity: item.quantity ?? 1,
-        price: item.price,
       })),
-      orderSummary,
     };
-
     setTransition(async () => {
       const res = await checkoutAction(orderData);
       if (res.success) {
@@ -61,6 +56,7 @@ export default function CheckoutPageContent() {
             shippingMethod={shippingMethod}
             onShippingMethodChange={setShippingMethod}
             handleOrder={handleOrder}
+            addresses={addresses.data ?? []}
           />
         </div>
 
@@ -70,7 +66,6 @@ export default function CheckoutPageContent() {
             formId={formId}
             isPending={isPending}
             items={items}
-            orderSummary={orderSummary}
             shippingMethod={shippingMethod}
           />
         </div>
