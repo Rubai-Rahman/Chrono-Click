@@ -2,118 +2,114 @@ import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
 const secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
-const authRoutes = ['/login', '/signup', '/forgot-password'];
+
 async function verifyJwt(token: string) {
   try {
     const { payload } = await jwtVerify(token, secret, {
       algorithms: ['HS256'],
     });
-    return payload as { userId: string; role: string };
+    return payload as {
+      userId?: string;
+      role?: string;
+      email?: string;
+      name?: string;
+    };
   } catch {
     return null;
   }
 }
 
+// Only protect these routes
+const protectedRoutes = [
+  { pattern: /^\/admin(\/|$)/, roles: ['admin'] },
+  { pattern: /^\/orders(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/wishlist(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/addresses(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/payment-methods(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/settings(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/order-success(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/checkout(\/|$)/, roles: ['user', 'admin'] },
+];
+
 export async function middleware(req: NextRequest) {
-  const url = req.nextUrl.clone();
-  let accessToken = req.cookies.get('accessToken')?.value;
-  const refreshToken = req.cookies.get('refreshToken')?.value;
-  let userData = accessToken ? await verifyJwt(accessToken) : null;
+  // Get cookies manually
+  const cookieHeader = req.headers.get('cookie') ?? '';
+  const accessMatch = cookieHeader.match(/accessToken=([^;]+)/);
+  const refreshMatch = cookieHeader.match(/refreshToken=([^;]+)/);
+  const accessToken = accessMatch ? decodeURIComponent(accessMatch[1]) : null;
+  const refreshToken = refreshMatch
+    ? decodeURIComponent(refreshMatch[1])
+    : null;
+
+  const userData = accessToken ? await verifyJwt(accessToken) : null;
 
   const redirectToLogin = () => {
-    // ✅ Don't redirect again if we're already on login/signup/forgot-password
-    if (authRoutes.includes(req.nextUrl.pathname)) {
-      return NextResponse.next(); // just let them stay there
-    }
-
-    url.pathname = '/login';
-    url.searchParams.set(
-      'callbackUrl',
-      req.nextUrl.pathname + req.nextUrl.search
+    // Clear cookies if invalid
+    const response = NextResponse.redirect(
+      new URL('/login', req.nextUrl.origin)
     );
-    return NextResponse.redirect(url);
+    response.cookies.set('accessToken', '', { maxAge: 0, path: '/' });
+    response.cookies.set('refreshToken', '', { maxAge: 0, path: '/' });
+    return response;
   };
 
-  // 🔑 If no userData, try refresh once
+  // Try refresh if access token missing/invalid and refresh token exists
   if (!userData && refreshToken) {
     try {
       const refreshRes = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            cookie: req.headers.get('cookie') ?? '',
-          },
-          body: JSON.stringify({ refreshToken }),
+          headers: { 'Content-Type': 'application/json', cookie: cookieHeader },
+          body: JSON.stringify({}),
         }
       );
 
-      if (refreshRes.ok) {
-        const refreshData = await refreshRes.json();
-        accessToken = refreshData.payload.accessToken;
+      if (!refreshRes.ok) return redirectToLogin();
 
-        // ✅ Verify the new token before proceeding
-        if (accessToken) {
-          userData = await verifyJwt(accessToken);
-        }
-        if (!userData) return redirectToLogin();
+      const refreshData = await refreshRes.json();
+      const newAccess = refreshData?.payload?.accessToken;
+      const newRefresh = refreshData?.payload?.refreshToken;
 
-        // ✅ Build response with new cookies
-        const response = NextResponse.next();
+      if (!newAccess) return redirectToLogin();
+      const newPayload = await verifyJwt(newAccess);
+      if (!newPayload) return redirectToLogin();
 
-        // Only set the cookie if accessToken is defined
-        if (accessToken) {
-          response.cookies.set('accessToken', accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: refreshData.payload.maxAge,
-          });
-        }
+      const response = NextResponse.next();
 
-        if (refreshData.payload.refreshToken) {
-          response.cookies.set(
-            'refreshToken',
-            refreshData.payload.refreshToken,
-            {
-              httpOnly: true,
-              secure: process.env.NODE_ENV === 'production',
-              sameSite: 'lax',
-              maxAge: refreshData.payload.maxAge,
-            }
-          );
-        }
+      response.cookies.set('accessToken', newAccess, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: refreshData?.payload?.maxAge ?? 60 * 15,
+      });
 
-        return response;
+      if (newRefresh) {
+        response.cookies.set('refreshToken', newRefresh, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          path: '/',
+          maxAge: refreshData?.payload?.refreshMaxAge ?? 60 * 60 * 24 * 30,
+        });
       }
 
-      // ❌ Refresh failed → force login
-      return redirectToLogin();
+      return response;
     } catch (err) {
-      console.error('Refresh error:', err);
+      console.error('Middleware refresh error', err);
       return redirectToLogin();
     }
   }
 
-  if (!userData && !refreshToken) return redirectToLogin();
+  if (!userData) return redirectToLogin();
 
+  // Role-based checks
   const role = userData?.role ?? null;
-
-  // Protected route logic
-  const protectedRoutes = [
-    { pattern: /^\/admin(\/|$)/, roles: ['admin'] },
-    { pattern: /^\/orders(\/|$)/, roles: ['user', 'admin'] },
-    { pattern: /^\/wishlist(\/|$)/, roles: ['user', 'admin'] },
-    { pattern: /^\/addresses(\/|$)/, roles: ['user', 'admin'] },
-    { pattern: /^\/payment-methods(\/|$)/, roles: ['user', 'admin'] },
-    { pattern: /^\/settings(\/|$)/, roles: ['user', 'admin'] },
-  ];
-
-  for (const route of protectedRoutes) {
-    if (route.pattern.test(url.pathname)) {
+  for (const r of protectedRoutes) {
+    if (r.pattern.test(req.nextUrl.pathname)) {
       if (!role) return redirectToLogin();
-      if (!route.roles.includes(role)) {
+      if (!r.roles.includes(role)) {
         return NextResponse.redirect(
           new URL('/unauthorized', req.nextUrl.origin)
         );
@@ -132,8 +128,7 @@ export const config = {
     '/addresses/:path*',
     '/payment-methods/:path*',
     '/settings/:path*',
-    '/login',
-    '/signup',
-    '/forgot-password',
+    '/order-success/:path*',
+    '/checkout/:path*',
   ],
 };

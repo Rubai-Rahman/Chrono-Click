@@ -110,8 +110,8 @@ export async function coreServerFetch<T>(
         if (!accessToken) {
           throw new ApiError(401, 'Invalid refresh response', {});
         }
-        deleteSession();
-        createSession(accessToken);
+        await deleteSession();
+        await createSession(accessToken);
         // Save the new accessToken in the server cookie (optional)
 
         // Retry original request

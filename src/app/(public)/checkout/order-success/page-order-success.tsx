@@ -58,7 +58,7 @@ const OrderSuccessPageContent = () => {
               email={lastOrder?.orderInfo.email}
             />
           )}
-          <DeliveryTimeline />
+          {lastOrder && <DeliveryTimeline order={lastOrder} />}
         </div>
 
         {/* Action Cards */}
@@ -99,8 +99,8 @@ const OrderSuccessPageContent = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 Discover more amazing products
               </p>
-              <Button size="sm" className="w-full">
-                Shop More
+              <Button asChild size="sm" className="w-full">
+                <Link href="/">Shop More</Link>
               </Button>
             </CardContent>
           </Card>
@@ -126,52 +126,55 @@ const OrderSuccessPageContent = () => {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Truck, Package, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FrontendOrder } from '@/lib/types/api/order-type';
 import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
 
-interface TimelineStep {
-  id: string;
-  title: string;
-  description: string;
-  completed: boolean;
-  icon: React.ReactNode;
-  estimatedDate?: string;
+interface DeliveryTimelineProps {
+  order: FrontendOrder;
 }
 
-const timelineSteps: TimelineStep[] = [
-  {
-    id: 'confirmed',
-    title: 'Order Confirmed',
-    description: "We've received your order and payment",
-    completed: true,
-    icon: <CheckCircle className="h-5 w-5" />,
-  },
-  {
-    id: 'processing',
-    title: 'Processing',
-    description: 'Your order is being prepared',
-    completed: false,
-    icon: <Package className="h-5 w-5" />,
-    estimatedDate: 'Today, 3:00 PM',
-  },
-  {
-    id: 'shipped',
-    title: 'Shipped',
-    description: 'Your order is on its way',
-    completed: false,
-    icon: <Truck className="h-5 w-5" />,
-    estimatedDate: 'Tomorrow, 10:00 AM',
-  },
-  {
-    id: 'delivered',
-    title: 'Delivered',
-    description: 'Your order will arrive at your doorstep',
-    completed: false,
-    icon: <Home className="h-5 w-5" />,
-    estimatedDate: 'Dec 28, 2024',
-  },
-];
+const DeliveryTimeline = ({ order }: DeliveryTimelineProps) => {
+  const steps = [
+    {
+      id: 'confirmed',
+      title: 'Order Confirmed',
+      description: "We've received your order and payment",
+      completed: true, // Always true if we have an order
+      icon: <CheckCircle className="h-5 w-5" />,
+      estimatedDate: new Date(order.createdAt).toLocaleString(),
+    },
+    {
+      id: 'processing',
+      title: 'Processing',
+      description: 'Your order is being prepared',
+      completed: ['processing', 'shipped', 'delivered'].includes(order.status),
+      icon: <Package className="h-5 w-5" />,
+    },
+    {
+      id: 'shipped',
+      title: 'Shipped',
+      description: 'Your order is on its way',
+      completed: ['shipped', 'delivered'].includes(order.status),
+      icon: <Truck className="h-5 w-5" />,
+      estimatedDate:
+        order.status === 'shipped'
+          ? new Date().toLocaleDateString() // You can replace with real shipment date
+          : undefined,
+    },
+    {
+      id: 'delivered',
+      title: 'Delivered',
+      description: 'Your order will arrive at your doorstep',
+      completed: order.status === 'delivered',
+      icon: <Home className="h-5 w-5" />,
+      estimatedDate:
+        order.status === 'delivered'
+          ? new Date().toLocaleDateString()
+          : '3-5 business days',
+    },
+  ];
 
-const DeliveryTimeline = () => {
   return (
     <Card className="animate-fade-in-up animation-delay-500 shadow-elegant">
       <CardHeader>
@@ -182,7 +185,7 @@ const DeliveryTimeline = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          {timelineSteps.map((step, index) => (
+          {steps.map((step, index) => (
             <div key={step.id} className="flex items-start gap-4">
               {/* Icon */}
               <div
@@ -222,7 +225,7 @@ const DeliveryTimeline = () => {
                 </p>
 
                 {/* Connecting line */}
-                {index < timelineSteps.length - 1 && (
+                {index < steps.length - 1 && (
                   <div
                     className={cn(
                       'w-0.5 h-6 mt-4 ml-5 transition-colors duration-300',
@@ -238,7 +241,6 @@ const DeliveryTimeline = () => {
     </Card>
   );
 };
-
 interface OrderItem {
   id: string;
   name: string;
@@ -278,7 +280,6 @@ const OrderDetails = ({
   phone,
   email,
 }: OrderDetailsProps) => {
-  console.log('items', items);
   return (
     <Card className="animate-fade-in-up animation-delay-300 shadow-elegant">
       <CardHeader>
