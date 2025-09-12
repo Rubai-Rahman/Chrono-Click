@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { TAddress } from '@/lib/types/api/address-types';
 import { ApiResult } from '@/lib/fetch';
 import { placeOrderAction } from '@/app/actions/orderAction';
+import { useOrderStore } from '@/store/useOrderStore';
 
 export default function CheckoutPageContent({
   addresses,
@@ -25,6 +26,7 @@ export default function CheckoutPageContent({
   // Get cart items and calculate order summary values
   const items = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
+  const setLastOrder = useOrderStore((state) => state.setLastOrder);
 
   const handleOrder = (data: CheckoutFormData) => {
     const orderData: OrderData = {
@@ -36,7 +38,9 @@ export default function CheckoutPageContent({
     };
     setTransition(async () => {
       const res = await placeOrderAction(orderData);
-      if (res.success) {
+      if (res.success && res.data) {
+        console.log('response', res.data);
+        setLastOrder(res.data.data);
         toast.success('Order placed successfully');
         clearCart();
         router.push('/checkout/order-success');

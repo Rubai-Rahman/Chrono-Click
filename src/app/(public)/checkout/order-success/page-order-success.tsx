@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
@@ -6,32 +8,12 @@ import {
   Clock,
   CreditCard,
 } from 'lucide-react';
-
-const mockOrder = {
-  orderNumber: 'ORD-2024-001234',
-  items: [
-    {
-      id: '1',
-      name: 'Premium Wireless Headphones',
-      quantity: 1,
-      price: 299.99,
-    },
-    {
-      id: '2',
-      name: 'Bluetooth Speaker',
-      quantity: 2,
-      price: 89.99,
-    },
-  ],
-  subtotal: 479.97,
-  shipping: 15.0,
-  tax: 39.6,
-  total: 534.57,
-  estimatedDelivery: 'December 28, 2024',
-  paymentMethod: '•••• •••• •••• 4242',
-};
+import Image from 'next/image';
+import { useOrderStore } from '@/store/useOrderStore';
 
 const OrderSuccessPageContent = () => {
+  const lastOrder = useOrderStore((state) => state.lastOrder);
+  console.log('lastOrder', lastOrder);
   return (
     <div className="min-h-screen bg-gradient-background">
       <div className="container mx-auto px-4">
@@ -48,7 +30,34 @@ const OrderSuccessPageContent = () => {
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <OrderDetails {...mockOrder} />
+          {lastOrder && (
+            <OrderDetails
+              orderNumber={lastOrder?.orderCode}
+              items={lastOrder.orderItems.map((item) => ({
+                id: item.productId, // map productId -> id
+                name: item.name, // already exists
+                price: item.price,
+                quantity: item.quantity,
+                image: item.image,
+              }))}
+              subtotal={lastOrder?.subtotal}
+              shipping={lastOrder?.shipping}
+              tax={lastOrder?.tax}
+              total={lastOrder?.total}
+              estimatedDelivery="3-5 Business Days"
+              paymentMethod={lastOrder?.paymentMethod}
+              address={`${lastOrder?.orderInfo.address.line1}, ${
+                lastOrder?.orderInfo.address.line2 || ''
+              }, ${lastOrder?.orderInfo.address.city}, ${
+                lastOrder?.orderInfo.address.state
+              }, ${lastOrder?.orderInfo.address.postalCode}, ${
+                lastOrder?.orderInfo.address.country
+              }`}
+              customer={`${lastOrder?.orderInfo.firstName} ${lastOrder?.orderInfo.lastName}`}
+              phone={lastOrder?.orderInfo.phone}
+              email={lastOrder?.orderInfo.email}
+            />
+          )}
           <DeliveryTimeline />
         </div>
 
@@ -247,6 +256,12 @@ interface OrderDetailsProps {
   total: number;
   estimatedDelivery: string;
   paymentMethod: string;
+
+  // New fields
+  address: string;
+  customer: string;
+  phone: string;
+  email: string;
 }
 
 const OrderDetails = ({
@@ -258,7 +273,12 @@ const OrderDetails = ({
   total,
   estimatedDelivery,
   paymentMethod,
+  address,
+  customer,
+  phone,
+  email,
 }: OrderDetailsProps) => {
+  console.log('items', items);
   return (
     <Card className="animate-fade-in-up animation-delay-300 shadow-elegant">
       <CardHeader>
@@ -267,9 +287,7 @@ const OrderDetails = ({
           Order Details
         </CardTitle>
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <span>Order #{orderNumber}</span>
-          </div>
+          <span>Order #{orderNumber}</span>
           <Badge className="bg-success-light text-success">Confirmed</Badge>
         </div>
       </CardHeader>
@@ -282,9 +300,19 @@ const OrderDetails = ({
               className="flex items-center justify-between py-2"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-                  <Package className="h-6 w-6 text-muted-foreground" />
-                </div>
+                {item.image ? (
+                  <Image
+                    width={30}
+                    height={30}
+                    src={item.image}
+                    alt={item.name}
+                    className="w-12 h-12 object-cover rounded-lg"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                    <Package className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                )}
                 <div>
                   <p className="font-medium">{item.name}</p>
                   <p className="text-sm text-muted-foreground">
@@ -322,7 +350,31 @@ const OrderDetails = ({
 
         <Separator />
 
-        {/* Additional Info */}
+        {/* Customer Info */}
+        <div className="space-y-2 text-sm">
+          <h4 className="font-semibold">Customer Information</h4>
+          <p>
+            <span className="font-medium">Name:</span> {customer}
+          </p>
+          <p>
+            <span className="font-medium">Phone:</span> {phone}
+          </p>
+          <p>
+            <span className="font-medium">Email:</span> {email}
+          </p>
+        </div>
+
+        <Separator />
+
+        {/* Shipping Address */}
+        <div className="space-y-2 text-sm">
+          <h4 className="font-semibold">Shipping Address</h4>
+          <p>{address}</p>
+        </div>
+
+        <Separator />
+
+        {/* Estimated Delivery & Payment */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-muted-foreground" />
