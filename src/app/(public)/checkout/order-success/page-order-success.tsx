@@ -66,13 +66,15 @@ const OrderSuccessPageContent = () => {
           <Card className="animate-fade-in-up animation-delay-700 shadow-elegant hover:shadow-success transition-all duration-300">
             <CardContent className="p-6 text-center">
               <Package className="h-12 w-12 text-success mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">Track Your Order</h3>
+              <h3 className="font-semibold mb-2">View All Your Order</h3>
               <p className="text-sm text-muted-foreground mb-4">
                 Get real-time updates on your delivery
               </p>
-              <Button size="sm" className="w-full">
-                Track Package
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <Button asChild size="sm" className="w-full">
+                <Link href="/orders">
+                  All Order
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -84,8 +86,8 @@ const OrderSuccessPageContent = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 Our support team is here to assist you
               </p>
-              <Button variant="outline" size="sm" className="w-full">
-                Contact Support
+              <Button asChild variant="outline" size="sm" className="w-full">
+                <Link href="/contact">Contact Support</Link>
               </Button>
             </CardContent>
           </Card>
@@ -104,19 +106,6 @@ const OrderSuccessPageContent = () => {
               </Button>
             </CardContent>
           </Card>
-        </div>
-
-        {/* Footer Message */}
-        <div className="text-center animate-fade-in-up animation-delay-1000">
-          <p className="text-muted-foreground">
-            Questions about your order? Email us at{' '}
-            <a
-              href="mailto:support@example.com"
-              className="text-success hover:underline font-medium"
-            >
-              support@example.com
-            </a>
-          </p>
         </div>
       </div>
     </div>

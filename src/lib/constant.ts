@@ -212,33 +212,3 @@ export const FILE_UPLOAD = {
   MAX_SIZE: 5 * 1024 * 1024, // 5MB
   ALLOWED_TYPES: ['image/jpeg', 'image/png', 'image/webp'],
 } as const;
-
-export const paymentMethods = [
-  {
-    id: 'sslcommerz',
-    value: 'sslcommerz',
-    label: 'SSLCommerz',
-    desc: 'Pay securely with bKash, Nagad, cards, and more',
-  },
-  {
-    id: 'cod',
-    value: 'cashOnDelivery',
-    label: 'Cash on Delivery',
-    desc: 'Pay after receiving the product',
-  },
-];
-
-export const shippingMethods = [
-  {
-    id: 'standard',
-    value: 'standard',
-    label: 'Standard Shipping',
-    description: '3–5 business days',
-  },
-  {
-    id: 'express',
-    value: 'express',
-    label: 'Express Shipping',
-    description: '1–2 business days',
-  },
-];

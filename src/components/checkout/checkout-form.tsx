@@ -11,7 +11,6 @@ import { User, MapPin, Phone, Mail } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
 import { TAddress } from '@/lib/types/api/address-types';
-import {shippingMethods } from '@/lib/constant';
 
 const checkoutSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
@@ -230,8 +229,7 @@ const CheckoutForm = ({
             </CommonFormField>
           </CardContent>
         </Card>
-
-        {/* Shipping Method */}
+        {/* shipping method */}
         <Card>
           <CardHeader>
             <CardTitle>Shipping Method</CardTitle>
@@ -240,36 +238,40 @@ const CheckoutForm = ({
             <CommonFormField control={form.control} name="shippingMethod">
               {({ field }) => (
                 <RadioGroup
+                  value={field.value}
                   onValueChange={(value) => {
                     field.onChange(value);
                     onShippingMethodChange(value);
                   }}
                   className="space-y-3"
                 >
-                  {shippingMethods.map((option) => {
-                    const isSelected = field.value === option.value;
-                    return (
-                      <div
-                        key={option.value}
-                        className={`
-              flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors
-              ${isSelected ? ' border-primary' : ''}
-            `}
-                        onClick={() => field.onChange(option.value)}
-                      >
-                        <RadioGroupItem value={option.value} id={option.id} />
-                        <Label
-                          htmlFor={option.id}
-                          className="flex-1 cursor-pointer"
-                        >
-                          <div className="font-medium">{option.label}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {option.description}
-                          </div>
-                        </Label>
+                  <div
+                    className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                      field.value === 'standard' ? 'border-primary' : ''
+                    }`}
+                  >
+                    <RadioGroupItem value="standard" id="standard" />
+                    <Label htmlFor="standard" className="flex-1 cursor-pointer">
+                      <div className="font-medium">Standard Shipping</div>
+                      <div className="text-sm text-muted-foreground">
+                        3–5 business days
                       </div>
-                    );
-                  })}
+                    </Label>
+                  </div>
+
+                  <div
+                    className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                      field.value === 'express' ? ' border-primary' : ''
+                    }`}
+                  >
+                    <RadioGroupItem value="express" id="express" />
+                    <Label htmlFor="express" className="flex-1 cursor-pointer">
+                      <div className="font-medium">Express Shipping</div>
+                      <div className="text-sm text-muted-foreground">
+                        1–2 business days
+                      </div>
+                    </Label>
+                  </div>
                 </RadioGroup>
               )}
             </CommonFormField>
