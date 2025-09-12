@@ -41,10 +41,11 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       setError: (error) => set({ error }),
       logout: async () => {
         try {
+          // clear store first
           set({
             user: null,
+            isInitialized: false,
             isLoading: false,
-            accessToken: '',
             error: null,
           });
 
@@ -52,10 +53,11 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             const { logoutAction } = await import('@/app/actions/authAction');
             await logoutAction();
           }
-        } catch (error) {
-          console.error('Logout error:', error);
+        } catch (err) {
+          console.error('Logout error:', err);
         }
       },
+
       reset: () =>
         set({
           user: null,

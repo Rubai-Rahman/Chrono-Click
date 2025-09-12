@@ -115,8 +115,16 @@ export async function logoutAction() {
         message: result.error?.message || 'Unknown error',
       };
     }
-    await deleteSession();
-    redirect('/');
+    const res = await fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    if (!res.ok) {
+      console.error('Logout failed');
+    }
+
+    deleteSession();
   } catch (error) {
     console.error('Logout error:', error);
   }

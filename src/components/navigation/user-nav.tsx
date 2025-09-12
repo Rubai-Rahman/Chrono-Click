@@ -29,7 +29,6 @@ import {
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
-import { logoutAction } from '@/app/actions/authAction';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -74,7 +73,6 @@ export function UserNav() {
         break;
       case 'logout':
         logout();
-        logoutAction();
         break;
       default:
         break;
