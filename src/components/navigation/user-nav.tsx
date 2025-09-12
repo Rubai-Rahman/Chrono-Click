@@ -31,6 +31,8 @@ import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
+import { logoutAction } from '@/app/actions/authAction';
+import { toast } from 'sonner';
 
 export function UserNav() {
   const { theme, setTheme } = useTheme();
@@ -42,7 +44,7 @@ export function UserNav() {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  const handleMenuAction = (action: string) => {
+  const handleMenuAction = async (action: string) => {
     switch (action) {
       case 'orders':
         router.push('/orders');
@@ -73,6 +75,18 @@ export function UserNav() {
         break;
       case 'logout':
         logout();
+        logoutAction();
+        const res = await fetch('/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (res.ok) {
+          toast.success('Logout successfully');
+          router.push('/');
+        }
+        if (!res.ok) {
+          toast.error('Logout failed');
+        }
         break;
       default:
         break;
