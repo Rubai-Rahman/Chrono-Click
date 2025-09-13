@@ -19,6 +19,7 @@ export interface FrontendOrder {
   total: number;
   createdAt: string;
   updatedAt: string;
+  _id?:string
 }
 
 // --- NEW: API Response type (wrapper) ---

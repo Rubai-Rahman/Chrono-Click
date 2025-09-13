@@ -1,12 +1,32 @@
 import { CheckoutFormData } from '@/components/checkout/checkout-form';
 import { ApiResult, safeApi } from '@/lib/fetch';
 import { requireSession } from './dal';
-import { CreateOrderResponse } from '@/lib/types/api/order-type';
+import { CreateOrderResponse, FrontendOrder } from '@/lib/types/api/order-type';
+
+// In src/data/order.ts
+export interface Product {
+  _id: string;
+  id: string;
+  name: string;
+  price: number;
+  img: string;
+  brand: string;
+  category: string;
+  description: string;
+  rating: number;
+  reviews: number;
+  inStock: boolean;
+  isFeatured?: boolean;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface OrderItem {
-  productId: string;
+  _id: string;
+  productId: Product;
   quantity: number;
-  price: number;
+  price?: number;
 }
 
 export interface OrderData {
@@ -25,4 +45,11 @@ export const placeOrder = async (
       next: { tags: ['orders'] },
     }
   );
+};
+
+export const fetchOrder = async (): Promise<ApiResult<FrontendOrder[]>> => {
+  await requireSession();
+  return await safeApi.get('/orders/userOrder', {
+    next: { tags: ['orders'] },
+  });
 };

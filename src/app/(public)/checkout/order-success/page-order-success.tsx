@@ -13,7 +13,6 @@ import { useOrderStore } from '@/store/useOrderStore';
 
 const OrderSuccessPageContent = () => {
   const lastOrder = useOrderStore((state) => state.lastOrder);
-  console.log('lastOrder', lastOrder);
   return (
     <div className="min-h-screen bg-gradient-background">
       <div className="container mx-auto px-4">
@@ -34,9 +33,9 @@ const OrderSuccessPageContent = () => {
             <OrderDetails
               orderNumber={lastOrder?.orderCode}
               items={lastOrder.orderItems.map((item) => ({
-                id: item.productId, // map productId -> id
-                name: item.name, // already exists
-                price: item.price,
+                id: item.productId._id || item.productId.id,
+                name: item.name,
+                price: item.price ?? 0,
                 quantity: item.quantity,
                 image: item.image,
               }))}
