@@ -11,7 +11,13 @@ export interface FrontendOrder {
   orderInfo: CheckoutFormData & { address: TAddress };
   orderCode: string;
   paymentMethod: string;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status:
+    | 'pending'
+    | 'processing'
+    | 'shipped'
+    | 'delivered'
+    | 'cancelled'
+    | 'returned';
   paymentStatus: 'pending' | 'completed' | 'failed' | 'refunded';
   subtotal: number;
   shipping: number;
@@ -19,7 +25,7 @@ export interface FrontendOrder {
   total: number;
   createdAt: string;
   updatedAt: string;
-  _id?:string
+  _id?: string;
 }
 
 // --- NEW: API Response type (wrapper) ---
