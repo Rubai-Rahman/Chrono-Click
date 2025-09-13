@@ -1,49 +1,77 @@
 'use client';
 
 import News from './news';
-import NewsSkeleton from '@/components/skeletons/news-skeleton';
-import { ErrorResultMessage } from '@/components/ui/data-result-message';
-import { fetchNewsPages } from '@/data/news/news';
-import { useQuery } from '@tanstack/react-query';
-import { notFound, useRouter, useSearchParams } from 'next/navigation';
+import { NewsType } from '@/lib/types/api/new-types';
 
-const NewsClient = () => {
-  const searchParams = useSearchParams();
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Container from '../layout/container';
+
+interface NewsProps {
+  news: NewsType[];
+  totalPages: number;
+  currentPage: number;
+  sort: string;
+  size: number;
+}
+
+const NewsClientWrapper = ({
+  news,
+  totalPages,
+  currentPage,
+  sort,
+  size,
+}: NewsProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const page = Number(searchParams.get('page') || '0');
-  const size = 4;
+  const [currentSize, setCurrentSize] = useState(size);
+  const [currentSort, setCurrentSort] = useState(sort);
 
-  const {
-    data: newsResponse,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['news', page, size],
-    queryFn: () => fetchNewsPages(page, size),
-    placeholderData: (previousData) => previousData,
-  });
+  // Update local state when props change (from server)
+  useEffect(() => {
+    setCurrentSize(size);
+    setCurrentSort(sort);
+  }, [size, sort]);
 
-  if (isLoading) return <NewsSkeleton />;
-  if (isError) return <ErrorResultMessage />;
-  if (!newsResponse) return notFound();
-
-  const totalPages = Math.ceil(newsResponse.count / size);
-
-  // page change handler: update URL with new page param
   const onPageChange = (newPage: number) => {
-    if (newPage < 0 || newPage >= totalPages) return; // boundary check
-    router.push(`/news?page=${newPage}`);
+    const params = new URLSearchParams(searchParams);
+    // newPage is 0-indexed, but we store it as 1-indexed in URL
+    params.set('page', (newPage + 1).toString());
+    router.push(`/news?${params.toString()}`);
+  };
+
+  const onSizeChange = (newSize: string) => {
+    const newSizeNum = parseInt(newSize, 10);
+    setCurrentSize(newSizeNum);
+    const params = new URLSearchParams(searchParams);
+    params.set('size', newSizeNum.toString());
+    params.set('page', '1'); // Reset to first page when changing page size
+    router.push(`/news?${params.toString()}`);
+  };
+
+  const onSortChange = (newSort: string) => {
+    setCurrentSort(newSort);
+    const params = new URLSearchParams(searchParams);
+    params.set('sort', newSort);
+    params.set('page', '1'); // Reset to first page when changing sort
+    router.push(`/news?${params.toString()}`);
   };
 
   return (
-    <News
-      news={newsResponse}
-      totalPages={totalPages}
-      currentPage={page}
-      onPageChange={onPageChange}
-    />
+    <Container>
+      <News
+        news={news}
+        totalPages={totalPages}
+        currentPage={currentPage - 1}
+        onPageChange={onPageChange}
+        onSizeChange={onSizeChange}
+        onSortChange={onSortChange}
+        currentSize={currentSize}
+        currentSort={currentSort}
+      />
+    </Container>
   );
 };
 
-export default NewsClient;
+export default NewsClientWrapper;

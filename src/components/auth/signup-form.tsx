@@ -10,10 +10,12 @@ import { Input, PasswordInput } from '@/components/ui/input';
 import { Form, CommonFormField } from '@/components/ui/form';
 import { signupSchema, SignupFormData } from '@/lib/validations/auth';
 import { PasswordStrength } from '@/components/ui/password-strength';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { toast } from 'sonner';
 
 interface SignupFormProps {
   onSubmit: (data: SignupFormData) => Promise<void>;
-  onGoogleSignIn: () => void;
+  onGoogleSignIn: (credentialResponse: CredentialResponse) => void;
   isLoading: boolean;
 }
 
@@ -26,7 +28,7 @@ const SignupForm = ({
     resolver: zodResolver(signupSchema),
     mode: 'onBlur',
     defaultValues: {
-      displayName: '',
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -37,6 +39,10 @@ const SignupForm = ({
 
   const handleSubmit = (formData: SignupFormData) => {
     onSubmit(formData);
+  };
+
+  const handleError = () => {
+    toast.error('Google login failed');
   };
 
   return (
@@ -88,7 +94,7 @@ const SignupForm = ({
                       {/* Full Name Input */}
                       <CommonFormField
                         control={form.control}
-                        name="displayName"
+                        name="name"
                         label="Full Name"
                       >
                         {({ field }) => (
@@ -170,22 +176,7 @@ const SignupForm = ({
                 </div>
 
                 {/* Google Sign In */}
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full h-12 text-base font-medium"
-                  onClick={onGoogleSignIn}
-                  disabled={isLoading}
-                >
-                  <Image
-                    className="rounded"
-                    src="/google_logo.jpg"
-                    width={20}
-                    height={20}
-                    alt="Google logo"
-                  />
-                  Sign In with Google
-                </Button>
+                <GoogleLogin onSuccess={onGoogleSignIn} onError={handleError} />
 
                 <div className="mt-6 text-center">
                   <p className="text-muted-foreground">

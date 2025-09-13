@@ -19,10 +19,8 @@ import {
   Plus,
   Minus,
   ShoppingBag,
-  CreditCard,
-  Gift,
-  Sparkles,
-  ArrowRight,
+  CreditCard, Sparkles,
+  ArrowRight
 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -205,34 +203,13 @@ const Cart = () => {
         {/* Footer with totals and checkout */}
         {items.length > 0 && (
           <div className="border-t bg-gradient-to-t from-muted/20 to-transparent p-6 space-y-4">
-            {/* Promo Banner */}
-            {subtotal < 100 && (
-              <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <Gift className="size-4 text-amber-600" />
-                  <span className="text-amber-800 dark:text-amber-200">
-                    Add {formatPrice(100 - subtotal)} more for free shipping!
-                  </span>
-                </div>
-              </div>
-            )}
-
             {/* Order Summary */}
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-medium">{formatPrice(subtotal)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Shipping</span>
-                <span className="font-medium">
-                  {shipping === 0 ? (
-                    <span className="text-green-600">Free</span>
-                  ) : (
-                    formatPrice(shipping)
-                  )}
-                </span>
-              </div>
+
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Tax</span>
                 <span className="font-medium">{formatPrice(tax)}</span>

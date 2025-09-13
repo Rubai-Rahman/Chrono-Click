@@ -1,15 +1,17 @@
 'use client';
 
-import React from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MapPin, User, Phone, Mail } from 'lucide-react';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-// Zod validation schema
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { CommonFormField, Form } from '@/components/ui/form';
+import { User, MapPin, Phone, Mail } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Label } from '../ui/label';
+import { TAddress } from '@/lib/types/api/address-types';
+
 const checkoutSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
@@ -22,216 +24,261 @@ const checkoutSchema = z.object({
       'Please enter a valid Bangladeshi phone number'
     ),
   address: z.string().min(10, 'Address must be at least 10 characters'),
-  city: z.string().min(2, 'City must be at least 2 characters'),
-  postalCode: z.string().min(4, 'Postal code must be at least 4 characters'),
-  country: z.string().min(1, 'Country is required'),
   paymentMethod: z.string().min(1, 'Payment method is required'),
+  shippingMethod: z.string().min(1, 'Shipping method is required'),
 });
 
 export type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
-const CheckoutForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CheckoutFormData>({
+const CheckoutForm = ({
+  formId,
+  shippingMethod,
+  onShippingMethodChange,
+  handleOrder,
+  addresses,
+}: {
+  formId: string;
+  shippingMethod: string;
+  onShippingMethodChange: (method: string) => void;
+  handleOrder: (data: CheckoutFormData) => void;
+  addresses: TAddress[];
+}) => {
+  const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      country: 'Bangladesh',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: addresses.find((addr) => addr.isDefault)?._id || '',
       paymentMethod: 'sslcommerz',
+      shippingMethod: shippingMethod || 'standard',
     },
-    mode: 'onChange',
+    mode: 'onSubmit',
   });
 
-  const onSubmit = handleSubmit((data) => {
-    console.log('Form Data:', data);
-  });
+  const onSubmit = (data: CheckoutFormData) => {
+    handleOrder(data);
+  };
 
   return (
-    <form className="space-y-6" onSubmit={onSubmit}>
-      {/* Personal Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Personal Information
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="firstName">First Name</Label>
-              <Input
-                id="firstName"
-                {...register('firstName')}
-                className={errors.firstName ? 'border-red-500' : ''}
-              />
-              {errors.firstName && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.firstName.message}
-                </p>
+    <Form {...form}>
+      <form
+        id={formId}
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6"
+      >
+        {/* Personal Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              Personal Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <CommonFormField
+                control={form.control}
+                name="firstName"
+                label="First Name"
+              >
+                {({ field }) => (
+                  <Input id="firstName" placeholder="John" {...field} />
+                )}
+              </CommonFormField>
+
+              <CommonFormField
+                control={form.control}
+                name="lastName"
+                label="Last Name"
+              >
+                {({ field }) => (
+                  <Input id="lastName" placeholder="Doe" {...field} />
+                )}
+              </CommonFormField>
+            </div>
+
+            <CommonFormField control={form.control} name="email" label="Email">
+              {({ field }) => (
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    className="pl-10"
+                    {...field}
+                  />
+                </div>
               )}
-            </div>
-            <div>
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input
-                id="lastName"
-                {...register('lastName')}
-                className={errors.lastName ? 'border-red-500' : ''}
-              />
-              {errors.lastName && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.lastName.message}
-                </p>
+            </CommonFormField>
+
+            <CommonFormField
+              control={form.control}
+              name="phone"
+              label="Phone Number"
+            >
+              {({ field }) => (
+                <div className="relative">
+                  <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="+880 1XXXXXXXXX"
+                    className="pl-10"
+                    {...field}
+                  />
+                </div>
               )}
-            </div>
-          </div>
+            </CommonFormField>
+          </CardContent>
+        </Card>
 
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                className={`pl-10 ${errors.email ? 'border-red-500' : ''}`}
-                {...register('email')}
-              />
-            </div>
-            {errors.email && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="phone">Phone Number</Label>
-            <div className="relative">
-              <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="phone"
-                type="tel"
-                className={`pl-10 ${errors.phone ? 'border-red-500' : ''}`}
-                placeholder="+880 1XXXXXXXXX"
-                {...register('phone')}
-              />
-            </div>
-            {errors.phone && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.phone.message}
-              </p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Shipping Address */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Shipping Address
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="address">Street Address</Label>
-            <Input
-              id="address"
-              {...register('address')}
-              className={errors.address ? 'border-red-500' : ''}
-            />
-            {errors.address && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.address.message}
-              </p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="city">City</Label>
-              <Input
-                id="city"
-                {...register('city')}
-                className={errors.city ? 'border-red-500' : ''}
-              />
-              {errors.city && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.city.message}
-                </p>
+        {/* Shipping Address */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="h-5 w-5" />
+              Shipping Address
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <CommonFormField control={form.control} name="address">
+              {({ field }) => (
+                <RadioGroup
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  className="space-y-3"
+                >
+                  {addresses.map((addr) => {
+                    const id = `address-${addr._id}`;
+                    const isSelected = field.value === addr._id;
+                    return (
+                      <div
+                        key={addr._id}
+                        className={`
+              flex items-start gap-3 p-4 border rounded-lg cursor-pointer
+              ${
+                isSelected
+                  ? ' border-primary' /* selected styles */
+                  : '' /* unselected styles */
+              }
+              transition-colors
+            `}
+                      >
+                        <RadioGroupItem value={addr._id!} id={id} />
+                        <Label htmlFor={id} className="flex-1 cursor-pointer">
+                          <div className="font-medium">{addr.name}</div>
+                        </Label>
+                      </div>
+                    );
+                  })}
+                </RadioGroup>
               )}
-            </div>
-            <div>
-              <Label htmlFor="postalCode">Postal Code</Label>
-              <Input
-                id="postalCode"
-                {...register('postalCode')}
-                className={errors.postalCode ? 'border-red-500' : ''}
-              />
-              {errors.postalCode && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.postalCode.message}
-                </p>
+            </CommonFormField>
+          </CardContent>
+        </Card>
+        {/* Payment method */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Payment Method</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CommonFormField control={form.control} name="paymentMethod">
+              {({ field }) => (
+                <RadioGroup
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  className="space-y-3"
+                >
+                  <div
+                    className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                      field.value === 'sslcommerz' ? 'border-primary' : ''
+                    }`}
+                  >
+                    <RadioGroupItem value="sslcommerz" id="sslcommerz" />
+                    <Label
+                      htmlFor="sslcommerz"
+                      className="flex-1 cursor-pointer"
+                    >
+                      <div className="font-medium">SSLCommerz</div>
+                      <div className="text-sm text-muted-foreground">
+                        Pay securely with bKash, Nagad, cards, and more
+                      </div>
+                    </Label>
+                  </div>
+
+                  <div
+                    className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                      field.value === 'cash_on_delivery'
+                        ? ' border-primary'
+                        : ''
+                    }`}
+                  >
+                    <RadioGroupItem value="cash_on_delivery" id="cod" />
+                    <Label htmlFor="cod" className="flex-1 cursor-pointer">
+                      <div className="font-medium">Cash on Delivery</div>
+                      <div className="text-sm text-muted-foreground">
+                        Pay after receiving the product
+                      </div>
+                    </Label>
+                  </div>
+                </RadioGroup>
               )}
-            </div>
-          </div>
+            </CommonFormField>
+          </CardContent>
+        </Card>
+        {/* shipping method */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Shipping Method</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CommonFormField control={form.control} name="shippingMethod">
+              {({ field }) => (
+                <RadioGroup
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    onShippingMethodChange(value);
+                  }}
+                  className="space-y-3"
+                >
+                  <div
+                    className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                      field.value === 'standard' ? 'border-primary' : ''
+                    }`}
+                  >
+                    <RadioGroupItem value="standard" id="standard" />
+                    <Label htmlFor="standard" className="flex-1 cursor-pointer">
+                      <div className="font-medium">Standard Shipping</div>
+                      <div className="text-sm text-muted-foreground">
+                        3–5 business days
+                      </div>
+                    </Label>
+                  </div>
 
-          <div>
-            <Label htmlFor="country">Country</Label>
-            <Input
-              id="country"
-              {...register('country')}
-              disabled
-              className="bg-muted"
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Payment Method */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Payment Method</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center space-x-2 p-4 border rounded-lg bg-muted/20">
-            <input
-              type="radio"
-              id="sslcommerz"
-              value="sslcommerz"
-              {...register('paymentMethod')}
-              className="text-primary"
-            />
-            <label htmlFor="sslcommerz" className="flex-1">
-              <div className="font-medium">SSL Commerce</div>
-              <div className="text-sm text-muted-foreground">
-                Pay securely with bKash, Nagad, Cards, and more
-              </div>
-            </label>
-          </div>
-        </CardContent>
-        <CardContent>
-          <div className="flex items-center space-x-2 p-4 border rounded-lg bg-muted/20">
-            <input
-              type="radio"
-              id="cod"
-              value="cashOndelivary"
-              {...register('paymentMethod')}
-              className="text-primary"
-            />
-            <label htmlFor="cashOndelivary" className="flex-1">
-              <div className="font-medium">CashOndelivary</div>
-              <div className="text-sm text-muted-foreground">
-                Pay After Revciviewign the product
-              </div>
-            </label>
-          </div>
-        </CardContent>
-      </Card>
-    </form>
+                  <div
+                    className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                      field.value === 'express' ? ' border-primary' : ''
+                    }`}
+                  >
+                    <RadioGroupItem value="express" id="express" />
+                    <Label htmlFor="express" className="flex-1 cursor-pointer">
+                      <div className="font-medium">Express Shipping</div>
+                      <div className="text-sm text-muted-foreground">
+                        1–2 business days
+                      </div>
+                    </Label>
+                  </div>
+                </RadioGroup>
+              )}
+            </CommonFormField>
+          </CardContent>
+        </Card>
+      </form>
+    </Form>
   );
 };
 

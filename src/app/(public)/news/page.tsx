@@ -17,8 +17,17 @@ export const metadata: Metadata = {
   ],
 };
 
-const NewsPage = () => {
-  return <NewsPageContent />;
+interface PageProps {
+  searchParams?: Promise<{ page?: string; sort?: string; size?: string }>;
+}
+const NewsPage = async ({ searchParams }: PageProps) => {
+  const resolvedSearchParams = await searchParams;
+
+  const page = resolvedSearchParams?.page || '1';
+  const sort = resolvedSearchParams?.sort;
+  const size = resolvedSearchParams?.size;
+
+  return <NewsPageContent page={page} searchParams={{ sort, size }} />;
 };
 
 export default NewsPage;

@@ -18,3 +18,31 @@ export interface NewsType {
   views: number;
   commentsEnabled: boolean;
 }
+
+export interface CommentType {
+  _id: string;
+  newsId: string;
+  user: string;
+  message: string;
+  date: string;
+  parentId?: string | null;
+  replyCount?: number;
+  replies?: CommentType[];
+  likes?: number;
+  dislikes?: number;
+  userReaction?: 'like' | 'dislike' | null;
+  isDeleted?: boolean;
+  username?: string;
+  updatedAt?: string;
+  isEdited?: boolean;
+}
+
+export interface CommentResponse {
+  comments: CommentType[];
+  count: number;
+}
+
+export interface NewsResponse {
+  data: NewsType[];
+  count: number;
+}

@@ -1,13 +1,20 @@
-import type { Metadata } from 'next';
-import AddressesPageContent from './page-addresses';
+import { Suspense } from 'react';
+import { fetchAllAddresses } from '@/data/address';
+import { AddressesPageContent } from './page-addresses';
+import { Metadata } from 'next';
+import CardSkeleton from '@/components/skeletons/review-skeleton';
 
 export const metadata: Metadata = {
   title: 'Addresses - Chrono Click',
   description: 'Manage your shipping and billing addresses.',
 };
 
-const AddressesPage = () => {
-  return <AddressesPageContent />;
-};
+export default async function Page() {
+  const addressesPromise = fetchAllAddresses();
 
-export default AddressesPage;
+  return (
+    <Suspense fallback={<CardSkeleton />}>
+      <AddressesPageContent addresses={addressesPromise} />
+    </Suspense>
+  );
+}

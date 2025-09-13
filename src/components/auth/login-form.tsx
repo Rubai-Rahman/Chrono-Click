@@ -11,10 +11,12 @@ import { Form, CommonFormField } from '@/components/ui/form';
 import { loginSchema, LoginFormData } from '@/lib/validations/auth';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { toast } from 'sonner';
 
 interface LoginFormProps {
-  onSubmit: (data: LoginFormData) => Promise<void>;
-  onGoogleSignIn: () => void;
+  onSubmit: (data: LoginFormData) => void | Promise<void>;
+  onGoogleSignIn: (credentialResponse: CredentialResponse) => void;
   onGetDemoCredentials: (type: 'admin' | 'user') => {
     email: string;
     password: string;
@@ -48,6 +50,9 @@ const LoginForm = ({
     onSubmit(formData);
   };
 
+  const handleError = () => {
+    toast.error('Google login failed');
+  };
   return (
     <div className="flex items-center justify-center bg-background responsive-space-x md:py-12">
       <div className=" flex container mx-auto h-full rounded-3xl overflow-hidden shadow-xl lg:shadow-2xl lg:shadow-foreground/20">
@@ -130,6 +135,7 @@ const LoginForm = ({
                     {({ field }) => (
                       <div className="flex items-center space-x-2">
                         <Checkbox
+                          disabled={isLoading}
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
@@ -155,23 +161,7 @@ const LoginForm = ({
                   Sign In
                 </Button>
 
-                {/* Google Sign In */}
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full h-12"
-                  onClick={onGoogleSignIn}
-                  disabled={isLoading}
-                >
-                  <Image
-                    className="rounded"
-                    src="/google_logo.jpg"
-                    width={20}
-                    height={20}
-                    alt="Google logo"
-                  />
-                  Sign In with Google
-                </Button>
+                <GoogleLogin onSuccess={onGoogleSignIn} onError={handleError} />
               </form>
             </Form>
 

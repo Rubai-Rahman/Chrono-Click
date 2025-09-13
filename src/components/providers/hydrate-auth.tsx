@@ -1,26 +1,22 @@
 'use client';
 
-import { SessionData } from '@/lib/session';
-import { useAuthStore } from '@/store/useAuthStore';
 import { useEffect } from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
+import { getCurrentUser } from '@/app/actions/getCurrentUser';
 
-export const HydrateAuth = ({
-  session,
-  children,
-}: {
-  session: SessionData | null;
-  children: React.ReactNode;
-}) => {
-  const { setUser, setInitialized } = useAuthStore();
+export const HydrateAuth = ({ children }: { children: React.ReactNode }) => {
+  const { setUser, setInitialized, setLoading } = useAuthStore();
 
   useEffect(() => {
-    if (session?.user) {
-      setUser(session.user);
-    } else {
-      setUser(null);
+    async function init() {
+      setLoading(true);
+      const user = await getCurrentUser(); // server action reads cookies
+      setUser(user ?? null); // null if no user
+      setInitialized(true);
+      setLoading(false);
     }
-    setInitialized(true);
-  }, [session, setUser, setInitialized]);
+    init();
+  }, [setUser, setInitialized, setLoading]);
 
   return <>{children}</>;
 };

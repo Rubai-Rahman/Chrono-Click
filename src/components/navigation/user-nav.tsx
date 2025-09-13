@@ -22,30 +22,29 @@ import {
   Sun,
   ShoppingBag,
   Heart,
-  CreditCard,
   MapPin,
   Shield,
   Package,
   Users,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { useHydration } from '@/hooks/useHydration';
-import { logoutAction } from '@/app/actions/authAction';
 import Link from 'next/link';
+import { useAuthStore } from '@/store/useAuthStore';
+import { logoutAction } from '@/app/actions/authAction';
+import { toast } from 'sonner';
 
 export function UserNav() {
   const { theme, setTheme } = useTheme();
-  const isHydrated = useHydration();
-  const { user } = useAuth();
+  const { user, logout } = useAuthStore();
+
   const router = useRouter();
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
-  const handleMenuAction = (action: string) => {
+  const handleMenuAction = async (action: string) => {
     switch (action) {
       case 'orders':
         router.push('/orders');
@@ -75,16 +74,24 @@ export function UserNav() {
         router.push('/admin/customers');
         break;
       case 'logout':
+        logout();
         logoutAction();
+        const res = await fetch('/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (res.ok) {
+          toast.success('Logout successfully');
+          router.push('/');
+        }
+        if (!res.ok) {
+          toast.error('Logout failed');
+        }
         break;
       default:
         break;
     }
   };
-
-  if (!isHydrated) {
-    return <CircleUserRound className="size-6 text-muted-foreground" />;
-  }
 
   if (!user) {
     return (
@@ -104,10 +111,10 @@ export function UserNav() {
           size="icon"
           className="relative h-10 w-10 rounded-full"
         >
-          {user?.photoURL ? (
+          {user?.avatar ? (
             <Avatar className="h-10 w-10">
               <AvatarImage
-                src={user?.photoURL || '/placeholder.svg'}
+                src={user?.avatar || '/placeholder.svg'}
                 alt={user?.name || 'User'}
               />
               <AvatarFallback>
@@ -213,14 +220,6 @@ export function UserNav() {
               >
                 <MapPin className="mr-2 size-4" />
                 <span>Addresses</span>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                onClick={() => handleMenuAction('payment')}
-                className="cursor-pointer"
-              >
-                <CreditCard className="mr-2 size-4" />
-                <span>Payment Methods</span>
               </DropdownMenuItem>
             </>
           )}

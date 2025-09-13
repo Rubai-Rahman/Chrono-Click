@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,66 +7,29 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Mail, ArrowLeft } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
 import {
   forgotPasswordSchema,
   ForgotPasswordFormData,
 } from '@/lib/validations/auth';
-import { resetPasswordAction } from '@/app/actions/authAction';
+import { Form, FormField, FormLabel } from '../ui/form';
 
-const ForgotPasswordForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ForgotPasswordFormData>({
+const ForgotPasswordForm = ({
+  onSubmit,
+  isLoading,
+}: {
+  onSubmit: (data: ForgotPasswordFormData) => void;
+  isLoading: boolean;
+}) => {
+  const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: '',
+    },
   });
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const { isLoading } = useAuth();
-
-  const onSubmit = async (data: ForgotPasswordFormData) => {
-    try {
-      await resetPasswordAction(data.email);
-      setIsSubmitted(true);
-    } catch (error) {
-      console.log(error);
-      // Error is handled by useAuth hook with toast notifications
-    }
+  const onSubmitForm = async (data: ForgotPasswordFormData) => {
+    onSubmit(data);
   };
-
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-8 bg-gradient-to-br from-background via-muted/5 to-background">
-        <div className="w-full max-w-md space-y-8">
-          <Card className="border-0 shadow-xl bg-card/60 backdrop-blur-md">
-            <CardHeader>
-              <CardTitle className="text-center text-green-600">
-                Email Sent!
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto">
-                <Mail className="w-8 h-8 text-green-600" />
-              </div>
-              <p className="text-muted-foreground">
-                We&apos;ve sent a password reset link to your email address.
-                Please check your inbox and follow the instructions to reset
-                your password.
-              </p>
-              <Button asChild className="w-full">
-                <Link href="/login">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Login
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-8 bg-gradient-to-br from-background via-muted/5 to-background">
@@ -88,46 +50,39 @@ const ForgotPasswordForm = () => {
           </CardHeader>
 
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium mb-2"
-                >
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    className="pl-10"
-                    {...register('email')}
-                  />
-                </div>
-                {errors.email && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full h-12 text-lg font-semibold"
-                disabled={isLoading}
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmitForm)}
+                className="space-y-6"
               >
-                {isLoading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                    Sending...
-                  </>
-                ) : (
-                  'Send Reset Link'
-                )}
-              </Button>
-            </form>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <div>
+                      <FormLabel>Email Address</FormLabel>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                        <Input
+                          type="email"
+                          placeholder="Enter your email"
+                          className="pl-10"
+                          {...field}
+                        />
+                      </div>
+                    </div>
+                  )}
+                />
+
+                <Button
+                  type="submit"
+                  className="w-full h-12 text-lg font-semibold"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Sending...' : 'Send Reset Link'}
+                </Button>
+              </form>
+            </Form>
 
             <div className="mt-6 text-center">
               <Link

@@ -22,21 +22,17 @@ import {
   Sun,
   ShoppingBag,
   Heart,
-  CreditCard,
   Bell,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { useHydration } from '@/hooks/useHydration';
 import { logoutAction } from '@/app/actions/authAction';
 
 const ProfileMenu = () => {
   const { theme, setTheme } = useTheme();
-  const isHydrated = useHydration();
   const { user } = useAuth();
   const router = useRouter();
-
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
@@ -63,9 +59,9 @@ const ProfileMenu = () => {
     }
   };
 
-  if (!isHydrated) {
-    return <CircleUserRound className="size-6 text-muted-foreground" />;
-  }
+  // if (!isHydrated) {
+  //   return <CircleUserRound className="size-6 text-muted-foreground" />;
+  // }
 
   return (
     <DropdownMenu>
@@ -75,10 +71,10 @@ const ProfileMenu = () => {
           size="icon"
           className="relative h-10 w-10 rounded-full"
         >
-          {user?.photoURL ? (
+          {user?.avatar ? (
             <Avatar className="h-10 w-10">
               <AvatarImage
-                src={user?.photoURL || '/placeholder.svg'}
+                src={user?.avatar || '/placeholder.svg'}
                 alt={user?.name || 'User'}
               />
               <AvatarFallback>
@@ -136,11 +132,6 @@ const ProfileMenu = () => {
             <Heart className="mr-2 size-4" />
             <span>Wishlist</span>
             <DropdownMenuShortcut>⌘W</DropdownMenuShortcut>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem className="cursor-pointer">
-            <CreditCard className="mr-2 size-4" />
-            <span>Payment Methods</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem className="cursor-pointer">

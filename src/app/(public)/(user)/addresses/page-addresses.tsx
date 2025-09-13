@@ -1,41 +1,178 @@
 'use client';
 
-import { PageHeader } from '@/components/account/page-header';
+import { use, useState, useTransition } from 'react';
+import { Plus, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Breadcrumb } from '@/components/navigation/breadcrumb';
-import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
+import { AddressCard } from '@/components/adresses/adresses-card';
+import { AddressForm } from '@/components/adresses/adresses-form';
+import Container from '@/components/layout/container';
+import { TAddress } from '@/lib/types/api/address-types';
+import {
+  createAddressAction,
+  deleteAddressAction,
+  updateAddressAction,
+} from '@/app/actions/addressAction';
+import { ApiResult } from '@/lib/fetch';
 
-const AddressesPageContent = () => {
+export const AddressesPageContent = ({
+  addresses,
+}: {
+  addresses: Promise<ApiResult<TAddress[]>>;
+}) => {
+  const addressesResult = use(addresses) as ApiResult<TAddress[]>;
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [address, setAddress] = useState<TAddress>();
+  const [formId, setFormId] = useState<string>('create');
+  const [isPending, startTransition] = useTransition();
+
+  const handleEditAddress = (formData: TAddress) => {
+    setAddress(formData);
+    if (formData._id) {
+      setIsFormOpen(true);
+      setFormId(`edit-${formData._id}-${Date.now()}`);
+    }
+  };
+  const toggleForm = () => {
+    setFormId('create');
+    setAddress(undefined);
+    setIsFormOpen(!isFormOpen);
+  };
+
+  const handleDeleteAddress = (_id: string) => {
+    startTransition(async () => {
+      try {
+        const result = await deleteAddressAction(_id);
+        if (result.success) {
+          toast.success('Address deleted');
+        } else {
+          toast.error('Failed to delete address');
+        }
+      } catch (err) {
+        toast.error((err as Error)?.message ?? 'Failed to delete address');
+      }
+    });
+  };
+
+  const handleSubmitAddressForm = (data: TAddress) => {
+    startTransition(async () => {
+      setIsFormOpen(false);
+      try {
+        if (address?._id) {
+          const result = await updateAddressAction(data, address._id);
+          if (result.success) {
+            toast.success('Address updated');
+          } else {
+            toast.error('Failed to update address');
+          }
+        } else {
+          if ((addressesResult?.data as TAddress[])?.length >= 3) {
+            toast.error('You can only have 3 addresses');
+            return;
+          }
+          const result = await createAddressAction(data);
+          if (result.success) {
+            toast.success('Address created');
+          } else {
+            toast.error('Failed to create address');
+          }
+        }
+      } catch (err) {
+        toast.error((err as Error)?.message ?? 'Failed to create address');
+      }
+      setIsFormOpen(false);
+      setAddress(undefined);
+      setFormId(`create-${Date.now()}`);
+    });
+  };
+  /** UI Helpers **/
+  const renderAddressSection = (
+    title: string,
+    items: TAddress[],
+    emptyMsg: string,
+    buttonLabel: string
+  ) => (
+    <div className="mb-8">
+      <div className="flex items-center gap-2 mb-4">
+        <h2 className="text-xl font-semibold text-foreground">{title}</h2>
+        <span className="text-sm text-muted-foreground">({items.length})</span>
+      </div>
+
+      {items.length === 0 ? (
+        <div className="text-center py-12 bg-muted/30 rounded-lg border-2 border-dashed border-muted">
+          <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground">{emptyMsg}</p>
+          <Button
+            onClick={() => toggleForm()}
+            variant="outline"
+            className="mt-4"
+          >
+            {buttonLabel}
+          </Button>
+        </div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2">
+          {items.map((address) => (
+            <AddressCard
+              key={address._id}
+              address={address}
+              onEdit={handleEditAddress}
+              onDelete={handleDeleteAddress}
+              isDeleting={isPending}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/5 to-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* Breadcrumb */}
-          <Breadcrumb />
-
-          <div className="space-y-8">
-            <PageHeader
-              title="My Addresses"
-              description="Manage your shipping and billing addresses."
-            >
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Address
-              </Button>
-            </PageHeader>
-
-            {/* Addresses content will be implemented here */}
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">
-                This page will show your saved addresses for shipping and
-                billing.
+    <Container>
+      {/* Header */}
+      <div className="bg-gradient-card border-b border-border/50">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <MapPin className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">
+                My Addresses
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                Manage your shipping and billing addresses
               </p>
             </div>
           </div>
+
+          <Button onClick={() => toggleForm()} size="lg">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Address
+          </Button>
         </div>
+
+        {/* Content */}
+        <div className="w-full py-8">
+          {renderAddressSection(
+            'Shipping Addresses',
+            addressesResult.data?.length ? addressesResult.data : [],
+            'No shipping addresses found',
+            'Add Your First Address'
+          )}
+        </div>
+
+        {/* Address Form Modal */}
+        <AddressForm
+          key={formId}
+          defaultAddress={address}
+          onSave={handleSubmitAddressForm}
+          onCancel={toggleForm}
+          isOpen={isFormOpen}
+          formId={formId}
+          isLoading={isPending}
+        />
       </div>
-    </div>
+    </Container>
   );
 };
-
-export default AddressesPageContent;

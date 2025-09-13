@@ -102,7 +102,6 @@ const AddNewsForm = () => {
     addNewsMutation.mutate(newsData);
   };
 
-  console.log(handleSubmit);
   const handleSaveAsDraft = () => {
     const draftData = { ...newsData, status: 'draft' as const };
     addNewsMutation.mutate(draftData);

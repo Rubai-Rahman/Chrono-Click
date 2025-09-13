@@ -1,5 +1,5 @@
 import { ProductType } from '@/lib/types/api/product-types';
-import { fetchProductById } from '@/data/product/product';
+import { fetchProductById } from '@/data/product';
 import { Metadata } from 'next';
 import ProductDetailPageContent from './page-product-detail';
 import ProductDetailsSkeleton from '@/components/skeletons/product-details-skeleton';

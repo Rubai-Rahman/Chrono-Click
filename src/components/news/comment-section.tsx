@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,14 +10,14 @@ import { MessageCircle, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
 import CommentItem from './comment-item';
+import { CommentType } from '@/lib/types/api/new-types';
 import {
-  CommentType,
   deleteNewsComment,
   editNewsComment,
   fetchNewsComments,
   postNewsComment,
   reactToComment,
-} from '@/data/news/news';
+} from '@/data/news.client';
 
 interface CommentSectionProps {
   newsId: string;
@@ -30,6 +29,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
   const { user, isInitialized } = useAuthStore();
   const isAuthenticated = !!user && isInitialized;
   const router = useRouter();
+
   const queryClient = useQueryClient();
 
   const {
@@ -49,21 +49,32 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
     }: {
       comment: string;
       parentId?: string;
-    }) =>
-      postNewsComment(
-        newsId,
-        comment,
-        user?.name || user?.displayName || 'Anonymous',
-        parentId
-      ),
+    }) => postNewsComment(newsId, comment, parentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['newsComments', newsId] });
       setNewComment('');
       toast.success('Comment posted successfully!');
     },
-    onError: (error) => {
-      toast.error('Failed to post comment. Please try again.');
-      console.error('Comment error:', error);
+    onError: (
+      error: Error & {
+        response?: {
+          data?: {
+            message?: string;
+          };
+        };
+      }
+    ) => {
+      console.error('Comment error details:', {
+        message: error.message,
+        name: error.name,
+        response: error.response,
+        stack: error.stack,
+      });
+
+      const errorMessage =
+        error.response?.data?.message ||
+        'Failed to post comment. Please try again.';
+      toast.error(errorMessage);
     },
   });
 
@@ -84,7 +95,6 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       console.error('Edit error:', error);
     },
   });
-
   const deleteMutation = useMutation({
     mutationFn: (commentId: string) => deleteNewsComment(commentId),
     onSuccess: () => {
@@ -128,7 +138,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       return;
     }
 
-    commentMutation.mutate({ comment: newComment.trim() });
+    commentMutation.mutate({ comment: newComment });
   };
 
   const handleReply = (parentId: string, message: string) => {
@@ -161,7 +171,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
     deleteMutation.mutate(commentId);
   };
 
-  const handleReact = async (
+  const handleReact = (
     commentId: string,
     reaction: 'like' | 'dislike' | 'remove'
   ) => {
@@ -171,27 +181,9 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       return;
     }
 
-    return new Promise((resolve, reject) => {
-      reactionMutation.mutate(
-        { commentId, reaction },
-        {
-          onSuccess: () => resolve(undefined),
-          onError: (error) => reject(error),
-        }
-      );
-    });
+    reactionMutation.mutate({ commentId, reaction });
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-  console.log(formatDate);
   if (!commentsEnabled) {
     return null;
   }
@@ -201,7 +193,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MessageCircle className="w-5 h-5" />
-          Comments ({commentsData?.count || 0})
+          Comments ({commentsData?.comments.length || 0})
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -222,7 +214,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
           <div className="flex justify-between items-center">
             <div className="text-sm text-muted-foreground">
               {isAuthenticated ? (
-                `Commenting as ${user?.name || user?.displayName}`
+                `Commenting as ${user?.name}`
               ) : (
                 <Button
                   type="button"
@@ -236,21 +228,13 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
             </div>
             <Button
               type="submit"
-              disabled={
-                !isAuthenticated ||
-                !newComment.trim() ||
-                commentMutation.isPending
-              }
+              disabled={!isAuthenticated || !newComment.trim()}
               size="sm"
             >
-              {commentMutation.isPending ? (
-                'Posting...'
-              ) : (
-                <>
-                  <Send className="w-4 h-4 mr-2" />
-                  Post Comment
-                </>
-              )}
+              <>
+                <Send className="w-4 h-4 mr-2" />
+                Post Comment
+              </>
             </Button>
           </div>
         </form>
@@ -295,7 +279,7 @@ const CommentSection = ({ newsId, commentsEnabled }: CommentSectionProps) => {
                   deleteMutation.isPending ||
                   reactionMutation.isPending
                 }
-                currentUser={user?.name || user?.displayName}
+                currentUser={user?.name}
               />
             ))}
           </div>

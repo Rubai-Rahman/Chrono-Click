@@ -1,4 +1,4 @@
-import { fetchProductsData } from '@/data/product/product';
+import { fetchProductsData } from '@/data/product';
 import { ProductType } from '@/lib/types/api/product-types';
 import { Suspense } from 'react';
 import { ProductsClientWrapper } from '../../../../components/products/products-client-wrapper';

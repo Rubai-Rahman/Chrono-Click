@@ -1,119 +1,60 @@
 import 'server-only';
 import { cookies } from 'next/headers';
+import { jwtVerify } from 'jose';
+import { SessionPayload } from '@/data/auth';
 
-export interface SessionData {
-  idToken: string;
-  user: {
-    email: string;
-    name: string;
-    role: 'admin' | 'user';
-  };
-  expiresAt: string;
-}
+const secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
 
 export async function createSession(
-  idToken: string,
-  userData: {
-    email: string;
-    name: string;
-    role: 'admin' | 'user';
-  },
-  rememberMe: boolean
+  accessToken: string,
+  refreshToken?: string,
+  maxAge?: number
 ) {
-  let expiresAt;
-  if (rememberMe) {
-    expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  } else {
-    expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
-  }
   const cookieStore = await cookies();
-
-  const sessionData: SessionData = {
-    idToken,
-    user: userData,
-    expiresAt: expiresAt.toISOString(),
-  };
-
-  // Store the session data as JSON
-  cookieStore.set('session', JSON.stringify(sessionData), {
+  cookieStore.set('accessToken', accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    expires: expiresAt,
     sameSite: 'lax',
-    path: '/',
   });
-}
-
-//update session
-export async function updateSession() {
-  const sessionCookie = (await cookies()).get('session')?.value;
-
-  if (!sessionCookie) {
-    return null;
-  }
-
-  try {
-    const sessionData: SessionData = JSON.parse(sessionCookie);
-    const newExpiry = new Date(Date.now() + 30 * 60 * 1000);
-
-    // Update expiration time
-    sessionData.expiresAt = newExpiry.toISOString();
-
-    const cookieStore = await cookies();
-    cookieStore.set('session', JSON.stringify(sessionData), {
+  if (refreshToken) {
+    cookieStore.set('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      expires: newExpiry,
       sameSite: 'lax',
-      path: '/',
+      maxAge,
     });
-
-    return sessionData;
-  } catch (error) {
-    console.error('Error updating session:', error);
-    return null;
   }
 }
-
+//
 //delete session
 export async function deleteSession() {
   const cookieStore = await cookies();
-  cookieStore.delete('session');
+  cookieStore.delete('accessToken');
+  cookieStore.delete('refreshToken');
 }
 
-// get session data
-export async function getSession(): Promise<SessionData | null> {
-  const sessionCookie = (await cookies()).get('session')?.value;
-
-  if (!sessionCookie) {
-    return null;
-  }
-
+// Decrypt JWT back into session payload
+export async function decrypt(session: string | undefined = '') {
+  if (!session) return null;
   try {
-    const sessionData: SessionData = JSON.parse(sessionCookie);
-
-    // Check if session is expired
-    if (new Date(sessionData.expiresAt) < new Date()) {
-      await deleteSession();
-      return null;
-    }
-
-    return sessionData;
+    const { payload } = await jwtVerify(session, secret, {
+      algorithms: ['HS256'],
+    });
+    return payload as SessionPayload;
   } catch (error) {
-    console.error('Error parsing session:', error);
-    await deleteSession(); // Clear invalid session
+    console.error('Session decrypt failed:', error);
     return null;
   }
 }
+// get session data
+export async function getSession() {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('accessToken')?.value ?? null;
+  const refreshToken = cookieStore.get('refreshToken')?.value ?? null;
 
-// get just the ID token (for API calls)
-export async function getIdToken(): Promise<string | null> {
-  const session = await getSession();
-  return session?.idToken || null;
-}
-
-// get current user data from session
-export async function getCurrentUserFromSession() {
-  const session = await getSession();
-  return session?.user || null;
+  return {
+    accessToken,
+    refreshToken,
+    isAuthenticated: !!accessToken,
+  };
 }

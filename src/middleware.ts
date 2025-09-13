@@ -1,5 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
 
+const secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
+
+async function verifyJwt(token: string) {
+  try {
+    const { payload } = await jwtVerify(token, secret, {
+      algorithms: ['HS256'],
+    });
+    return payload as {
+      userId?: string;
+      role?: string;
+      email?: string;
+      name?: string;
+    };
+  } catch {
+    return null;
+  }
+}
+
+// Only protect these routes
 const protectedRoutes = [
   { pattern: /^\/admin(\/|$)/, roles: ['admin'] },
   { pattern: /^\/orders(\/|$)/, roles: ['user', 'admin'] },
@@ -7,81 +27,89 @@ const protectedRoutes = [
   { pattern: /^\/addresses(\/|$)/, roles: ['user', 'admin'] },
   { pattern: /^\/payment-methods(\/|$)/, roles: ['user', 'admin'] },
   { pattern: /^\/settings(\/|$)/, roles: ['user', 'admin'] },
-  // Legacy dashboard routes - will be redirected
-  { pattern: /^\/dashboard(\/|$)/, roles: ['user', 'admin'] },
-  { pattern: /^\/account(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/order-success(\/|$)/, roles: ['user', 'admin'] },
+  { pattern: /^\/checkout(\/|$)/, roles: ['user', 'admin'] },
 ];
 
-const authRoutes = ['/login', '/signup', '/forgot-password'];
-
-// Route mapping for legacy dashboard routes
-const legacyRouteMapping: Record<string, (role: string) => string> = {
-  '/dashboard': (role) => (role === 'admin' ? '/admin' : '/orders'),
-  '/dashboard/myOrders': () => '/orders',
-  '/dashboard/payment': () => '/payment-methods',
-  '/dashboard/review': () => '/reviews',
-  '/dashboard/manageOrders': () => '/admin/orders',
-  '/dashboard/makeAdmin': () => '/admin/customers',
-  '/dashboard/addProduct': () => '/admin/products',
-  '/dashboard/manageProduct': () => '/admin/products',
-  '/dashboard/addNews': () => '/admin/news',
-  // Redirect old account routes to new simplified routes
-  '/account': () => '/orders',
-  '/account/orders': () => '/orders',
-  '/account/wishlist': () => '/wishlist',
-  '/account/addresses': () => '/addresses',
-  '/account/payment-methods': () => '/payment-methods',
-  '/account/settings': () => '/settings',
-};
-
 export async function middleware(req: NextRequest) {
-  const token = req.cookies.get('session')?.value;
-  let role = null;
+  // Get cookies manually
+  const cookieHeader = req.headers.get('cookie') ?? '';
+  const accessMatch = cookieHeader.match(/accessToken=([^;]+)/);
+  const refreshMatch = cookieHeader.match(/refreshToken=([^;]+)/);
+  const accessToken = accessMatch ? decodeURIComponent(accessMatch[1]) : null;
+  const refreshToken = refreshMatch
+    ? decodeURIComponent(refreshMatch[1])
+    : null;
 
-  if (token) {
+  const userData = accessToken ? await verifyJwt(accessToken) : null;
+
+  const redirectToLogin = () => {
+    // Clear cookies if invalid
+    const response = NextResponse.redirect(
+      new URL('/login', req.nextUrl.origin)
+    );
+    response.cookies.set('accessToken', '', { maxAge: 0, path: '/' });
+    response.cookies.set('refreshToken', '', { maxAge: 0, path: '/' });
+    return response;
+  };
+
+  // Try refresh if access token missing/invalid and refresh token exists
+  if (!userData && refreshToken) {
     try {
-      const sessionData = JSON.parse(token);
-      if (new Date(sessionData.expiresAt) > new Date()) {
-        role = sessionData.user.role;
+      const refreshRes = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', cookie: cookieHeader },
+          body: JSON.stringify({}),
+        }
+      );
+
+      if (!refreshRes.ok) return redirectToLogin();
+
+      const refreshData = await refreshRes.json();
+      const newAccess = refreshData?.payload?.accessToken;
+      const newRefresh = refreshData?.payload?.refreshToken;
+
+      if (!newAccess) return redirectToLogin();
+      const newPayload = await verifyJwt(newAccess);
+      if (!newPayload) return redirectToLogin();
+
+      const response = NextResponse.next();
+
+      response.cookies.set('accessToken', newAccess, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: refreshData?.payload?.maxAge ?? 60 * 15,
+      });
+
+      if (newRefresh) {
+        response.cookies.set('refreshToken', newRefresh, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          path: '/',
+          maxAge: refreshData?.payload?.refreshMaxAge ?? 60 * 60 * 24 * 30,
+        });
       }
-    } catch {
-      // invalid session
+
+      return response;
+    } catch (err) {
+      console.error('Middleware refresh error', err);
+      return redirectToLogin();
     }
   }
 
-  const url = req.nextUrl.clone();
+  if (!userData) return redirectToLogin();
 
-  // Handle legacy route redirects
-  if (
-    url.pathname.startsWith('/dashboard') ||
-    url.pathname.startsWith('/account')
-  ) {
-    const newRoute = legacyRouteMapping[url.pathname];
-    if (newRoute) {
-      const redirectPath =
-        typeof newRoute === 'function' ? newRoute(role || 'user') : newRoute;
-      return NextResponse.redirect(new URL(redirectPath, req.nextUrl.origin));
-    }
-  }
-
-  // Redirect authenticated users away from auth pages
-  if (role && authRoutes.includes(url.pathname)) {
-    const redirectPath = role === 'admin' ? '/admin' : '/account';
-    return NextResponse.redirect(new URL(redirectPath, req.nextUrl.origin));
-  }
-
-  // Check protected routes
-  for (const route of protectedRoutes) {
-    if (route.pattern.test(url.pathname)) {
-      if (!role) {
-        url.pathname = '/login';
-        url.searchParams.set(
-          'callbackUrl',
-          req.nextUrl.pathname + req.nextUrl.search
-        );
-        return NextResponse.redirect(url);
-      }
-      if (!route.roles.includes(role)) {
+  // Role-based checks
+  const role = userData?.role ?? null;
+  for (const r of protectedRoutes) {
+    if (r.pattern.test(req.nextUrl.pathname)) {
+      if (!role) return redirectToLogin();
+      if (!r.roles.includes(role)) {
         return NextResponse.redirect(
           new URL('/unauthorized', req.nextUrl.origin)
         );
@@ -94,16 +122,13 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/account/:path*',
     '/admin/:path*',
     '/orders/:path*',
     '/wishlist/:path*',
     '/addresses/:path*',
     '/payment-methods/:path*',
     '/settings/:path*',
-    '/login',
-    '/signup',
-    '/forgot-password',
+    '/order-success/:path*',
+    '/checkout/:path*',
   ],
 };

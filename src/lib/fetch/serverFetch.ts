@@ -3,6 +3,7 @@ import 'server-only';
 import { cookies } from 'next/headers';
 import { fetchCore, DoFetch } from './fetchCore';
 import { ApiError, FetchCoreError } from './apiError';
+import { createSession, deleteSession } from '../session';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
@@ -58,46 +59,84 @@ const createServerDoFetch = (
  * Core server fetch function using fetchCore with automatic interceptor-like behavior
  * Handles authentication, headers, body serialization, and error responses
  */
-async function coreServerFetch<T>(
+export async function coreServerFetch<T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
   path: string,
   data?: Record<string, unknown> | BodyInit,
   config: RequestConfig = {}
 ): Promise<T> {
-  if (!BASE_URL) {
-    throw new Error('NEXT_PUBLIC_API_BASE_URL is not defined');
-  }
+  if (!BASE_URL) throw new Error('NEXT_PUBLIC_API_BASE_URL is not defined');
 
-  // Build complete URL
   const url = path.startsWith('http')
     ? path
     : `${BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
 
-  // Get authentication token automatically
-  const token = (await cookies()).get('session')?.value;
-
-  // Prepare headers with automatic auth
+  const cookieStore = await cookies();
+  let accessToken = cookieStore.get('accessToken')?.value ?? '';
   const headers: Record<string, string> = {
     ...config.headers,
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
   };
 
-  // Create server-specific doFetch with Next.js options
   const doFetch = createServerDoFetch(config.credentials, config.next);
 
   try {
-    // Use fetchCore for all the heavy lifting
     return await fetchCore<T>(doFetch, url, {
       method,
       headers,
-      body: data, // fetchCore handles serialization
+      body: data,
       responseType: config.responseType,
+      credentials: config.credentials,
     });
   } catch (err) {
-    // Convert FetchCoreError to ApiError for consistency
+    if (
+      err instanceof FetchCoreError &&
+      (err.status === 401 || err.status === 403)
+    ) {
+      // 🔄 Refresh token flow
+      try {
+        const refreshRes = await fetch(`${BASE_URL}/auth/refresh`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+
+        if (!refreshRes.ok) {
+          throw new ApiError(401, 'Session expired', {});
+        }
+
+        const refreshData = await refreshRes.json();
+        accessToken = refreshData?.payload?.accessToken;
+
+        if (!accessToken) {
+          throw new ApiError(401, 'Invalid refresh response', {});
+        }
+
+        await deleteSession();
+        await createSession(accessToken);
+
+        // Retry original request
+        const retryHeaders = {
+          ...headers,
+          Authorization: `Bearer ${accessToken}`,
+        };
+
+        return await fetchCore<T>(doFetch, url, {
+          method,
+          headers: retryHeaders,
+          body: data,
+          responseType: config.responseType,
+          credentials: config.credentials,
+        });
+      } catch (refreshErr) {
+        console.error('Refresh token failed:', refreshErr);
+        throw refreshErr;
+      }
+    }
+
     if (err instanceof FetchCoreError) {
       throw new ApiError(err.status, err.message, err.payload ?? {});
     }
+
     throw err;
   }
 }

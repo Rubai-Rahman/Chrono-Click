@@ -5,9 +5,14 @@ import { ApiError, FetchCoreError } from './apiError';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
-/**
- * Structured response format for safe API calls
- */
+/** Standard API response from your backend */
+export interface BackendResponse<T> {
+  success: boolean;
+  message: string;
+  payload: T;
+}
+
+/** Structured response format for safe API calls */
 export interface ClientApiResult<T> {
   data: T | null;
   error: {
@@ -18,83 +23,90 @@ export interface ClientApiResult<T> {
   success: boolean;
 }
 
-/**
- * Client request configuration options
- */
+/** Client request configuration options */
 export interface ClientRequestConfig {
   headers?: Record<string, string>;
   credentials?: 'omit' | 'same-origin' | 'include';
   responseType?: 'json' | 'text';
 }
 
-/**
- * Client-side DoFetch implementation
- */
+/** Client-side DoFetch implementation */
 const createClientDoFetch = (
   credentials: ClientRequestConfig['credentials'] = 'include'
 ): DoFetch => {
   return (url: string, init: RequestInit) => {
-    const finalInit: RequestInit = {
-      ...init,
-      credentials,
-    };
-
-    return fetch(url, finalInit);
+    return fetch(url, { ...init, credentials });
   };
 };
 
-/**
- * Core client fetch function using fetchCore with automatic interceptor-like behavior
- * Handles headers, body serialization, and error responses
- */
+/** Core client fetch function using fetchCore with automatic refresh */
 async function coreClientFetch<T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
   path: string,
   data?: unknown,
   config: ClientRequestConfig = {}
 ): Promise<T> {
-  if (!BASE_URL) {
-    throw new Error('NEXT_PUBLIC_API_BASE_URL is not defined');
-  }
+  if (!BASE_URL) throw new Error('NEXT_PUBLIC_API_BASE_URL is not defined');
 
-  // Build complete URL
   const url = path.startsWith('http')
     ? path
     : `${BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
 
-  // Prepare headers (client-side auth would be handled differently)
   const headers: Record<string, string> = {
     ...config.headers,
   };
 
-  // Create client-specific doFetch
   const doFetch = createClientDoFetch(config.credentials);
 
   try {
-    // Use fetchCore for all the heavy lifting
     return await fetchCore<T>(doFetch, url, {
       method,
       headers,
-      body:
-        data === undefined || data === null
-          ? undefined
-          : typeof data === 'string' || data instanceof FormData || data instanceof Blob
-          ? data
-          : JSON.stringify(data),
+      body: data as Record<string, unknown> | BodyInit | undefined,
       responseType: config.responseType,
     });
   } catch (err) {
-    // Convert FetchCoreError to ApiError for consistency
+    if (err instanceof FetchCoreError && err.status === 401) {
+      // Attempt refresh
+      try {
+        const refreshRes = await fetch(`${BASE_URL}/auth/refresh`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+
+        if (!refreshRes.ok) throw new ApiError(401, 'Refresh failed', {});
+
+        const refreshData: BackendResponse<{
+          accessToken: string;
+          refreshToken?: string;
+        }> = await refreshRes.json();
+
+        const newAccessToken = refreshData.payload.accessToken;
+
+        if (!newAccessToken)
+          throw new ApiError(401, 'No access token returned', {});
+
+        // Retry original request (cookies will handle auth automatically)
+        return await fetchCore<T>(doFetch, url, {
+          method,
+          headers,
+          body: data as Record<string, unknown> | BodyInit | undefined,
+          responseType: config.responseType,
+        });
+      } catch (refreshErr) {
+        throw refreshErr;
+      }
+    }
+
     if (err instanceof FetchCoreError) {
       throw new ApiError(err.status, err.message, err.payload ?? {});
     }
+
     throw err;
   }
 }
 
-/**
- * Safe wrapper that returns structured results instead of throwing
- */
+/** Safe wrapper that returns structured results instead of throwing */
 async function safeCoreClientFetch<T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
   path: string,
@@ -103,11 +115,7 @@ async function safeCoreClientFetch<T>(
 ): Promise<ClientApiResult<T>> {
   try {
     const result = await coreClientFetch<T>(method, path, data, config);
-    return {
-      data: result,
-      error: null,
-      success: true,
-    };
+    return { data: result, error: null, success: true };
   } catch (err) {
     if (err instanceof ApiError) {
       return {
@@ -120,57 +128,35 @@ async function safeCoreClientFetch<T>(
         success: false,
       };
     }
-
-    const errorMessage =
-      err instanceof Error ? err.message : 'Unknown error occurred';
-    return {
-      data: null,
-      error: {
-        message: errorMessage,
-        status: 0,
-        details: {},
-      },
-      success: false,
-    };
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return { data: null, error: { message, status: 0 }, success: false };
   }
 }
 
-/**
- * Standard client API methods that throw on errors (like Axios)
- */
+/** Standard client API methods */
 export const clientApi = {
   get: <T>(path: string, config?: ClientRequestConfig) =>
     coreClientFetch<T>('GET', path, undefined, config),
-
   post: <T>(path: string, data?: unknown, config?: ClientRequestConfig) =>
     coreClientFetch<T>('POST', path, data, config),
-
   put: <T>(path: string, data?: unknown, config?: ClientRequestConfig) =>
     coreClientFetch<T>('PUT', path, data, config),
-
   delete: <T>(path: string, config?: ClientRequestConfig) =>
     coreClientFetch<T>('DELETE', path, undefined, config),
-
   patch: <T>(path: string, data?: unknown, config?: ClientRequestConfig) =>
     coreClientFetch<T>('PATCH', path, data, config),
 };
 
-/**
- * Safe client API methods that return structured results instead of throwing
- */
+/** Safe API methods */
 export const safeClientApi = {
   get: <T>(path: string, config?: ClientRequestConfig) =>
     safeCoreClientFetch<T>('GET', path, undefined, config),
-
   post: <T>(path: string, data?: unknown, config?: ClientRequestConfig) =>
     safeCoreClientFetch<T>('POST', path, data, config),
-
   put: <T>(path: string, data?: unknown, config?: ClientRequestConfig) =>
     safeCoreClientFetch<T>('PUT', path, data, config),
-
   delete: <T>(path: string, config?: ClientRequestConfig) =>
     safeCoreClientFetch<T>('DELETE', path, undefined, config),
-
   patch: <T>(path: string, data?: unknown, config?: ClientRequestConfig) =>
     safeCoreClientFetch<T>('PATCH', path, data, config),
 };

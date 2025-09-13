@@ -1,24 +1,35 @@
-// Order related types
-export interface OrderItem {
-  _id: string;
+import { CheckoutFormData } from '@/components/checkout/checkout-form';
+import { OrderItem } from '@/data/order';
+import { TAddress } from './address-types';
+export interface ReturnOrderItem extends OrderItem {
+  image: string;
   name: string;
-  price: number;
-  quantity: number;
-  img: string;
+}
+// --- Keep your existing FrontendOrder ---
+export interface FrontendOrder {
+  orderItems: ReturnOrderItem[];
+  orderInfo: CheckoutFormData & { address: TAddress };
+  orderCode: string;
+  paymentMethod: string;
+  status:
+    | 'pending'
+    | 'processing'
+    | 'shipped'
+    | 'delivered'
+    | 'cancelled'
+    | 'returned';
+  paymentStatus: 'pending' | 'completed' | 'failed' | 'refunded';
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+  createdAt: string;
+  updatedAt: string;
+  _id?: string;
 }
 
-export interface OrderType {
-  _id: string;
-  items: OrderItem[];
-  totalAmount: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  orderDate: string;
-  deliveryDate?: string;
-  shippingAddress?: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country: string;
-  };
+// --- NEW: API Response type (wrapper) ---
+export interface CreateOrderResponse {
+  message: string;
+  data: FrontendOrder;
 }

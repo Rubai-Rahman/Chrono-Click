@@ -1,38 +1,34 @@
 'use client';
 
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Package, CheckCircle, Loader2 } from 'lucide-react';
-import { addProduct } from '@/data/product/product';
+import { Package, CheckCircle } from 'lucide-react';
 
 const AddProductForm = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [details, setDetails] = useState('');
   const [success, setSuccess] = useState(false);
-  const queryClient = useQueryClient();
 
-  const addProductMutation = useMutation({
-    mutationFn: addProduct,
-    onSuccess: () => {
-      setSuccess(true);
-      setName('');
-      setPrice('');
-      setDetails('');
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-    },
-    onError: (error) => {
-      console.error('Error adding product:', error);
-    },
-  });
+  // const addProductMutation = useMutation({
+  //   mutationFn: addProduct,
+  //   onSuccess: () => {
+  //     setSuccess(true);
+  //     setName('');
+  //     setPrice('');
+  //     setDetails('');
+  //     queryClient.invalidateQueries({ queryKey: ['products'] });
+  //   },
+  //   onError: (error) => {
+  //     console.error('Error adding product:', error);
+  //   },
+  // });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addProductMutation.mutate({ name, price, details });
+    // addProductMutation.mutate({ name, price, details });
   };
 
   return (
@@ -125,7 +121,7 @@ const AddProductForm = () => {
               />
             </div>
 
-            <Button
+            {/* <Button
               type="submit"
               size="lg"
               disabled={addProductMutation.isPending}
@@ -139,7 +135,7 @@ const AddProductForm = () => {
               ) : (
                 'Add Product'
               )}
-            </Button>
+            </Button> */}
           </form>
         </CardContent>
       </Card>

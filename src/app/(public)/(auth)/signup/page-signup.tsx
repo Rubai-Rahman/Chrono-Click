@@ -1,62 +1,82 @@
 'use client';
 
-import { useState } from 'react';
+import { useTransition } from 'react';
 import { toast } from 'sonner';
 import SignupForm from '@/components/auth/signup-form';
 import { SignupFormData } from '@/lib/validations/auth';
-import { registerAction } from '@/app/actions/authAction';
-import { useAuth } from '@/hooks/useAuth';
+import { googleSignInAction, registerAction } from '@/app/actions/authAction';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/useAuthStore';
+import { CredentialResponse } from '@react-oauth/google';
 
 const SignupPageContent = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { googleSignIn } = useAuth();
+  const { setUser, setAccessToken } = useAuthStore();
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleSignup = async (data: SignupFormData) => {
-    setIsLoading(true);
+    startTransition(async () => {
+      try {
+        const result = await registerAction({
+          email: data.email,
+          password: data.password,
+          name: data.name,
+        });
+        if (result.success) {
+          setUser(result.payload.user);
+          setAccessToken(result.payload.accessToken);
+        }
+        if (!result.success) {
+          const errorMessage = result.message;
+          toast.error(errorMessage, { id: 'signup-error' });
+          return;
+        }
+        toast.success('🎉 Account created successfully!', {
+          id: 'signup-success',
+        });
+        router.push('/products/gents');
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : 'Something went wrong',
+          { id: 'signup-unexpected' }
+        );
+      }
+    });
+  };
+
+  const handleGoogleSignIn = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse?.credential) {
+      toast.error('Google login failed');
+      return;
+    }
     try {
-      const result = await registerAction({
-        email: data.email,
-        password: data.password,
-        displayName: data.displayName,
-      });
-      console.log('reuslt', result);
-      if (!result.success) {
-        // Show validation errors
-        const errorMessage =
-          result.errors?.email?.[0] ||
-          result.errors?.password?.[0] ||
-          result.errors?.displayName?.[0] ||
-          'Registration failed';
+      const res = await googleSignInAction(
+        credentialResponse?.credential,
+        false
+      );
+      if (res.success) {
+        setUser(res.payload.user);
+        setAccessToken(res.payload.accessToken);
+        router.push('/products/gents');
+      }
+      if (!res.success) {
+        const errorMessage = res.message;
         toast.error(errorMessage, { id: 'signup-error' });
         return;
       }
-
-      // Success case
-      toast.success('🎉 Account created successfully!', {
+      toast.success(`🎉 Welcome back!${res.payload.user.name}`, {
         id: 'signup-success',
       });
-      router.push('/products/gents');
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Something went wrong',
-        { id: 'signup-unexpected' }
-      );
-    } finally {
-      setIsLoading(false);
+      console.log('error', error);
     }
-  };
-
-  const handleGoogleSignIn = async () => {
-    await googleSignIn();
   };
 
   return (
     <SignupForm
       onSubmit={handleSignup}
       onGoogleSignIn={handleGoogleSignIn}
-      isLoading={isLoading}
+      isLoading={isPending}
     />
   );
 };

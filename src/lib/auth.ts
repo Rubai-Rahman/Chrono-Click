@@ -1,4 +1,4 @@
-import { getSession, getCurrentUserFromSession } from '@/lib/session';
+import { getSession } from '@/lib/session';
 
 export async function getCurrentUser() {
   const session = await getSession();
@@ -9,8 +9,9 @@ export async function getCurrentUser() {
 
   try {
     return {
-      idToken: session.idToken,
-      user: session.user,
+      accessToken: session.accessToken,
+      refreshToken: session.refreshToken,
+      isAuthenticated: session.isAuthenticated,
     };
   } catch (error) {
     console.error('Error getting current user:', error);
@@ -20,17 +21,17 @@ export async function getCurrentUser() {
 
 // Get user info from session (no database call needed)
 export async function getUserInfo() {
-  const userData = await getCurrentUserFromSession();
+  const userData = await getCurrentUser();
 
   if (!userData) {
     return { admin: false, role: 'user' as const };
   }
 
   return {
-    admin: userData.role === 'admin',
-    role: userData.role,
-    email: userData.email,
-    name: userData.name,
+    admin: userData.isAuthenticated,
+    role: 'admin' as const,
+    email: '',
+    name: '',
   };
 }
 
@@ -69,5 +70,3 @@ export async function requireRole(role: 'admin' | 'user') {
   }
   return true;
 }
-
-

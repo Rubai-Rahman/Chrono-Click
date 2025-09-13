@@ -1,14 +1,13 @@
 import Container from '@/components/layout/container';
 import NewsDetailsClient from '@/components/news/news-details-client';
-import NewsBreadcrumb from '@/components/news/news-breadcrumb';
+import { fetchNewsDetails } from '@/data/news.server';
 
-const NewsDetailsPageContent = () => {
+const NewsDetailsPageContent = async ({ newsId }: { newsId: string }) => {
+  const newsData = await fetchNewsDetails(newsId);
+
   return (
     <Container>
-      <div className="py-6">
-        <NewsBreadcrumb />
-      </div>
-      <NewsDetailsClient />
+      <NewsDetailsClient newsDetails={newsData} />
     </Container>
   );
 };

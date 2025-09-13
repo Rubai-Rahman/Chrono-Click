@@ -17,6 +17,8 @@ import Container from '@/components/layout/container';
 const Slider = () => {
   const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: false }));
 
+
+
   return (
     <Container>
       <div className="w-full overflow-hidden">

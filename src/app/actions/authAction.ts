@@ -1,90 +1,28 @@
 'use server';
 
-import { authService } from '@/lib/firebase/auth';
 import { createSession, deleteSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
-import axiosInstance from '@/lib/axios';
-import { isValidUrl } from '@/lib/utils';
 import { safeApi } from '@/lib/fetch/serverFetch';
-import { ProductType } from '@/lib/types/api/product-types';
 
-//
-// ---- Types ----
-//
-export type RegisterResult =
-  | { success: true }
-  | { success: false; errors: Record<string, string[]> };
-
-type SaveUserOk = {
-  success: true;
-  data: { email: string; name: string; role: 'user' | 'admin' };
-};
-type SaveUserErr = {
-  success: false;
-  error: { message: string; status?: number; details?: unknown };
-};
-type SaveUserResult = SaveUserOk | SaveUserErr;
-
-//
-// ---- saveUser ----
-//
-export async function saveUser(
-  email: string,
-  displayName: string,
-  idToken: string,
-  photoURL?: string,
-  rememberMe: boolean = false
-): Promise<SaveUserResult> {
-  console.log(
-    'email',
-    email,
-    'dispalyName',
-    displayName,
-    'idToken',
-    idToken,
-    'photoURL',
-    photoURL,
-    'rememberMe',
-    rememberMe
-  );
-  const result = await safeApi.put<{
-    email: string;
-    name: string;
-    role: 'user' | 'admin';
-  }>('/users', {
-    email,
-    displayName,
-    name: displayName,
-    idToken,
-    photoURL,
-    rememberMe,
-  });
-
-  if (!result.success || !result.data) {
-    return {
-      success: false,
-      error: {
-        message: result.error?.message || 'Failed to save user',
-        status: result.error?.status,
-        details: result.error?.details,
-      },
-    };
-  }
-
-  const userData = result.data;
-
-  await createSession(
-    idToken,
-    {
-      email: userData.email || email,
-      name: userData.name || displayName,
-      role: userData.role || 'user',
-    },
-    rememberMe
-  );
-
-  return { success: true, data: userData };
+interface SignupPayload {
+  accessToken: string;
+  refreshToken: string;
+  maxAge: number;
+  user: { email: string; name: string; role: 'user' | 'admin' };
+  message: string;
 }
+
+interface SignupSuccess {
+  success: true;
+  payload: SignupPayload;
+}
+
+interface ErrorResponse {
+  success: false;
+  message: string;
+}
+
+type RegisterResultAlt = SignupSuccess | ErrorResponse;
 
 //
 // ---- registerAction ----
@@ -92,31 +30,33 @@ export async function saveUser(
 export async function registerAction(data: {
   email: string;
   password: string;
-  displayName: string;
-}): Promise<RegisterResult> {
+  name: string;
+}): Promise<RegisterResultAlt> {
   try {
-    const userCred = await authService.createUserWithEmail(
-      data.email,
-      data.password,
-      data.displayName
-    );
-    const idToken = await userCred.user.getIdToken();
+    const result = await safeApi.post<RegisterResultAlt>('auth/signup', data, {
+      credentials: 'include',
+    });
 
-    const saveResult = await saveUser(data.email, data.displayName, idToken);
-
-    if (!saveResult.success) {
+    if (!result.success) {
+      // Return a proper ErrorResponse, not the whole ApiResult
       return {
         success: false,
-        errors: { email: [saveResult.error.message] },
+        message: result.error?.message || 'Unknown error',
       };
     }
+    if (result.success && result.data && 'payload' in result.data) {
+      createSession(
+        result.data?.payload.accessToken,
+        result.data?.payload.refreshToken,
+        result.data?.payload.maxAge
+      );
+    }
 
-    return { success: true };
+    return result.data!;
   } catch (error) {
-    console.error('Registration error:', error);
     return {
       success: false,
-      errors: { email: ['Registration failed. Please try again.'] },
+      message: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }
@@ -124,78 +64,35 @@ export async function registerAction(data: {
 //
 // ---- loginAction ----
 //
-export async function loginAction(
-  data: { email: string; password: string; rememberMe: boolean },
-  callbackUrl?: string
-) {
-  const { email, password, rememberMe } = data;
-
+export async function loginAction(data: {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}): Promise<RegisterResultAlt> {
   try {
-    const userCred = await authService.signInWithEmail(email, password);
-    const idToken = await userCred.user.getIdToken();
+    const result = await safeApi.post<RegisterResultAlt>('auth/login', data, {
+      credentials: 'include',
+    });
 
-    const saveResult = await saveUser(
-      email,
-      userCred.user.displayName || '',
-      idToken,
-      undefined,
-      rememberMe
-    );
-
-    if (!saveResult.success) {
+    if (!result.success) {
       return {
-        errors: { email: [saveResult.error.message] },
+        success: false,
+        message: result.error?.message || 'Unknown error',
       };
     }
-  } catch (error: unknown) {
-    console.error('Login error:', error);
-
-    let errorMessage = 'Invalid email or password';
-    if (
-      typeof error === 'object' &&
-      error !== null &&
-      'code' in error &&
-      typeof (error as { code?: string }).code === 'string'
-    ) {
-      switch ((error as { code: string }).code) {
-        case 'auth/user-not-found':
-          errorMessage = 'No account found with this email address';
-          break;
-        case 'auth/wrong-password':
-          errorMessage = 'Incorrect password';
-          break;
-        case 'auth/invalid-email':
-          errorMessage = 'Invalid email address';
-          break;
-        case 'auth/user-disabled':
-          errorMessage = 'This account has been disabled';
-          break;
-        case 'auth/too-many-requests':
-          errorMessage = 'Too many failed attempts. Please try again later';
-          break;
-      }
+    if (result.success && result.data && 'payload' in result.data) {
+      createSession(
+        result.data?.payload.accessToken,
+        result.data?.payload.refreshToken,
+        result.data?.payload.maxAge
+      );
     }
-
-    return { errors: { email: [errorMessage] } };
-  }
-
-  const redirectUrl =
-    callbackUrl && isValidUrl(callbackUrl) ? callbackUrl : '/products/gents';
-  redirect(redirectUrl);
-}
-
-//
-// ---- getProduct ----
-//
-export async function getProduct(): Promise<ProductType[]> {
-  try {
-    const response = await axiosInstance.get<{ products: ProductType[] }>(
-      '/products'
-    );
-    return response.data.products || [];
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    return [];
+    return result.data!;
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 
@@ -204,21 +101,116 @@ export async function getProduct(): Promise<ProductType[]> {
 //
 export async function logoutAction() {
   try {
-    await authService.signOut();
-    await deleteSession();
+    const result = await safeApi.post<RegisterResultAlt>(
+      'auth/logout',
+      {},
+      {
+        credentials: 'include',
+      }
+    );
+
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.error?.message || 'Unknown error',
+      };
+    }
+
+    deleteSession();
+    redirect('/');
   } catch (error) {
     console.error('Logout error:', error);
   }
-  redirect('/');
 }
 
 //
 // ---- resetPasswordAction ----
 //
-export async function resetPasswordAction(email: string) {
+export async function resetEmailAction(email: string) {
   try {
-    await authService.resetPassword(email);
+    const result = await safeApi.post<RegisterResultAlt>(
+      'auth/forgot-password',
+      { email },
+      {
+        credentials: 'include',
+      }
+    );
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.error?.message || 'Unknown error',
+      };
+    }
+    return {
+      success: true,
+      message: 'Password reset email sent successfully!',
+    };
   } catch (error) {
     console.error('Reset password error:', error);
+    return {
+      success: false,
+      message: 'Failed to send password reset email.',
+    };
+  }
+}
+export async function resetPasswordAction(data: {
+  password: string;
+  token: string;
+}) {
+  try {
+    const result = await safeApi.post<RegisterResultAlt>(
+      'auth/reset-password',
+      data
+    );
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.error?.message || 'Unknown error',
+      };
+    }
+    return {
+      success: true,
+      message: 'Password reset successfully!',
+    };
+  } catch (error) {
+    console.error('Reset password error:', error);
+    return {
+      success: false,
+      message: 'Failed to reset password.',
+    };
+  }
+}
+
+//googleSignInAction
+
+export async function googleSignInAction(
+  idToken: string,
+  rememberMe: boolean
+): Promise<RegisterResultAlt> {
+  try {
+    const result = await safeApi.post<RegisterResultAlt>('auth/google', {
+      idToken,
+      rememberMe,
+    });
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.error?.message || 'Unknown error',
+      };
+    }
+    if (result.success && result.data && 'payload' in result.data) {
+      createSession(
+        result.data?.payload.accessToken,
+        result.data?.payload.refreshToken,
+        result.data?.payload.maxAge
+      );
+    }
+    return result.data!;
+  } catch (error) {
+    console.error('Google sign-in error:', error);
+    return {
+      success: false,
+      message: 'Failed to sign in with Google.',
+    };
   }
 }

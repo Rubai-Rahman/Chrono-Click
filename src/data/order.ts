@@ -1,67 +1,71 @@
-export interface CartProduct {
+import { CheckoutFormData } from '@/components/checkout/checkout-form';
+import { ApiResult, safeApi } from '@/lib/fetch';
+import { requireSession } from './dal';
+import { CreateOrderResponse, FrontendOrder } from '@/lib/types/api/order-type';
+
+// In src/data/order.ts
+export interface Product {
   _id: string;
+  id: string;
   name: string;
   price: number;
   img: string;
-  qty: number;
-  status: string;
-  // Add other properties of your product here
-}
-
-export interface OrderData {
-  email: string | undefined;
-  cart: CartProduct[];
+  brand: string;
+  category: string;
+  description: string;
+  rating: number;
+  reviews: number;
+  inStock: boolean;
+  isFeatured?: boolean;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface OrderItem {
   _id: string;
-  email: string;
-  cart: CartProduct[];
+  productId: Product;
+  quantity: number;
+  price?: number;
 }
 
-export const placeOrder = async (orderData: OrderData) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/orders`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(orderData),
-  });
-  if (!res.ok) {
-    throw new Error('Failed to place order');
-  }
-  return res.json();
-};
+export interface sentOrderItem {
+  productId: string;
+  quantity: number;
+}
+export interface sentOrderData {
+  orderInfo: CheckoutFormData;
+  orderItems: sentOrderItem[];
+}
+export interface OrderData {
+  orderInfo: CheckoutFormData;
+  orderItems: OrderItem[];
+}
 
-export const fetchOrders = async (
-  email: string | undefined
-): Promise<CartProduct[]> => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/orders?email=${email}`
-  );
-  if (!res.ok) {
-    throw new Error('Failed to fetch orders');
-  }
-  return res.json();
-};
-
-export const fetchAllOrders = async (): Promise<OrderItem[]> => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/orders`);
-  if (!res.ok) {
-    throw new Error('Failed to fetch all orders');
-  }
-  return res.json();
-};
-
-export const deleteOrder = async (id: string) => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/orders/${id}`,
+export const placeOrder = async (
+  orderData: sentOrderData
+): Promise<ApiResult<CreateOrderResponse>> => {
+  await requireSession();
+  return await safeApi.post(
+    '/orders/create',
+    { ...orderData },
     {
-      method: 'DELETE',
+      next: { tags: ['orders'] },
     }
   );
-  if (!res.ok) {
-    throw new Error('Failed to delete order');
-  }
-  return res.json();
+};
+
+export const fetchOrder = async (): Promise<ApiResult<FrontendOrder[]>> => {
+  await requireSession();
+  return await safeApi.get('/orders/userOrder', {
+    next: { tags: ['orders'] },
+  });
+};
+export const fetchOrderById = async (
+  _id: string
+): Promise<ApiResult<FrontendOrder[]>> => {
+  await requireSession();
+  return await safeApi.get(`/orders/${_id}`, {
+    next: { tags: ['orders'] },
+  });
 };

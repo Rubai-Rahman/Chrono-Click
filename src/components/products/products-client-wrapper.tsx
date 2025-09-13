@@ -45,7 +45,7 @@ export const ProductsClientWrapper = ({
     setCurrentSize(newSizeNum);
     const params = new URLSearchParams(searchParams);
     params.set('size', newSizeNum.toString());
-    // params.set('page', '1');
+    params.set('page', '1');
     router.push(`/products/${category}?${params.toString()}`);
   };
 
@@ -53,7 +53,7 @@ export const ProductsClientWrapper = ({
     setCurrentSort(newSort);
     const params = new URLSearchParams(searchParams);
     params.set('sort', newSort);
-    // params.set('page', '1');
+    params.set('page', '1');
     router.push(`/products/${category}?${params.toString()}`);
   };
 
