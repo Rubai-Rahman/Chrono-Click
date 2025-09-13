@@ -100,9 +100,7 @@ export async function loginAction(data: {
 // ---- logoutAction ----
 //
 export async function logoutAction() {
-  console.log('Logout action called');
   try {
-    
     const result = await safeApi.post<RegisterResultAlt>(
       'auth/logout',
       {},

@@ -10,7 +10,6 @@ const OrderDetailsContent = ({
 }: {
   orderDetails: FrontendOrder;
 }) => {
-  console.log('data', orderDetails);
   const items = orderDetails.orderItems.map((item) => ({
     id: item._id,
     name: item.productId.name,

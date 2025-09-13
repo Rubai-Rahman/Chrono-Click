@@ -6,7 +6,7 @@ import CheckoutForm, {
   CheckoutFormData,
 } from '@/components/checkout/checkout-form';
 import { useCartStore } from '@/store/useCartStore';
-import { OrderData } from '@/data/order';
+import { OrderData, sentOrderData } from '@/data/order';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { TAddress } from '@/lib/types/api/address-types';
@@ -29,7 +29,7 @@ export default function CheckoutPageContent({
   const setLastOrder = useOrderStore((state) => state.setLastOrder);
 
   const handleOrder = (data: CheckoutFormData) => {
-    const orderData: OrderData = {
+    const orderData: sentOrderData = {
       orderInfo: data,
       orderItems: items.map((item) => ({
         productId: item._id,

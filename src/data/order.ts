@@ -29,13 +29,21 @@ export interface OrderItem {
   price?: number;
 }
 
+export interface sentOrderItem {
+  productId: string;
+  quantity: number;
+}
+export interface sentOrderData {
+  orderInfo: CheckoutFormData;
+  orderItems: sentOrderItem[];
+}
 export interface OrderData {
   orderInfo: CheckoutFormData;
-  orderItems: Omit<OrderItem, 'price'>[];
+  orderItems: OrderItem[];
 }
 
 export const placeOrder = async (
-  orderData: OrderData
+  orderData: sentOrderData
 ): Promise<ApiResult<CreateOrderResponse>> => {
   await requireSession();
   return await safeApi.post(
