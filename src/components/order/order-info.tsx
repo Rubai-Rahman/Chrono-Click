@@ -39,7 +39,7 @@ const OrderInfo = ({
   email,
 }: OrderInfoProps) => {
   return (
-    <Card className="animate-fade-in-up animation-delay-300 shadow-elegant">
+    <Card className="animate-fade-in-up animation-delay-300 shadow-elegant h-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Package className="h-5 w-5 text-success" />

@@ -53,3 +53,11 @@ export const fetchOrder = async (): Promise<ApiResult<FrontendOrder[]>> => {
     next: { tags: ['orders'] },
   });
 };
+export const fetchOrderById = async (
+  _id: string
+): Promise<ApiResult<FrontendOrder[]>> => {
+  await requireSession();
+  return await safeApi.get(`/orders/${_id}`, {
+    next: { tags: ['orders'] },
+  });
+};
