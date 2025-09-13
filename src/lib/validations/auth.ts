@@ -55,9 +55,8 @@ export const newPasswordSchema = z.object({
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
       'Password must contain at least one uppercase letter, one lowercase letter, and one number'
-  ),
+    ),
   confirmPassword: z.string().min(1, 'Please confirm your password'),
-
 });
 
 // Type exports
@@ -68,9 +67,9 @@ export type NewPasswordFormData = z.infer<typeof newPasswordSchema>;
 // Demo credentials (for development only)
 export const DEMO_CREDENTIALS = {
   admin: {
-    email: 'admin@chronoclick.com',
+    email: 'admin@gmail.com',
     name: 'Admin',
-    password: 'Admin123!',
+    password: 'StrongAdmin#1',
   },
   user: {
     email: 'test1@gmail.com',
